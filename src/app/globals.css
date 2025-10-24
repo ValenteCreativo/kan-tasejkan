@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
+/* =====================================================
+   VARIABLES DE COLOR Y FUENTE
+===================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --accent-color: #722f37;       /* Rojo vino elegante */
+  --accent-light: #a04a4e;       /* Tono más claro para hover */
+  --primary-bg: #000000;         /* Fondo principal */
+  --secondary-bg: #111111;       /* Fondo secundario */
+  --border-color: #222222;       /* Borde sutil */
+  --embroidery-gold: #d4af37;    /* Oro bordado para detalles */
+  --animation-speed: 0.3s;       /* Velocidad de animaciones */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* =====================================================
+   CONFIGURACIÓN GLOBAL
+===================================================== */
+html,
+body {
+  background-color: var(--primary-bg);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+h1, h2, h3, h4, h5, h6 {
+  color: var(--accent-color);
+  font-family: 'Cinzel', serif;
+}
+
+/* =====================================================
+   EFECTO “BORDADO” SOBRIO
+===================================================== */
+.embroidery-text {
+  background: linear-gradient(
+    90deg,
+    var(--accent-color) 0%,
+    var(--embroidery-gold) 50%,
+    var(--accent-color) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: embroidery-shimmer 4s linear infinite;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+}
+
+/* =====================================================
+   ANIMACIONES SAGRADAS (DE CLAUDE)
+===================================================== */
+@keyframes sacred-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes embroidery-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes rotate-sacred {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blood-drip {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(10px) scaleY(1.2);
+  }
+}
+
+/* =====================================================
+   ELEMENTOS ESTILIZADOS
+===================================================== */
+
+/* Tarjetas sobrias y ceremoniales */
+.card {
+  @apply bg-gray-900 border border-gray-800 shadow-md p-4;
+  border-left: 3px solid var(--accent-color);
+  transition: border-color var(--animation-speed);
+}
+.card:hover {
+  border-left-color: var(--accent-light);
+}
+
+/* Botones minimalistas con escala */
+button {
+  @apply px-6 py-2 rounded border border-transparent transition-transform duration-300;
+  background-color: var(--accent-color);
+  color: #fff;
+}
+button:hover {
+  transform: scale(1.05);
+  background-color: var(--accent-light);
+}
+
+/* Efecto de cristal oscuro con borde vino */
+.glass-blood {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(114, 47, 55, 0.4);
+  box-shadow:
+    0 6px 24px rgba(114, 47, 55, 0.25),
+    inset 0 0 18px rgba(114, 47, 55, 0.15);
+}
+
+/* Contenedor general */
+.container {
+  @apply max-w-screen-2xl mx-auto px-4;
+}
+
+/* Enlaces con transición */
+a {
+  color: var(--accent-color);
+  transition: color var(--animation-speed);
+}
+a:hover {
+  color: var(--accent-light);
+}
+
+/* =====================================================
+   DETALLES VISUALES Y EFECTOS
+===================================================== */
+
+/* Fondo sagrado */
+.sacred-bg {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(114, 47, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(160, 74, 78, 0.1) 0%, transparent 50%);
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* Animaciones */
+.animate-sacred-pulse {
+  animation: sacred-pulse 3s ease-in-out infinite;
+}
+.animate-rotate-sacred {
+  animation: rotate-sacred 20s linear infinite;
+}
+.animate-blood-drip {
+  animation: blood-drip 2s ease-in-out infinite;
+}
+
+/* Efecto glow elegante */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+.hover-glow:hover {
+  box-shadow:
+    0 0 15px rgba(114, 47, 55, 0.4),
+    0 0 25px rgba(160, 74, 78, 0.2),
+    inset 0 0 15px rgba(114, 47, 55, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--primary-bg);
+  border-left: 1px solid var(--accent-color);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--accent-color), var(--accent-light));
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-light);
 }

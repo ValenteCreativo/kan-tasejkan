@@ -1,0 +1,107 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create artworks table
+CREATE TABLE artworks (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  thumbnail_url TEXT,
+  category TEXT NOT NULL,
+  year INTEGER,
+  medium TEXT,
+  dimensions TEXT,
+  price DECIMAL(10, 2),
+  available BOOLEAN DEFAULT true,
+  featured BOOLEAN DEFAULT false,
+  order_index INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create categories table
+CREATE TABLE categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT,
+  order_index INTEGER DEFAULT 0
+);
+
+-- Create storage bucket for artworks
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('artworks', 'artworks', true);
+
+-- Allow public access to view images
+CREATE POLICY "Public Access"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'artworks');
+
+-- Allow authenticated users to upload images
+CREATE POLICY "Authenticated users can upload images"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'artworks');
+
+-- Allow authenticated users to delete images
+CREATE POLICY "Authenticated users can delete images"
+ON storage.objects FOR DELETE
+USING (bucket_id = 'artworks');
+
+-- Enable Row Level Security
+ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+
+-- Public read access for artworks
+CREATE POLICY "Public can view artworks"
+ON artworks FOR SELECT
+USING (true);
+
+-- Authenticated users can insert artworks
+CREATE POLICY "Authenticated users can insert artworks"
+ON artworks FOR INSERT
+WITH CHECK (true);
+
+-- Authenticated users can update artworks
+CREATE POLICY "Authenticated users can update artworks"
+ON artworks FOR UPDATE
+USING (true);
+
+-- Authenticated users can delete artworks
+CREATE POLICY "Authenticated users can delete artworks"
+ON artworks FOR DELETE
+USING (true);
+
+-- Public read access for categories
+CREATE POLICY "Public can view categories"
+ON categories FOR SELECT
+USING (true);
+
+-- Authenticated users can manage categories
+CREATE POLICY "Authenticated users can manage categories"
+ON categories FOR ALL
+USING (true);
+
+-- Create updated_at trigger function
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Add trigger to artworks table
+CREATE TRIGGER update_artworks_updated_at
+BEFORE UPDATE ON artworks
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
+-- Insert default categories
+INSERT INTO categories (name, slug, description, order_index)
+VALUES
+  ('Sacred Geometry', 'sacred-geometry', 'Artworks featuring sacred geometric patterns', 0),
+  ('Abstract', 'abstract', 'Abstract contemporary pieces', 1),
+  ('Embroidery', 'embroidery', 'Hand-embroidered artworks', 2),
+  ('Mixed Media', 'mixed-media', 'Mixed media compositions', 3)
+ON CONFLICT (name) DO NOTHING;
