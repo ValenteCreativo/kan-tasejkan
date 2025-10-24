@@ -1,62 +1,81 @@
 'use client';
 
 import Link from 'next/link';
-import FlowerOfLife from '../components/sacred-geometry/FlowerOfLife';
-import Metatron from '../components/sacred-geometry/Metatron';
-import SacredPattern from '../components/sacred-geometry/SacredPattern';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-hidden">
-      <SacredPattern />
-      
-      <div className="absolute top-20 left-10 opacity-20 animate-sacred-pulse">
-        <FlowerOfLife size={300} animate={false} />
-      </div>
-      
-      <div className="absolute bottom-20 right-10 opacity-10">
-        <Metatron size={400} />
-      </div>
-
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8 flex justify-center">
-            <FlowerOfLife size={200} className="animate-sacred-pulse" />
-          </div>
-
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 embroidery-text">
-            Martina
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Sacred geometry meets contemporary art. Explore a collection where ancient symbolism 
-            intertwines with modern expression.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/portfolio"
-              className="group px-8 py-4 bg-[#8B0000] hover:bg-[#DC143C] text-white rounded-lg 
-                       transition-all duration-300 flex items-center gap-2 sacred-border hover-glow">
-              View Portfolio
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-            </Link>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="glass-blood rounded-lg p-6 hover-glow">
-              <div className="text-3xl font-bold text-[#DC143C] mb-2">Sacred</div>
-              <p className="text-gray-300 text-sm">Ancient geometric patterns</p>
+    <main className="min-h-screen sacred-minimal">
+      <div className="content-container">
+        <div className="min-h-screen flex flex-col items-center justify-center py-32">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-center max-w-3xl"
+          >
+            <div className="mb-8 flex justify-center gap-2">
+              <div className="sacred-dot animate-subtle-glow" />
+              <div className="sacred-dot animate-subtle-glow" style={{ animationDelay: '1s' }} />
+              <div className="sacred-dot animate-subtle-glow" style={{ animationDelay: '2s' }} />
             </div>
-            <div className="glass-blood rounded-lg p-6 hover-glow">
-              <div className="text-3xl font-bold text-[#DC143C] mb-2">Art</div>
-              <p className="text-gray-300 text-sm">Contemporary expression</p>
+
+            <h1 className="text-6xl md:text-8xl font-light mb-8 tracking-wider">
+              Martina
+            </h1>
+
+            <p className="text-lg md:text-xl mb-12 font-light leading-relaxed text-[#8b7d7b]">
+              Handpoke artist channeling sacred dimensions through ink and intention.
+              <br />
+              Each piece a portal, each line a whisper from beyond.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Link
+                href="/portfolio"
+                className="btn-elegant group flex items-center gap-2"
+              >
+                View Work
+                <ArrowRight
+                  className="group-hover:translate-x-1 transition-transform"
+                  size={16}
+                />
+              </Link>
+              <Link
+                href="/about"
+                className="btn-elegant"
+              >
+                Book Session
+              </Link>
             </div>
-            <div className="glass-blood rounded-lg p-6 hover-glow">
-              <div className="text-3xl font-bold text-[#DC143C] mb-2">Soul</div>
-              <p className="text-gray-300 text-sm">Spiritual embroidery</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1.5 }}
+            className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-12 w-full max-w-5xl"
+          >
+            <div className="card-minimal p-8 text-center">
+              <div className="elegant-text text-xs mb-4 text-[#8b7d7b]">Sacred Craft</div>
+              <p className="text-sm font-light leading-relaxed opacity-70">
+                Traditional handpoke techniques merged with channeled geometric wisdom
+              </p>
             </div>
-          </div>
+            <div className="card-minimal p-8 text-center">
+              <div className="elegant-text text-xs mb-4 text-[#8b7d7b]">Divine Channel</div>
+              <p className="text-sm font-light leading-relaxed opacity-70">
+                Each design received from higher dimensions, translated to skin
+              </p>
+            </div>
+            <div className="card-minimal p-8 text-center">
+              <div className="elegant-text text-xs mb-4 text-[#8b7d7b]">Eternal Art</div>
+              <p className="text-sm font-light leading-relaxed opacity-70">
+                Permanent marks carrying frequency, protection, and transformation
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </main>

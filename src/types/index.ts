@@ -36,6 +36,36 @@ export interface Category {
   order_index: number;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  is_admin: boolean;
+  created_at: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  cover_image_url?: string;
+  published: boolean;
+  author_id: string;
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+}
+
+export interface BlogFormData {
+  title: string;
+  content: string;
+  excerpt?: string;
+  cover_image_url?: string;
+  published: boolean;
+}
+
 export interface ContactForm {
   name: string;
   email: string;
@@ -55,6 +85,16 @@ export interface Database {
         Row: Category;
         Insert: Omit<Category, 'id'>;
         Update: Partial<Omit<Category, 'id'>>;
+      };
+      users: {
+        Row: User;
+        Insert: Omit<User, 'id' | 'created_at'>;
+        Update: Partial<Omit<User, 'id' | 'created_at'>>;
+      };
+      blog_posts: {
+        Row: BlogPost;
+        Insert: Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<BlogPost, 'id' | 'created_at' | 'updated_at'>>;
       };
     };
   };

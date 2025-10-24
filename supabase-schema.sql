@@ -105,3 +105,52 @@ VALUES
   ('Embroidery', 'embroidery', 'Hand-embroidered artworks', 2),
   ('Mixed Media', 'mixed-media', 'Mixed media compositions', 3)
 ON CONFLICT (name) DO NOTHING;
+
+-- Users table for authentication
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT,
+  is_admin BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Blog posts table
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  content TEXT NOT NULL,
+  excerpt TEXT,
+  cover_image_url TEXT,
+  published BOOLEAN DEFAULT false,
+  author_id UUID REFERENCES users(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  published_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Enable RLS
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
+
+-- Users policies
+CREATE POLICY "Admin can view all users"
+ON users FOR SELECT
+USING (true);
+
+-- Blog posts policies
+CREATE POLICY "Anyone can view published posts"
+ON blog_posts FOR SELECT
+USING (published = true);
+
+CREATE POLICY "Authenticated users can manage posts"
+ON blog_posts FOR ALL
+USING (true);
+
+-- Trigger for blog_posts updated_at
+CREATE TRIGGER update_blog_posts_updated_at
+BEFORE UPDATE ON blog_posts
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();

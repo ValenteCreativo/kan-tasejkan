@@ -11,40 +11,56 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/portfolio', label: 'Portfolio' },
-    { href: '/admin', label: 'Admin' },
+    { href: '/blog', label: 'Journal' },
+    { href: '/about', label: 'About' },
+    { href: '/admin', label: 'Studio' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass-blood">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass-minimal">
+      <div className="content-container">
+        <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold embroidery-text">Martina</span>
+            <span className="text-xl elegant-text">Martina</span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-12">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}
-                className="text-white hover:text-[#DC143C] transition-colors duration-300 font-medium">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="elegant-text text-xs subtle-accent"
+              >
                 {item.label}
               </Link>
             ))}
           </div>
 
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white hover:text-[#DC143C]">
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden subtle-accent"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }} className="md:hidden glass-blood">
-            <div className="px-4 pt-2 pb-4 space-y-3">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden glass-minimal border-t border-[#8b7d7b]/10"
+          >
+            <div className="content-container py-6 space-y-6">
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setIsOpen(false)}
-                  className="block text-white hover:text-[#DC143C] transition-colors duration-300 py-2">
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block elegant-text text-xs subtle-accent"
+                >
                   {item.label}
                 </Link>
               ))}
