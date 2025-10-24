@@ -23,6 +23,14 @@ export const blogService = {
       .single();
   },
 
+  async getById(id: string) {
+    return supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('id', id)
+      .single();
+  },
+
   async create(post: any) {
     return supabase
       .from('blog_posts')

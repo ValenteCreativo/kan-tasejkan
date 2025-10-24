@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create artworks table
-CREATE TABLE artworks (
+CREATE TABLE IF NOT EXISTS artworks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
   description TEXT NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE artworks (
 );
 
 -- Create categories table
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL UNIQUE,
   slug TEXT NOT NULL UNIQUE,
@@ -29,58 +29,66 @@ CREATE TABLE categories (
   order_index INTEGER DEFAULT 0
 );
 
--- Create storage bucket for artworks
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('artworks', 'artworks', true);
-
--- Allow public access to view images
-CREATE POLICY "Public Access"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'artworks');
-
--- Allow authenticated users to upload images
-CREATE POLICY "Authenticated users can upload images"
-ON storage.objects FOR INSERT
-WITH CHECK (bucket_id = 'artworks');
-
--- Allow authenticated users to delete images
-CREATE POLICY "Authenticated users can delete images"
-ON storage.objects FOR DELETE
-USING (bucket_id = 'artworks');
+-- Note: Storage bucket should be created manually in Supabase Dashboard
+-- Go to Storage > Create new bucket > Name: "artworks" > Public bucket: ON
 
 -- Enable Row Level Security
 ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 
 -- Public read access for artworks
-CREATE POLICY "Public can view artworks"
-ON artworks FOR SELECT
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Public can view artworks"
+  ON artworks FOR SELECT
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Authenticated users can insert artworks
-CREATE POLICY "Authenticated users can insert artworks"
-ON artworks FOR INSERT
-WITH CHECK (true);
+DO $$ BEGIN
+  CREATE POLICY "Authenticated users can insert artworks"
+  ON artworks FOR INSERT
+  WITH CHECK (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Authenticated users can update artworks
-CREATE POLICY "Authenticated users can update artworks"
-ON artworks FOR UPDATE
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Authenticated users can update artworks"
+  ON artworks FOR UPDATE
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Authenticated users can delete artworks
-CREATE POLICY "Authenticated users can delete artworks"
-ON artworks FOR DELETE
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Authenticated users can delete artworks"
+  ON artworks FOR DELETE
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Public read access for categories
-CREATE POLICY "Public can view categories"
-ON categories FOR SELECT
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Public can view categories"
+  ON categories FOR SELECT
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Authenticated users can manage categories
-CREATE POLICY "Authenticated users can manage categories"
-ON categories FOR ALL
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Authenticated users can manage categories"
+  ON categories FOR ALL
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -92,10 +100,14 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Add trigger to artworks table
-CREATE TRIGGER update_artworks_updated_at
-BEFORE UPDATE ON artworks
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+DO $$ BEGIN
+  CREATE TRIGGER update_artworks_updated_at
+  BEFORE UPDATE ON artworks
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Insert default categories
 INSERT INTO categories (name, slug, description, order_index)
@@ -136,21 +148,37 @@ ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 
 -- Users policies
-CREATE POLICY "Admin can view all users"
-ON users FOR SELECT
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Admin can view all users"
+  ON users FOR SELECT
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Blog posts policies
-CREATE POLICY "Anyone can view published posts"
-ON blog_posts FOR SELECT
-USING (published = true);
+DO $$ BEGIN
+  CREATE POLICY "Anyone can view published posts"
+  ON blog_posts FOR SELECT
+  USING (published = true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Authenticated users can manage posts"
-ON blog_posts FOR ALL
-USING (true);
+DO $$ BEGIN
+  CREATE POLICY "Authenticated users can manage posts"
+  ON blog_posts FOR ALL
+  USING (true);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Trigger for blog_posts updated_at
-CREATE TRIGGER update_blog_posts_updated_at
-BEFORE UPDATE ON blog_posts
-FOR EACH ROW
-EXECUTE FUNCTION update_updated_at_column();
+DO $$ BEGIN
+  CREATE TRIGGER update_blog_posts_updated_at
+  BEFORE UPDATE ON blog_posts
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;

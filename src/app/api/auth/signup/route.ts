@@ -23,9 +23,13 @@ export async function POST(request: Request) {
       },
     });
   } catch (error: any) {
+    console.error('Signup error:', error);
     if (error.code === '23505') {
       return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
     }
-    return NextResponse.json({ error: 'Signup failed' }, { status: 500 });
+    return NextResponse.json({
+      error: 'Signup failed',
+      details: error.message || 'Unknown error'
+    }, { status: 500 });
   }
 }
