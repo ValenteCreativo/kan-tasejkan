@@ -9,9 +9,9 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-  uploadFile,
   deleteFile
 } from '../actions';
+import { upload } from '@vercel/blob/client';
 import type { NewArtwork, NewCategory } from '../db/schema';
 
 // Helper functions for artwork operations
@@ -46,11 +46,17 @@ export const artworkService = {
     return await deleteArtwork(id);
   },
 
-  // Upload image to storage (Vercel Blob)
+  // Upload image to storage (Vercel Blob Client-Side)
   async uploadImage(file: File, path: string) {
-    const { url, error } = await uploadFile(file, path);
-    if (error) return { data: null, error };
-    return { data: { publicUrl: url! }, error: null };
+    try {
+      const newBlob = await upload(path, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+      });
+      return { data: { publicUrl: newBlob.url }, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   // Get public URL for image (Vercel Blob returns full URL on upload)
