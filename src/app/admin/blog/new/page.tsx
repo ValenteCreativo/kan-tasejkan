@@ -79,7 +79,7 @@ export default function NewBlogPostPage() {
       router.push('/admin');
     } catch (error) {
       console.error('Error creating blog post:', error);
-      alert('Error creating blog post. Please try again.');
+      alert(`Error creating blog post: ${error}`);
     } finally {
       setSubmitting(false);
     }

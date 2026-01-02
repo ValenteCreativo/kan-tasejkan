@@ -141,7 +141,8 @@ export async function createBlogPost(post: NewBlogPost) {
         const [data] = await db.insert(blogPosts).values(post).returning();
         return { data, error: null };
     } catch (error) {
-        return { data: null, error };
+        console.error('Create Blog Post Error:', error);
+        return { data: null, error: (error as Error).message };
     }
 }
 
