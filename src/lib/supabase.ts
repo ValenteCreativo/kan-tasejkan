@@ -1,70 +1,47 @@
-import { db, artworks, categories, type Artwork, type NewArtwork, type Category, type NewCategory } from '../db';
-import { eq, asc } from 'drizzle-orm';
+import {
+  getAllArtworks,
+  getArtworkById,
+  getArtworksByCategory,
+  createArtwork,
+  updateArtwork,
+  deleteArtwork,
+  getAllCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory
+} from '../actions';
+import type { NewArtwork, NewCategory } from '../db/schema';
 
 // Helper functions for artwork operations
 export const artworkService = {
   // Get all artworks
   async getAll(featured?: boolean) {
-    try {
-      if (featured !== undefined) {
-        const data = await db.select().from(artworks).where(eq(artworks.featured, featured)).orderBy(asc(artworks.orderIndex));
-        return { data, error: null };
-      }
-      const data = await db.select().from(artworks).orderBy(asc(artworks.orderIndex));
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await getAllArtworks(featured);
   },
 
   // Get artwork by ID
   async getById(id: string) {
-    try {
-      const [data] = await db.select().from(artworks).where(eq(artworks.id, id));
-      return { data: data || null, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await getArtworkById(id);
   },
 
   // Get artworks by category
   async getByCategory(category: string) {
-    try {
-      const data = await db.select().from(artworks).where(eq(artworks.category, category)).orderBy(asc(artworks.orderIndex));
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await getArtworksByCategory(category);
   },
 
   // Create new artwork
   async create(artwork: NewArtwork) {
-    try {
-      const [data] = await db.insert(artworks).values(artwork).returning();
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await createArtwork(artwork);
   },
 
   // Update artwork
   async update(id: string, artwork: Partial<NewArtwork>) {
-    try {
-      const [data] = await db.update(artworks).set({ ...artwork, updatedAt: new Date() }).where(eq(artworks.id, id)).returning();
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await updateArtwork(id, artwork);
   },
 
   // Delete artwork
   async delete(id: string) {
-    try {
-      await db.delete(artworks).where(eq(artworks.id, id));
-      return { error: null };
-    } catch (error) {
-      return { error };
-    }
+    return await deleteArtwork(id);
   },
 
   // Upload image to storage (placeholder - will use Vercel Blob later)
@@ -91,38 +68,18 @@ export const artworkService = {
 // Category service
 export const categoryService = {
   async getAll() {
-    try {
-      const data = await db.select().from(categories).orderBy(asc(categories.orderIndex));
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await getAllCategories();
   },
 
   async create(category: NewCategory) {
-    try {
-      const [data] = await db.insert(categories).values(category).returning();
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await createCategory(category);
   },
 
   async update(id: string, category: Partial<NewCategory>) {
-    try {
-      const [data] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
-      return { data, error: null };
-    } catch (error) {
-      return { data: null, error };
-    }
+    return await updateCategory(id, category);
   },
 
   async delete(id: string) {
-    try {
-      await db.delete(categories).where(eq(categories.id, id));
-      return { error: null };
-    } catch (error) {
-      return { error };
-    }
+    return await deleteCategory(id);
   },
 };
