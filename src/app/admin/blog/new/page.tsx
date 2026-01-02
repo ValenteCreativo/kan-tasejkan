@@ -54,11 +54,10 @@ export default function NewBlogPostPage() {
         const { artworkService } = await import('../../../../lib/supabase');
         const fileExt = coverImage.name.split('.').pop();
         const fileName = `blog-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await artworkService.uploadImage(coverImage, fileName);
+        const { data: uploadData, error: uploadError } = await artworkService.uploadImage(coverImage, fileName);
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = artworkService.getPublicUrl(fileName);
-        coverImageUrl = urlData.publicUrl;
+        coverImageUrl = uploadData?.publicUrl || '';
       }
 
       const slug = blogService.generateSlug(title);

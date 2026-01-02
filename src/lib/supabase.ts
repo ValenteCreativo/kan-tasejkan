@@ -8,7 +8,9 @@ import {
   getAllCategories,
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  uploadFile,
+  deleteFile
 } from '../actions';
 import type { NewArtwork, NewCategory } from '../db/schema';
 
@@ -44,24 +46,22 @@ export const artworkService = {
     return await deleteArtwork(id);
   },
 
-  // Upload image to storage (placeholder - will use Vercel Blob later)
+  // Upload image to storage (Vercel Blob)
   async uploadImage(file: File, path: string) {
-    // TODO: Implement with Vercel Blob
-    console.warn('Image upload not yet implemented - use Vercel Blob');
-    return { data: null, error: new Error('Image upload not implemented') };
+    const { url, error } = await uploadFile(file, path);
+    if (error) return { data: null, error };
+    return { data: { publicUrl: url! }, error: null };
   },
 
-  // Get public URL for image (placeholder)
+  // Get public URL for image (Vercel Blob returns full URL on upload)
   getPublicUrl(path: string) {
-    // TODO: Implement with Vercel Blob
     return { data: { publicUrl: path } };
   },
 
-  // Delete image from storage (placeholder)
+  // Delete image from storage
   async deleteImage(path: string) {
-    // TODO: Implement with Vercel Blob
-    console.warn('Image deletion not yet implemented - use Vercel Blob');
-    return { error: null };
+    const { error } = await deleteFile(path);
+    return { error };
   },
 };
 

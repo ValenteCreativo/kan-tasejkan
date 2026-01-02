@@ -2,6 +2,7 @@
 
 import { db, artworks, categories, blogPosts } from '../db';
 import { eq, asc, desc } from 'drizzle-orm';
+import { put, del } from '@vercel/blob';
 import type { NewArtwork, NewCategory, NewBlogPost } from '../db/schema';
 
 // --- Artwork Actions ---
@@ -156,6 +157,26 @@ export async function updateBlogPost(id: string, post: Partial<NewBlogPost>) {
 export async function deleteBlogPost(id: string) {
     try {
         await db.delete(blogPosts).where(eq(blogPosts.id, id));
+        return { error: null };
+    } catch (error) {
+        return { error };
+    }
+}
+
+// --- File Storage Actions ---
+
+export async function uploadFile(file: File, pathname: string) {
+    try {
+        const blob = await put(pathname, file, { access: 'public' });
+        return { url: blob.url, error: null };
+    } catch (error) {
+        return { url: null, error };
+    }
+}
+
+export async function deleteFile(url: string) {
+    try {
+        await del(url);
         return { error: null };
     } catch (error) {
         return { error };

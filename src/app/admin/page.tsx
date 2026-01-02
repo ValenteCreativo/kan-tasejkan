@@ -51,15 +51,16 @@ export default function AdminPage() {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await artworkService.uploadImage(file, fileName);
+      const { data: uploadData, error: uploadError } = await artworkService.uploadImage(file, fileName);
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = artworkService.getPublicUrl(fileName);
+      const imageUrl = uploadData?.publicUrl || '';
+
       const { data, error } = await artworkService.create({
         ...formData,
         price: formData.price?.toString(),
-        imageUrl: urlData.publicUrl,
-        thumbnailUrl: urlData.publicUrl,
+        imageUrl,
+        thumbnailUrl: imageUrl,
         orderIndex: artworks.length,
       });
 
