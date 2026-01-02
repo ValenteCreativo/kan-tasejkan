@@ -24,7 +24,7 @@ export default function ArtworkList({ artworks, onDelete }: ArtworkListProps) {
         <div key={artwork.id} className="glass-blood rounded-lg overflow-hidden sacred-border hover-glow">
           <div className="aspect-square relative">
             <Image
-              src={artwork.thumbnail_url || artwork.image_url}
+              src={artwork.thumbnailUrl || artwork.imageUrl}
               alt={artwork.title}
               fill
               className="object-cover"

@@ -1,58 +1,63 @@
-import { supabase } from './supabase';
-import type { BlogPost } from '../types';
+import { db, blogPosts, type BlogPost, type NewBlogPost } from '../db';
+import { eq, desc } from 'drizzle-orm';
 
 export const blogService = {
   async getAll(published?: boolean) {
-    let query = supabase
-      .from('blog_posts')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (published !== undefined) {
-      query = query.eq('published', published);
+    try {
+      if (published !== undefined) {
+        const data = await db.select().from(blogPosts).where(eq(blogPosts.published, published)).orderBy(desc(blogPosts.createdAt));
+        return { data, error: null };
+      }
+      const data = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
     }
-
-    return query;
   },
 
   async getBySlug(slug: string) {
-    return supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('slug', slug)
-      .single();
+    try {
+      const [data] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+      return { data: data || null, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   async getById(id: string) {
-    return supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('id', id)
-      .single();
+    try {
+      const [data] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+      return { data: data || null, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
-  async create(post: any) {
-    return supabase
-      .from('blog_posts')
-      .insert(post)
-      .select()
-      .single();
+  async create(post: NewBlogPost) {
+    try {
+      const [data] = await db.insert(blogPosts).values(post).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
-  async update(id: string, post: any) {
-    return supabase
-      .from('blog_posts')
-      .update(post)
-      .eq('id', id)
-      .select()
-      .single();
+  async update(id: string, post: Partial<NewBlogPost>) {
+    try {
+      const [data] = await db.update(blogPosts).set({ ...post, updatedAt: new Date() }).where(eq(blogPosts.id, id)).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   async delete(id: string) {
-    return supabase
-      .from('blog_posts')
-      .delete()
-      .eq('id', id);
+    try {
+      await db.delete(blogPosts).where(eq(blogPosts.id, id));
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   },
 
   generateSlug(title: string): string {

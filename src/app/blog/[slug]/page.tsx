@@ -64,9 +64,9 @@ export default function BlogPostPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {post.cover_image_url && (
+          {post.coverImageUrl && (
             <div className="aspect-[21/9] relative overflow-hidden rounded-lg mb-12">
-              <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" />
+              <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover" />
             </div>
           )}
 
@@ -74,7 +74,7 @@ export default function BlogPostPage() {
             <h1 className="text-4xl md:text-5xl font-light mb-4 leading-tight">{post.title}</h1>
             <div className="flex items-center justify-between">
               <time className="text-sm elegant-text text-[#8b7d7b]/50">
-                {new Date(post.created_at).toLocaleDateString('en-US', {
+                {new Date(post.createdAt!).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',

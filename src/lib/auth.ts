@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcryptjs';
-import { supabase } from './supabase';
+import { db, users } from '../db';
+import { eq } from 'drizzle-orm';
 
 export async function hashPassword(password: string): Promise<string> {
   return hash(password, 12);
@@ -10,32 +11,25 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export async function getUserByEmail(email: string) {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .single();
-
-  if (error) return null;
-  return data;
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || null;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function createUser(email: string, password: string, name?: string) {
   const hashedPassword = await hashPassword(password);
-  
-  const { data, error } = await supabase
-    .from('users')
-    .insert({
-      email,
-      password_hash: hashedPassword,
-      name,
-      is_admin: email === 'hola@martina.com', // Only Martina is admin
-    })
-    .select()
-    .single();
 
-  if (error) throw error;
-  return data;
+  const [user] = await db.insert(users).values({
+    email,
+    passwordHash: hashedPassword,
+    name,
+    isAdmin: email === 'hola@martina.com', // Only Martina is admin
+  }).returning();
+
+  return user;
 }
 
 export const WHITELISTED_EMAIL = 'hola@martina.com';

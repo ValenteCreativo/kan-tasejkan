@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         id: user.id,
         email: user.email,
         name: user.name,
-        is_admin: user.is_admin,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (error: any) {

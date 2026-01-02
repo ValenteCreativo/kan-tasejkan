@@ -68,7 +68,7 @@ export default function PortfolioPage() {
                 <motion.div key={artwork.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }} className="card-minimal overflow-hidden group hover-lift">
                   <div className="aspect-square relative">
-                    <Image src={artwork.thumbnail_url || artwork.image_url} alt={artwork.title} fill
+                    <Image src={artwork.thumbnailUrl || artwork.imageUrl} alt={artwork.title} fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -58,9 +58,9 @@ export default function BlogPage() {
                 <motion.article key={post.id} initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                   <Link href={`/blog/${post.slug}`} className="block card-minimal overflow-hidden group">
-                    {post.cover_image_url && (
+                    {post.coverImageUrl && (
                       <div className="aspect-[4/3] relative overflow-hidden">
-                        <Image src={post.cover_image_url} alt={post.title} fill
+                        <Image src={post.coverImageUrl} alt={post.title} fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       </div>
                     )}
@@ -72,7 +72,7 @@ export default function BlogPage() {
                         <p className="text-sm font-light text-[#8b7d7b] line-clamp-3">{post.excerpt}</p>
                       )}
                       <div className="mt-4 text-xs elegant-text text-[#8b7d7b]/50">
-                        {new Date(post.created_at).toLocaleDateString('en-US', {
+                        {new Date(post.createdAt!).toLocaleDateString('en-US', {
                           year: 'numeric', month: 'long', day: 'numeric'
                         })}
                       </div>

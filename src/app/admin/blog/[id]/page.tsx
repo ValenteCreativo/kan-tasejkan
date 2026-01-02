@@ -39,8 +39,8 @@ export default function EditBlogPostPage() {
         setTitle(data.title);
         setContent(data.content);
         setExcerpt(data.excerpt || '');
-        setCoverImagePreview(data.cover_image_url || '');
-        setPublished(data.published);
+        setCoverImagePreview(data.coverImageUrl || '');
+        setPublished(data.published || false);
       }
     } catch (error) {
       console.error('Error loading post:', error);
@@ -72,7 +72,7 @@ export default function EditBlogPostPage() {
 
     setSubmitting(true);
     try {
-      let coverImageUrl = post.cover_image_url;
+      let coverImageUrl = post.coverImageUrl;
 
       // Upload new cover image if provided
       if (coverImage) {
@@ -92,10 +92,10 @@ export default function EditBlogPostPage() {
         slug,
         content,
         excerpt: excerpt || content.substring(0, 200),
-        cover_image_url: coverImageUrl,
+        coverImageUrl: coverImageUrl,
         published,
-        published_at: published && !post.published ? new Date().toISOString() : post.published_at,
-        updated_at: new Date().toISOString(),
+        publishedAt: published && !post.published ? new Date() : post.publishedAt,
+        updatedAt: new Date(),
       };
 
       const { error } = await blogService.update(post.id, postData);

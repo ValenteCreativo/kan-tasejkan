@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const isValid = await verifyPassword(password, user.password_hash);
+    const isValid = await verifyPassword(password, user.passwordHash);
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         id: user.id,
         email: user.email,
         name: user.name,
-        is_admin: user.is_admin,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (error) {

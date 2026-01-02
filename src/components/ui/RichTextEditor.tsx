@@ -34,8 +34,8 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
     }, 0);
   }
 
-  function wrapSelection(wrapper: string) {
-    insertAtCursor(wrapper, wrapper);
+  function wrapSelection(wrapper: string, endWrapper?: string) {
+    insertAtCursor(wrapper, endWrapper || wrapper);
   }
 
   function insertLinePrefix(prefix: string) {

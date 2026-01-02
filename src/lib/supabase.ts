@@ -1,126 +1,128 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { db, artworks, categories, type Artwork, type NewArtwork, type Category, type NewCategory } from '../db';
+import { eq, asc } from 'drizzle-orm';
 
 // Helper functions for artwork operations
 export const artworkService = {
   // Get all artworks
   async getAll(featured?: boolean) {
-    let query = supabase
-      .from('artworks')
-      .select('*')
-      .order('order_index', { ascending: true });
-
-    if (featured !== undefined) {
-      query = query.eq('featured', featured);
+    try {
+      if (featured !== undefined) {
+        const data = await db.select().from(artworks).where(eq(artworks.featured, featured)).orderBy(asc(artworks.orderIndex));
+        return { data, error: null };
+      }
+      const data = await db.select().from(artworks).orderBy(asc(artworks.orderIndex));
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
     }
-
-    return query;
   },
 
   // Get artwork by ID
   async getById(id: string) {
-    return supabase
-      .from('artworks')
-      .select('*')
-      .eq('id', id)
-      .single();
+    try {
+      const [data] = await db.select().from(artworks).where(eq(artworks.id, id));
+      return { data: data || null, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   // Get artworks by category
   async getByCategory(category: string) {
-    return supabase
-      .from('artworks')
-      .select('*')
-      .eq('category', category)
-      .order('order_index', { ascending: true });
+    try {
+      const data = await db.select().from(artworks).where(eq(artworks.category, category)).orderBy(asc(artworks.orderIndex));
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   // Create new artwork
-  async create(artwork: any) {
-    return supabase
-      .from('artworks')
-      .insert(artwork)
-      .select()
-      .single();
+  async create(artwork: NewArtwork) {
+    try {
+      const [data] = await db.insert(artworks).values(artwork).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   // Update artwork
-  async update(id: string, artwork: any) {
-    return supabase
-      .from('artworks')
-      .update(artwork)
-      .eq('id', id)
-      .select()
-      .single();
+  async update(id: string, artwork: Partial<NewArtwork>) {
+    try {
+      const [data] = await db.update(artworks).set({ ...artwork, updatedAt: new Date() }).where(eq(artworks.id, id)).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   // Delete artwork
   async delete(id: string) {
-    return supabase
-      .from('artworks')
-      .delete()
-      .eq('id', id);
+    try {
+      await db.delete(artworks).where(eq(artworks.id, id));
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   },
 
-  // Upload image to storage
+  // Upload image to storage (placeholder - will use Vercel Blob later)
   async uploadImage(file: File, path: string) {
-    return supabase.storage
-      .from('artworks')
-      .upload(path, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
+    // TODO: Implement with Vercel Blob
+    console.warn('Image upload not yet implemented - use Vercel Blob');
+    return { data: null, error: new Error('Image upload not implemented') };
   },
 
-  // Get public URL for image
+  // Get public URL for image (placeholder)
   getPublicUrl(path: string) {
-    return supabase.storage
-      .from('artworks')
-      .getPublicUrl(path);
+    // TODO: Implement with Vercel Blob
+    return { data: { publicUrl: path } };
   },
 
-  // Delete image from storage
+  // Delete image from storage (placeholder)
   async deleteImage(path: string) {
-    return supabase.storage
-      .from('artworks')
-      .remove([path]);
+    // TODO: Implement with Vercel Blob
+    console.warn('Image deletion not yet implemented - use Vercel Blob');
+    return { error: null };
   },
 };
 
 // Category service
 export const categoryService = {
   async getAll() {
-    return supabase
-      .from('categories')
-      .select('*')
-      .order('order_index', { ascending: true });
+    try {
+      const data = await db.select().from(categories).orderBy(asc(categories.orderIndex));
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
-  async create(category: any) {
-    return supabase
-      .from('categories')
-      .insert(category)
-      .select()
-      .single();
+  async create(category: NewCategory) {
+    try {
+      const [data] = await db.insert(categories).values(category).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
-  async update(id: string, category: any) {
-    return supabase
-      .from('categories')
-      .update(category)
-      .eq('id', id)
-      .select()
-      .single();
+  async update(id: string, category: Partial<NewCategory>) {
+    try {
+      const [data] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 
   async delete(id: string) {
-    return supabase
-      .from('categories')
-      .delete()
-      .eq('id', id);
+    try {
+      await db.delete(categories).where(eq(categories.id, id));
+      return { error: null };
+    } catch (error) {
+      return { error };
+    }
   },
 };

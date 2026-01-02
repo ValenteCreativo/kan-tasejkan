@@ -57,9 +57,10 @@ export default function AdminPage() {
       const { data: urlData } = artworkService.getPublicUrl(fileName);
       const { data, error } = await artworkService.create({
         ...formData,
-        image_url: urlData.publicUrl,
-        thumbnail_url: urlData.publicUrl,
-        order_index: artworks.length,
+        price: formData.price?.toString(),
+        imageUrl: urlData.publicUrl,
+        thumbnailUrl: urlData.publicUrl,
+        orderIndex: artworks.length,
       });
 
       if (error) throw error;
@@ -130,21 +131,19 @@ export default function AdminPage() {
         <div className="flex justify-center gap-4 mb-12">
           <button
             onClick={() => setTab('artworks')}
-            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${
-              tab === 'artworks'
-                ? 'minimal-border bg-[#8b7d7b]/10'
-                : 'border border-transparent hover:border-[#8b7d7b]/20'
-            }`}
+            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'artworks'
+              ? 'minimal-border bg-[#8b7d7b]/10'
+              : 'border border-transparent hover:border-[#8b7d7b]/20'
+              }`}
           >
             Artworks
           </button>
           <button
             onClick={() => setTab('blog')}
-            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${
-              tab === 'blog'
-                ? 'minimal-border bg-[#8b7d7b]/10'
-                : 'border border-transparent hover:border-[#8b7d7b]/20'
-            }`}
+            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'blog'
+              ? 'minimal-border bg-[#8b7d7b]/10'
+              : 'border border-transparent hover:border-[#8b7d7b]/20'
+              }`}
           >
             Journal
           </button>
@@ -187,7 +186,7 @@ export default function AdminPage() {
                       <h3 className="text-lg font-light mb-1">{post.title}</h3>
                       <p className="text-sm text-[#8b7d7b] font-light">
                         {post.published ? 'Published' : 'Draft'} ·{' '}
-                        {new Date(post.created_at).toLocaleDateString()}
+                        {new Date(post.createdAt!).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="flex gap-3">

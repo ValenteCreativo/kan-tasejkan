@@ -20,7 +20,7 @@ export default function ArtworkCard({ artwork, index }: ArtworkCardProps) {
     >
       <div className="aspect-square relative">
         <Image
-          src={artwork.thumbnail_url || artwork.image_url}
+          src={artwork.thumbnailUrl || artwork.imageUrl}
           alt={artwork.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"

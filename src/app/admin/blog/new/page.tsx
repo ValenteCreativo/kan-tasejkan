@@ -67,10 +67,10 @@ export default function NewBlogPostPage() {
         slug,
         content,
         excerpt: excerpt || content.substring(0, 200),
-        cover_image_url: coverImageUrl,
+        coverImageUrl: coverImageUrl,
         published,
-        author_id: user.id,
-        published_at: published ? new Date().toISOString() : null,
+        authorId: user.id,
+        publishedAt: published ? new Date() : null,
       };
 
       const { error } = await blogService.create(postData);
