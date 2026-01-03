@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { artworkService } from '../../../lib/supabase';
+import ImageMagnifier from '../../../components/ui/ImageMagnifier';
 import type { Artwork } from '../../../types';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 
@@ -93,12 +94,10 @@ export default function TattooDetailPage() {
                     >
                         <div className="aspect-[3/4] md:aspect-[4/5] relative bg-[#0a0a0a] border-[1px] border-[#1a1a1a] shadow-2xl z-[60]">
                             {artwork.imageUrl ? (
-                                <Image
+                                <ImageMagnifier
                                     src={artwork.imageUrl}
                                     alt={artwork.title}
-                                    fill
-                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-100"
-                                    priority
+                                    className="object-cover z-[60]"
                                 />
                             ) : <div className="w-full h-full bg-[#0a0a0a]" />}
                         </div>
