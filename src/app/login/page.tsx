@@ -33,8 +33,8 @@ export default function LoginPage() {
 
       localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/admin');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

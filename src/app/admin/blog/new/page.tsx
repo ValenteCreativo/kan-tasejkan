@@ -6,9 +6,11 @@ import { blogService } from '../../../../lib/blog';
 import { Upload } from 'lucide-react';
 import RichTextEditor from '../../../../components/ui/RichTextEditor';
 
+import type { User } from '../../../../types';
+
 export default function NewBlogPostPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [excerpt, setExcerpt] = useState('');
@@ -156,6 +158,7 @@ export default function NewBlogPostPage() {
             <div className="minimal-border rounded p-6 text-center">
               {coverImagePreview ? (
                 <div className="space-y-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverImagePreview}
                     alt="Cover preview"

@@ -7,15 +7,15 @@ import { artworkService } from '../../lib/supabase';
 import { blogService } from '../../lib/blog';
 import ArtworkForm from '../../components/admin/ArtworkForm';
 import ArtworkList from '../../components/admin/ArtworkList';
-import type { Artwork, ArtworkFormData, BlogPost } from '../../types';
+import type { Artwork, ArtworkFormData, BlogPost, User } from '../../types';
 
 export default function AdminPage() {
   const router = useRouter();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
-  const [tab, setTab] = useState<'artworks' | 'blog'>('artworks');
+  const [user, setUser] = useState<User | null>(null);
+  const [tab, setTab] = useState<'artworks' | 'tattoos' | 'blog'>('artworks');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -56,7 +56,7 @@ export default function AdminPage() {
 
       const imageUrl = uploadData?.publicUrl || '';
 
-      const { data, error } = await artworkService.create({
+      const { error } = await artworkService.create({
         ...formData,
         price: formData.price?.toString(),
         imageUrl,
@@ -140,6 +140,15 @@ export default function AdminPage() {
             Artworks
           </button>
           <button
+            onClick={() => setTab('tattoos')}
+            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'tattoos'
+              ? 'minimal-border bg-[#8b7d7b]/10'
+              : 'border border-transparent hover:border-[#8b7d7b]/20'
+              }`}
+          >
+            Tattoos
+          </button>
+          <button
             onClick={() => setTab('blog')}
             className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'blog'
               ? 'minimal-border bg-[#8b7d7b]/10'
@@ -150,7 +159,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {tab === 'artworks' ? (
+        {tab === 'artworks' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-1">
               <div className="glass-minimal p-6 rounded-lg sticky top-24">
@@ -160,10 +169,33 @@ export default function AdminPage() {
             </div>
             <div className="lg:col-span-2">
               <h2 className="elegant-text text-sm mb-6">Your Collection</h2>
-              <ArtworkList artworks={artworks} onDelete={handleArtworkDelete} />
+              <ArtworkList
+                artworks={artworks.filter(a => a.category !== 'tattoo')}
+                onDelete={handleArtworkDelete}
+              />
             </div>
           </div>
-        ) : (
+        )}
+
+        {tab === 'tattoos' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1">
+              <div className="glass-minimal p-6 rounded-lg sticky top-24">
+                <h2 className="elegant-text text-sm mb-6">Add New Tattoo</h2>
+                <ArtworkForm onSubmit={handleArtworkSubmit} defaultCategory="tattoo" />
+              </div>
+            </div>
+            <div className="lg:col-span-2">
+              <h2 className="elegant-text text-sm mb-6">Tattoo Works</h2>
+              <ArtworkList
+                artworks={artworks.filter(a => a.category === 'tattoo')}
+                onDelete={handleArtworkDelete}
+              />
+            </div>
+          </div>
+        )}
+
+        {tab === 'blog' && (
           <div className="max-w-5xl mx-auto">
             <div className="mb-8 text-center">
               <Link href="/admin/blog/new" className="btn-elegant">

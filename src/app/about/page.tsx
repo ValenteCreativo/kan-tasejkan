@@ -45,7 +45,7 @@ export default function AboutPage() {
             <div className="mt-12 text-center">
               <p className="text-sm font-light text-[#8b7d7b] leading-relaxed">
                 Sessions are held in a private, sacred space.<br />
-                Please reach out with your vision, and we'll co-create something eternal.
+                Please reach out with your vision, and we&apos;ll co-create something eternal.
               </p>
             </div>
           </div>

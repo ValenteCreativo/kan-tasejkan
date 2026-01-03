@@ -7,10 +7,17 @@ import type { BlogPost } from '../../../../types';
 import { Upload } from 'lucide-react';
 import RichTextEditor from '../../../../components/ui/RichTextEditor';
 
+// Define a basic User type based on common usage
+interface User {
+  id: string;
+  email: string;
+  // Add other user properties as needed
+}
+
 export default function EditBlogPostPage() {
   const router = useRouter();
   const params = useParams();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null); // Changed from any to User | null
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
@@ -28,28 +35,29 @@ export default function EditBlogPostPage() {
       return;
     }
     setUser(JSON.parse(storedUser));
+
+    async function loadPost() {
+      try {
+        const { data } = await blogService.getById(params.id as string);
+        if (data) {
+          setPost(data);
+          setTitle(data.title);
+          setContent(data.content);
+          setExcerpt(data.excerpt || '');
+          setCoverImagePreview(data.coverImageUrl || '');
+          setPublished(data.published || false);
+        }
+      } catch (error) {
+        console.error('Error loading post:', error);
+        alert('Error loading post');
+        router.push('/admin');
+      } finally {
+        setLoading(false);
+      }
+    }
+
     loadPost();
   }, [params.id, router]);
-
-  async function loadPost() {
-    try {
-      const { data } = await blogService.getById(params.id as string);
-      if (data) {
-        setPost(data);
-        setTitle(data.title);
-        setContent(data.content);
-        setExcerpt(data.excerpt || '');
-        setCoverImagePreview(data.coverImageUrl || '');
-        setPublished(data.published || false);
-      }
-    } catch (error) {
-      console.error('Error loading post:', error);
-      alert('Error loading post');
-      router.push('/admin');
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -200,6 +208,7 @@ export default function EditBlogPostPage() {
             <div className="minimal-border rounded p-6 text-center">
               {coverImagePreview ? (
                 <div className="space-y-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={coverImagePreview}
                     alt="Cover preview"

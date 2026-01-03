@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import type { Artwork } from '../../types';
 
 interface ArtworkListProps {
@@ -38,6 +38,9 @@ export default function ArtworkList({ artworks, onDelete }: ArtworkListProps) {
           <div className="p-4">
             <h3 className="text-lg font-bold text-white mb-1">{artwork.title}</h3>
             <p className="text-sm text-gray-400 mb-2">{artwork.category}</p>
+            {artwork.technique && (
+              <p className="text-xs text-gray-500 mb-2 italic">Technique: {artwork.technique}</p>
+            )}
             <p className="text-sm text-gray-300 line-clamp-2 mb-3">{artwork.description}</p>
 
             <div className="flex gap-2">

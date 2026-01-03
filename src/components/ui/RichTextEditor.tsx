@@ -9,6 +9,19 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
+const TOOLBAR_ITEMS = [
+  { id: 'bold', icon: Bold, label: 'Bold' },
+  { id: 'italic', icon: Italic, label: 'Italic' },
+  { id: 'underline', icon: Underline, label: 'Underline' },
+  { id: 'h1', icon: Heading1, label: 'Heading 1' },
+  { id: 'h2', icon: Heading2, label: 'Heading 2' },
+  { id: 'list', icon: List, label: 'Bullet List' },
+  { id: 'ordered', icon: ListOrdered, label: 'Numbered List' },
+  { id: 'quote', icon: Quote, label: 'Quote' },
+  { id: 'code', icon: Code, label: 'Inline Code' },
+  { id: 'link', icon: Link, label: 'Insert Link' },
+];
+
 export default function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [showLinkInput, setShowLinkInput] = useState(false);
@@ -65,34 +78,36 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
     }
   }
 
-  const toolbarButtons = [
-    { icon: Bold, action: () => wrapSelection('**'), label: 'Bold' },
-    { icon: Italic, action: () => wrapSelection('*'), label: 'Italic' },
-    { icon: Underline, action: () => wrapSelection('<u>', '</u>'), label: 'Underline' },
-    { icon: Heading1, action: () => insertLinePrefix('# '), label: 'Heading 1' },
-    { icon: Heading2, action: () => insertLinePrefix('## '), label: 'Heading 2' },
-    { icon: List, action: () => insertLinePrefix('- '), label: 'Bullet List' },
-    { icon: ListOrdered, action: () => insertLinePrefix('1. '), label: 'Numbered List' },
-    { icon: Quote, action: () => insertLinePrefix('> '), label: 'Quote' },
-    { icon: Code, action: () => wrapSelection('`'), label: 'Inline Code' },
-    { icon: Link, action: () => setShowLinkInput(!showLinkInput), label: 'Insert Link' },
-  ];
+  function handleToolbarAction(id: string) {
+    switch (id) {
+      case 'bold': wrapSelection('**'); break;
+      case 'italic': wrapSelection('*'); break;
+      case 'underline': wrapSelection('<u>', '</u>'); break;
+      case 'h1': insertLinePrefix('# '); break;
+      case 'h2': insertLinePrefix('## '); break;
+      case 'list': insertLinePrefix('- '); break;
+      case 'ordered': insertLinePrefix('1. '); break;
+      case 'quote': insertLinePrefix('> '); break;
+      case 'code': wrapSelection('`'); break;
+      case 'link': setShowLinkInput(!showLinkInput); break;
+    }
+  }
 
   return (
     <div className="space-y-3">
       {/* Toolbar */}
       <div className="glass-minimal p-3 rounded-lg flex flex-wrap gap-2">
-        {toolbarButtons.map((button, index) => (
+        {TOOLBAR_ITEMS.map((item) => (
           <button
-            key={index}
+            key={item.id}
             type="button"
-            onClick={button.action}
+            onClick={() => handleToolbarAction(item.id)}
             className="p-2 hover:bg-[#8b7d7b]/20 rounded transition-colors group relative"
-            title={button.label}
+            title={item.label}
           >
-            <button.icon size={18} className="text-[#8b7d7b] group-hover:text-white transition-colors" />
+            <item.icon size={18} className="text-[#8b7d7b] group-hover:text-white transition-colors" />
             <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-              {button.label}
+              {item.label}
             </span>
           </button>
         ))}

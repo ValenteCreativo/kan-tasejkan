@@ -9,15 +9,17 @@ interface ArtworkFormProps {
   onSubmit: (data: ArtworkFormData, file: File | null) => Promise<void>;
   initialData?: ArtworkFormData;
   isEdit?: boolean;
+  defaultCategory?: string;
 }
 
-export default function ArtworkForm({ onSubmit, initialData, isEdit = false }: ArtworkFormProps) {
+export default function ArtworkForm({ onSubmit, initialData, isEdit = false, defaultCategory }: ArtworkFormProps) {
   const [formData, setFormData] = useState<ArtworkFormData>(initialData || {
     title: '',
     description: '',
-    category: '',
+    category: defaultCategory || '',
     year: new Date().getFullYear(),
     medium: '',
+    technique: '',
     dimensions: '',
     price: undefined,
     available: true,
@@ -47,13 +49,13 @@ export default function ArtworkForm({ onSubmit, initialData, isEdit = false }: A
     setLoading(true);
     try {
       await onSubmit(formData, file);
-      // Reset form
       setFormData({
         title: '',
         description: '',
-        category: '',
+        category: defaultCategory || '',
         year: new Date().getFullYear(),
         medium: '',
+        technique: '',
         dimensions: '',
         price: undefined,
         available: true,
@@ -80,6 +82,7 @@ export default function ArtworkForm({ onSubmit, initialData, isEdit = false }: A
         <input {...getInputProps()} />
         {preview ? (
           <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={preview} alt="Preview" className="max-h-64 mx-auto rounded-lg" />
             <button
               type="button"
@@ -116,17 +119,34 @@ export default function ArtworkForm({ onSubmit, initialData, isEdit = false }: A
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
-          <input
-            type="text"
-            required
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full px-4 py-2 bg-black/50 border border-[#8B0000] rounded-lg text-white
-                     focus:outline-none focus:border-[#DC143C] transition-colors"
-          />
-        </div>
+        {defaultCategory ? (
+          <input type="hidden" value={defaultCategory} />
+        ) : (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
+            <input
+              type="text"
+              required
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-2 bg-black/50 border border-[#8B0000] rounded-lg text-white
+                       focus:outline-none focus:border-[#DC143C] transition-colors"
+            />
+          </div>
+        )}
+
+        {defaultCategory === 'tattoo' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Technique</label>
+            <input
+              type="text"
+              value={formData.technique || ''}
+              onChange={(e) => setFormData({ ...formData, technique: e.target.value })}
+              className="w-full px-4 py-2 bg-black/50 border border-[#8B0000] rounded-lg text-white
+                       focus:outline-none focus:border-[#DC143C] transition-colors"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">Year</label>

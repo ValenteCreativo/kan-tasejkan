@@ -29,6 +29,7 @@ export const artworks = pgTable('artworks', {
     category: varchar('category', { length: 255 }).notNull(),
     year: integer('year'),
     medium: varchar('medium', { length: 255 }),
+    technique: varchar('technique', { length: 255 }),
     dimensions: varchar('dimensions', { length: 255 }),
     price: decimal('price', { precision: 10, scale: 2 }),
     available: boolean('available').default(true),

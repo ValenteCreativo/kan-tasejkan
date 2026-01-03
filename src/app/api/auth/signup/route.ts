@@ -22,14 +22,14 @@ export async function POST(request: Request) {
         isAdmin: user.isAdmin,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Signup error:', error);
-    if (error.code === '23505') {
+    if ((error as { code?: string }).code === '23505') {
       return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
     }
     return NextResponse.json({
       error: 'Signup failed',
-      details: error.message || 'Unknown error'
+      details: (error as Error).message || 'Unknown error'
     }, { status: 500 });
   }
 }

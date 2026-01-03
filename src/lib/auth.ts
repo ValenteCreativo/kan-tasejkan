@@ -14,7 +14,7 @@ export async function getUserByEmail(email: string) {
   try {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

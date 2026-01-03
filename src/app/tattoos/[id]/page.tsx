@@ -9,7 +9,7 @@ import { artworkService } from '../../../lib/supabase';
 import type { Artwork } from '../../../types';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 
-export default function ArtworkDetailPage() {
+export default function TattooDetailPage() {
     const params = useParams();
     const router = useRouter();
     const [artwork, setArtwork] = useState<Artwork | null>(null);
@@ -24,10 +24,10 @@ export default function ArtworkDetailPage() {
                 if (data) {
                     setArtwork(data);
                 } else {
-                    router.push('/portfolio');
+                    router.push('/tattoos');
                 }
             } catch (error) {
-                console.error('Error loading artwork:', error);
+                console.error('Error loading tattoo:', error);
             } finally {
                 setLoading(false);
             }
@@ -77,48 +77,42 @@ export default function ArtworkDetailPage() {
             <div className="content-container max-w-6xl">
 
                 {/* Back Navigation */}
-                <Link href="/portfolio" className="inline-flex items-center gap-2 text-[#8b7d7b] hover:text-[#8a1c1c] transition-colors mb-12 group">
+                <Link href="/tattoos" className="inline-flex items-center gap-2 text-[#8b7d7b] hover:text-[#8a1c1c] transition-colors mb-12 group">
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] uppercase tracking-[0.2em]">Return to Archive</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em]">Return to Ink Rituals</span>
                 </Link>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 items-start">
 
-                    {/* Left: The Vizualisation (Museum Frame) */}
+                    {/* Left: The Visualization */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 1 }}
                         className="w-full relative"
                     >
-                        <div className="aspect-[3/4] md:aspect-[4/5] relative bg-[#0a0a0a] border-[16px] border-[#111] shadow-2xl">
+                        <div className="aspect-[3/4] md:aspect-[4/5] relative bg-[#0a0a0a] border-[1px] border-[#1a1a1a] shadow-2xl">
                             {artwork.imageUrl ? (
                                 <Image
                                     src={artwork.imageUrl}
                                     alt={artwork.title}
                                     fill
-                                    className="object-cover"
+                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
                                     priority
                                 />
                             ) : <div className="w-full h-full bg-[#0a0a0a]" />}
-
-                            {/* Lighting Effect Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/5 pointer-events-none mix-blend-overlay" />
                         </div>
-
-                        {/* Shadow Reflection */}
-                        <div className="absolute -bottom-16 left-8 right-8 h-4 bg-black/50 blur-2xl" />
                     </motion.div>
 
 
-                    {/* Right: The Museum Label (Details) - CLEAN SANS SERIF */}
+                    {/* Right: The Detail Label */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, delay: 0.3 }}
                         className="flex flex-col space-y-8 pt-8 md:pt-16"
                     >
-                        {/* Header Info - NO ITALIC, NO CORMORANT */}
+                        {/* Header Info */}
                         <div className="space-y-3 border-l-2 border-[#8a1c1c] pl-6">
                             <h1 className="text-3xl md:text-5xl font-light tracking-wide text-[#e5e5e5] uppercase">{artwork.title}</h1>
                             <p className="text-[#8b7d7b] text-xs tracking-[0.3em] uppercase">Martina Gorozo • {artwork.year || new Date().getFullYear()}</p>
@@ -127,30 +121,34 @@ export default function ArtworkDetailPage() {
                         {/* Technical Specs */}
                         <div className="grid grid-cols-2 gap-8 py-8 border-y border-[#1a1a1a]">
                             <div>
-                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Medium</span>
-                                <span className="text-sm font-light text-[#e5e5e5]">{artwork.medium || 'Mixed Media'}</span>
+                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Technique/Medium</span>
+                                <span className="text-sm font-light text-[#e5e5e5]">
+                                    {artwork.technique || artwork.medium || 'Handpoke / Machine'}
+                                </span>
                             </div>
                             <div>
-                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Dimensions</span>
-                                <span className="text-sm font-light text-[#e5e5e5]">{artwork.dimensions || 'Variable'}</span>
+                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Placement/Size</span>
+                                <span className="text-sm font-light text-[#e5e5e5]">{artwork.dimensions || 'Custom'}</span>
                             </div>
                         </div>
 
                         {/* Description */}
                         <div className="prose prose-invert">
-                            <p className="text-[#8b7d7b] font-light leading-relaxed text-sm">{artwork.description || "A unique exploration of form and void, capturing the essence of the subconscious mind. This piece serves as a bridge between the seen and unseen, inviting the viewer to look inward."}</p>
+                            <p className="text-[#8b7d7b] font-light leading-relaxed text-sm">
+                                {artwork.description || "A permanent mark, a ritual of ink and skin."}
+                            </p>
                         </div>
 
-                        {/* Acquisition */}
+                        {/* Acquisition/Booking */}
                         <div className="pt-8 mt-auto">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex flex-col">
-                                    <span className="text-[9px] uppercase tracking-widest text-[#404040]">Valuation</span>
+                                    <span className="text-[9px] uppercase tracking-widest text-[#404040]">Deposit / Price</span>
                                     <span className="text-2xl font-light text-[#8a1c1c]">${artwork.price || 50} USD</span>
                                 </div>
                                 <div className="text-right">
                                     <span className={`text-[9px] uppercase tracking-widest ${artwork.available ? 'text-green-900/60' : 'text-red-900/60'}`}>
-                                        {artwork.available ? 'Available' : 'Sold Out'}
+                                        {artwork.available ? 'Available' : 'Booked'}
                                     </span>
                                 </div>
                             </div>
@@ -161,7 +159,7 @@ export default function ArtworkDetailPage() {
                                 className="w-full btn-ritual flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest text-xs py-4"
                             >
                                 <ShoppingBag size={14} />
-                                <span>{artwork.available ? 'Acquire Artwork' : 'Unavailable'}</span>
+                                <span>{artwork.available ? 'Acquire' : 'Unavailable'}</span>
                             </button>
                         </div>
 

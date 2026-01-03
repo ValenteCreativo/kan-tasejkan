@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         isAdmin: user.isAdmin,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
   }
 }

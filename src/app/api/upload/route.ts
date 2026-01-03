@@ -1,3 +1,4 @@
+
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
 
@@ -8,7 +9,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const jsonResponse = await handleUpload({
             body,
             request,
-            onBeforeGenerateToken: async (pathname, clientPayload) => {
+            onBeforeGenerateToken: async () => {
                 // Allow images and other assets used in blog/portfolio
                 return {
                     allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
@@ -17,9 +18,11 @@ export async function POST(request: Request): Promise<NextResponse> {
                     }),
                 };
             },
-            onUploadCompleted: async ({ blob, tokenPayload }) => {
-                // Token generation successful
-                console.log('blob uploaded', blob.url);
+            onUploadCompleted: async ({ blob, tokenPayload: _tokenPayload }) => {
+                if (!_tokenPayload) {
+                    // Token generation successful
+                    console.log('blob uploaded', blob.url);
+                }
             },
         });
 

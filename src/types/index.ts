@@ -8,6 +8,7 @@ export interface ArtworkFormData {
   category: string;
   year?: number;
   medium?: string;
+  technique?: string;
   dimensions?: string;
   price?: number;
   available: boolean;

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { artworkService } from '../../lib/supabase';
-import sectionHeader from '../../components/ui/SectionHeader'; // Fix import if needed, assuming component exists
 import type { Artwork } from '../../types';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -68,25 +67,27 @@ export default function TattoosPage() {
                                     transition={{ duration: 0.8, delay: index * 0.1 }}
                                     className={`group relative ${index % 2 !== 0 ? 'lg:translate-y-24' : ''} ${index % 3 === 2 ? 'lg:translate-y-12' : ''}`}
                                 >
-                                    {/* Image Container */}
-                                    <div className="relative mb-6 overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c]/30 transition-colors duration-500">
-                                        <div className="aspect-[3/4] relative bg-[#0a0a0a]">
-                                            {artwork.imageUrl ? (
-                                                <Image
-                                                    src={artwork.imageUrl}
-                                                    alt={artwork.title}
-                                                    fill
-                                                    className="object-cover transition-all duration-[1.5s] grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 scale-100 group-hover:scale-105"
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                />
-                                            ) : <div className="w-full h-full bg-[#111]" />}
+                                    <Link href={`/tattoos/${artwork.id}`} className="block">
+                                        {/* Image Container */}
+                                        <div className="relative mb-6 overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c]/30 transition-colors duration-500">
+                                            <div className="aspect-[3/4] relative bg-[#0a0a0a]">
+                                                {artwork.imageUrl ? (
+                                                    <Image
+                                                        src={artwork.imageUrl}
+                                                        alt={artwork.title}
+                                                        fill
+                                                        className="object-cover transition-all duration-[1.5s] grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 scale-100 group-hover:scale-105"
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    />
+                                                ) : <div className="w-full h-full bg-[#111]" />}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    {/* Minimal Metadata */}
-                                    <div className="flex flex-col items-center space-y-2">
-                                        <h3 className="text-lg font-light tracking-[0.2em] text-[#e5e5e5] uppercase group-hover:text-[#8a1c1c] transition-colors duration-500 text-center">{artwork.title}</h3>
-                                    </div>
+                                        {/* Minimal Metadata */}
+                                        <div className="flex flex-col items-center space-y-2">
+                                            <h3 className="text-lg font-light tracking-[0.2em] text-[#e5e5e5] uppercase group-hover:text-[#8a1c1c] transition-colors duration-500 text-center">{artwork.title}</h3>
+                                        </div>
+                                    </Link>
                                 </motion.div>
                             ))}
                         </div>
