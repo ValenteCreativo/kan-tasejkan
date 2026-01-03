@@ -69,7 +69,7 @@ export default function TattoosPage() {
                                 >
                                     <Link href={`/tattoos/${artwork.id}`} className="block">
                                         {/* Image Container */}
-                                        <div className="relative mb-6 overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c]/30 transition-colors duration-500">
+                                        <div className="relative mb-6 overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c]/30 transition-colors duration-500 z-[60]">
                                             <div className="aspect-[3/4] relative bg-[#0a0a0a]">
                                                 {artwork.imageUrl ? (
                                                     <Image

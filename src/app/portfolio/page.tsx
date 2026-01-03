@@ -68,7 +68,7 @@ export default function PortfolioPage() {
               >
                 <Link href={`/portfolio/${art.id}`} className="flex flex-col items-center">
                   {/* Museum Frame Image */}
-                  <div className="relative w-48 h-64 mb-8 bg-[#0a0a0a] shadow-lg overflow-hidden border-[8px] border-[#111] group-hover:border-[#1a1a1a] transition-all duration-500">
+                  <div className="relative w-48 h-64 mb-8 bg-[#0a0a0a] shadow-lg overflow-hidden border-[8px] border-[#111] group-hover:border-[#1a1a1a] transition-all duration-500 z-[60]">
                     {art.imageUrl ? (
                       <Image
                         src={art.imageUrl}

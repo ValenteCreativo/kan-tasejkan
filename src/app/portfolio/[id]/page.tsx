@@ -91,7 +91,7 @@ export default function ArtworkDetailPage() {
                         transition={{ duration: 1 }}
                         className="w-full relative"
                     >
-                        <div className="aspect-[3/4] md:aspect-[4/5] relative bg-[#0a0a0a] border-[16px] border-[#111] shadow-2xl">
+                        <div className="aspect-[3/4] md:aspect-[4/5] relative bg-[#0a0a0a] border-[16px] border-[#111] shadow-2xl z-[60]">
                             {artwork.imageUrl ? (
                                 <Image
                                     src={artwork.imageUrl}

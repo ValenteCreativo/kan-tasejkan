@@ -110,7 +110,7 @@ export default function Home() {
                     {/* LINK TO DETAIL PAGE */}
                     <Link href={`/portfolio/${art.id}`} className="block relative z-0">
                       {/* Smaller Image Container */}
-                      <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
+                      <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a] z-0 group-hover:z-[60]">
                         {art.imageUrl ? (
                           <Image src={art.imageUrl} alt={art.title} fill className="object-cover group-hover:opacity-100 transition-opacity" />
                         ) : <div className="w-full h-full bg-[#111]" />}
@@ -167,7 +167,7 @@ export default function Home() {
                 {tattoos.length > 0 ? tattoos.map((art) => (
                   <Link href={`/portfolio/${art.id}`} key={art.id} className="group block relative">
                     {/* Smaller Image Container */}
-                    <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
+                    <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a] z-0 group-hover:z-[60]">
                       {art.imageUrl ? (
                         <Image src={art.imageUrl} alt={art.title} fill className="object-cover group-hover:opacity-100 transition-opacity" />
                       ) : <div className="w-full h-full bg-[#111]" />}
