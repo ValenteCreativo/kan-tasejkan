@@ -14,20 +14,20 @@ export default function HorizontalScroll({ children, className = "" }: Horizonta
         target: targetRef,
     });
 
-    // Transform vertical scroll to horizontal movement
-    // We scroll 100% of the container width to the left
-    // 3 Panels (Digital, Tattoo, Journal) + 1 partial initial view = ~300vw movement needed
-    // We map 0-1 vertical progress to 0% to -75% horizontal translation to show all panels.
+    // 3 Panels (Digital, Tattoo, Journal)
+    // Width = 300vw
+    // Movement = 0 to -200vw (to show the 3rd panel fully)
+    // -200vw / 300vw = -66.666%
 
-    // Increased height to 500vh to add "friction" (make it slower) as requested.
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
+    // Adjusted to 400vh to balance "friction" (speed) and "arrival time" (footer access).
+    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-66.66%"]);
 
     return (
-        <section ref={targetRef} className={`relative h-[500vh] bg-background ${className}`}>
+        <section ref={targetRef} className={`relative h-[400vh] bg-background ${className}`}>
             <div className="sticky top-0 flex h-screen items-center overflow-hidden">
                 <motion.div
                     style={{ x }}
-                    className="flex h-screen items-center w-[400vw]" /* 4 sections width */
+                    className="flex h-screen items-center w-[300vw]"
                 >
                     {children}
                 </motion.div>

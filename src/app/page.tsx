@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import HorizontalScroll from '../components/HorizontalScroll';
@@ -16,6 +16,11 @@ export default function Home() {
   const [tattoos, setTattoos] = useState<Artwork[]>([]);
   const [journal, setJournal] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Hero Fade Logic
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 200], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 200], [1, 0.9]);
 
   useEffect(() => {
     loadData();
@@ -50,9 +55,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(138,28,28,0.05),transparent_70%)] opacity-50 pointer-events-none" />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          style={{ opacity: heroOpacity, scale: heroScale }}
           className="text-center px-4 max-w-3xl z-10"
         >
           {/* Copy Only */}
@@ -85,8 +88,8 @@ export default function Home() {
 
         {/* Panel 1: Digital Archive */}
         <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* VISIBLE LABEL */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#e5e5e5] opacity-100 shadow-sm">Page 01 • Digital Art</div>
+          {/* RED BOLD LABEL - NO TITLE */}
+          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 01 •</div>
           <div className="w-full max-w-6xl flex flex-col items-start">
             <div className="w-full flex justify-between items-end mb-12">
               <SectionHeader title="Digital Art" subtitle="Portfolio" align="left" className="mb-0 my-0" />
@@ -122,8 +125,8 @@ export default function Home() {
 
         {/* Panel 2: Ink Rituals (Tattoos) */}
         <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* VISIBLE LABEL */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#e5e5e5] opacity-100 shadow-sm">Page 02 • Tattoos</div>
+          {/* RED BOLD LABEL - NO TITLE */}
+          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 02 •</div>
           <div className="w-full max-w-6xl flex flex-col items-start">
             <div className="w-full flex justify-between items-end mb-12">
               <SectionHeader title="Tattoos" subtitle="Ink Art" align="left" className="mb-0 my-0" />
@@ -148,7 +151,7 @@ export default function Home() {
                     <h4 className="text-xs uppercase tracking-widest text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
                   </Link>
                 )) : (
-                  <div className="col-span-4 border border-dashed border-[#1a1a1a] p-12 text-center w-full">
+                  <div className="col-span-4 border border-dashed border-[#1a1a1a] p-12 text-center w-full min-h-[400px] flex items-center justify-center">
                     <p className="text-xs text-[#404040] tracking-widest uppercase">No Ink Art Displayed</p>
                   </div>
                 )}
@@ -163,8 +166,8 @@ export default function Home() {
 
         {/* Panel 3: The Journal */}
         <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* VISIBLE LABEL */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#e5e5e5] opacity-100 shadow-sm">Page 03 • The Journal</div>
+          {/* RED BOLD LABEL - NO TITLE */}
+          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 03 •</div>
           <div className="w-full max-w-6xl flex flex-col items-start">
             <div className="w-full flex justify-between items-end mb-12">
               <SectionHeader title="Journal" subtitle="Recent Transmission" align="left" className="mb-0 my-0" />
