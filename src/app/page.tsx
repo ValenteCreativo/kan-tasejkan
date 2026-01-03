@@ -112,7 +112,7 @@ export default function Home() {
                       {/* Smaller Image Container */}
                       <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
                         {art.imageUrl ? (
-                          <Image src={art.imageUrl} alt={art.title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                          <Image src={art.imageUrl} alt={art.title} fill className="object-cover group-hover:opacity-100 transition-opacity" />
                         ) : <div className="w-full h-full bg-[#111]" />}
 
                         {/* Quick Shop Overlay */}
@@ -169,7 +169,7 @@ export default function Home() {
                     {/* Smaller Image Container */}
                     <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
                       {art.imageUrl ? (
-                        <Image src={art.imageUrl} alt={art.title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        <Image src={art.imageUrl} alt={art.title} fill className="object-cover group-hover:opacity-100 transition-opacity" />
                       ) : <div className="w-full h-full bg-[#111]" />}
                     </div>
 

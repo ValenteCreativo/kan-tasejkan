@@ -97,7 +97,7 @@ export default function TattooDetailPage() {
                                     src={artwork.imageUrl}
                                     alt={artwork.title}
                                     fill
-                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-100"
                                     priority
                                 />
                             ) : <div className="w-full h-full bg-[#0a0a0a]" />}

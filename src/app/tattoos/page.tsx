@@ -45,7 +45,7 @@ export default function TattoosPage() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
                     <div className="mb-24 text-center">
                         <h1 className="text-4xl md:text-5xl font-light mb-2 tracking-[0.2em] uppercase text-white">Ink Rituals</h1>
-                        <p className="text-[#8b7d7b] tracking-[0.2em] uppercase text-xs mt-4">Permanent Marks on Skin</p>
+                        <p className="text-[#8b7d7b] tracking-[0.2em] uppercase text-xs mt-4">Sacred Geometry • Eternal</p>
                         <div className="w-px h-12 bg-gradient-to-b from-[#8a1c1c] to-transparent mx-auto mt-8 opacity-50" />
                     </div>
 
@@ -76,7 +76,7 @@ export default function TattoosPage() {
                                                         src={artwork.imageUrl}
                                                         alt={artwork.title}
                                                         fill
-                                                        className="object-cover transition-all duration-[1.5s] grayscale group-hover:grayscale-0 opacity-80 group-hover:opacity-100 scale-100 group-hover:scale-105"
+                                                        className="object-cover transition-all duration-[1.5s] grayscale group-hover:grayscale-0 scale-100 group-hover:scale-105"
                                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     />
                                                 ) : <div className="w-full h-full bg-[#111]" />}
