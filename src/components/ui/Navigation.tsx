@@ -42,7 +42,7 @@ export default function Navigation() {
           {/* Central Totem */}
           <Link href="/" className="group flex flex-col items-center">
             <span className={`font-light tracking-[0.5em] uppercase transition-all duration-500 ${scrolled ? 'text-xs text-white' : 'text-xl text-white'}`}>
-              Martina
+              Martina Gorozo
             </span>
             <span className={`h-px bg-[#8a1c1c] transition-all duration-700 ${scrolled ? 'w-0' : 'w-full mt-2 group-hover:w-1/2'}`} />
           </Link>

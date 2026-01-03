@@ -17,20 +17,21 @@ export default function BlogPage() {
 
   async function loadPosts() {
     try {
-      const { data } = await blogService.getAll(true);
+      const { data, error } = await blogService.getAll(true);
+      if (error) throw error;
       setPosts(data || []);
     } catch (error) {
-      console.error('Error loading posts:', error);
+      console.error('Error loading journal:', error);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen pt-32 pb-16 sacred-minimal">
-      <div className="content-container max-w-6xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
+    <main className="min-h-screen pt-32 pb-16 bg-[#050505] text-[#e5e5e5]">
+      <div className="content-container max-w-4xl"> {/* Reduced width for reading focus */}
+
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
           <div className="mb-24 text-center">
             <h1 className="text-4xl md:text-5xl font-light mb-2 tracking-[0.2em] uppercase text-white">Journal</h1>
             <div className="w-px h-12 bg-gradient-to-b from-[#8a1c1c] to-transparent mx-auto mt-8 opacity-50" />
@@ -42,60 +43,61 @@ export default function BlogPage() {
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-[#404040] font-light italic">The void is silent.</p>
+              <p className="text-[#404040] font-light italic">The pages are blank.</p>
             </div>
           ) : (
-            <div className="space-y-24 max-w-4xl mx-auto relative px-4">
-
-              {/* Timeline Thread */}
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#8a1c1c]/50 via-[#8a1c1c]/20 to-transparent dashed-thread hidden md:block" />
-
+            <div className="flex flex-col space-y-16">
               {posts.map((post, index) => (
-                <motion.article
+                <motion.div
                   key={post.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: index * 0.1 }}
-                  className={`relative flex flex-col md:flex-row gap-8 md:gap-16 items-start ${index % 2 === 0 ? 'md:text-right md:flex-row-reverse' : 'md:text-left'}`}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  {/* Date Marker (Center) */}
-                  <div className="absolute left-4 md:left-1/2 top-0 -translate-x-[5px] md:-translate-x-1/2 w-3 h-3 bg-[#050505] border border-[#8a1c1c] rotate-45 z-10 hidden md:block" />
+                  <Link href={`/blog/${post.slug}`} className="group flex flex-col md:flex-row gap-8 items-start md:items-center p-8 border border-transparent hover:border-[#1a1a1a] transition-all duration-500 rounded-sm bg-gradient-to-r from-transparent to-transparent hover:to-[#0a0a0a]">
 
-                  {/* Content */}
-                  <div className="flex-1 w-full group cursor-pointer">
-                    <Link href={`/blog/${post.slug}`} className="block space-y-4">
-                      <div className="overflow-hidden mb-4 relative aspect-[16/9] md:aspect-[21/9]">
-                        {post.coverImageUrl && (
-                          <Image
-                            src={post.coverImageUrl}
-                            alt={post.title}
-                            fill
-                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-[1.5s] opacity-60 group-hover:opacity-100 scale-105 group-hover:scale-100"
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-80" />
-                      </div>
-
-                      <div className="space-y-2">
-                        <span className="text-xs text-[#8a1c1c] tracking-[0.3em] font-mono">
-                          {new Date(post.createdAt!).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </span>
-                        <h2 className="text-3xl md:text-4xl font-light text-[#e5e5e5] group-hover:text-white transition-colors duration-500">
-                          {post.title}
-                        </h2>
-                        <p className="text-[#8b7d7b] font-light leading-relaxed line-clamp-3 opacity-70 group-hover:opacity-100 transition-opacity">
-                          {post.excerpt || "No excerpt available for this sacred text..."}
-                        </p>
-                        <div className={`pt-4 flex ${index % 2 === 0 ? 'md:justify-end' : 'md:justify-start'}`}>
-                          <span className="text-[10px] uppercase tracking-widest border-b border-[#8a1c1c] pb-1 text-[#e5e5e5]">Read Prophecy</span>
+                    {/* Small Elegant Image Thumbnail */}
+                    <div className="flex-shrink-0 w-full md:w-32 h-32 relative overflow-hidden bg-[#0a0a0a] border border-[#1a1a1a] group-hover:border-[#8a1c1c]/30 transition-colors">
+                      {post.coverImageUrl ? (
+                        <Image
+                          src={post.coverImageUrl}
+                          alt={post.title}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-[#111]">
+                          <div className="w-1 h-1 bg-[#8a1c1c] opacity-50" />
                         </div>
-                      </div>
-                    </Link>
-                  </div>
+                      )}
+                    </div>
 
-                  {/* Empty space for timeline balance */}
-                  <div className="flex-1 hidden md:block" />
-                </motion.article>
+                    {/* Content */}
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-[10px] text-[#8a1c1c] tracking-widest uppercase">{new Date(post.createdAt!).toLocaleDateString()}</span>
+                        <span className="h-px w-8 bg-[#1a1a1a]" />
+                      </div>
+
+                      <h2 className="text-2xl font-light mb-3 tracking-wide text-[#e5e5e5] group-hover:text-white transition-colors">{post.title}</h2>
+
+                      <p className="text-sm text-[#8b7d7b] leading-relaxed line-clamp-2 md:line-clamp-2 font-light">
+                        {post.excerpt || 'Read the full entry...'}
+                      </p>
+                    </div>
+
+                    {/* Arrow Indicator */}
+                    <div className="hidden md:block text-[#404040] group-hover:text-[#8a1c1c] transition-colors transform group-hover:translate-x-2 duration-500">
+                      →
+                    </div>
+
+                  </Link>
+
+                  {/* Divider */}
+                  {index !== posts.length - 1 && (
+                    <div className="w-full h-px bg-[#1a1a1a] mt-16 opacity-50" />
+                  )}
+                </motion.div>
               ))}
             </div>
           )}

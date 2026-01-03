@@ -9,7 +9,7 @@ import SectionHeader from '../components/ui/SectionHeader';
 import { artworkService } from '../lib/supabase';
 import { blogService } from '../lib/blog';
 import type { Artwork, BlogPost } from '../types';
-import { Instagram, Mail } from 'lucide-react';
+import { Instagram, Mail, ShoppingBag } from 'lucide-react';
 
 export default function Home() {
   const [digitalArt, setDigitalArt] = useState<Artwork[]>([]);
@@ -17,10 +17,10 @@ export default function Home() {
   const [journal, setJournal] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Hero Fade Logic
+  // Hero Fade Logic - Delayed to prevent instant disappearance
   const { scrollY } = useScroll();
-  const heroOpacity = useTransform(scrollY, [0, 200], [1, 0]);
-  const heroScale = useTransform(scrollY, [0, 200], [1, 0.9]);
+  const heroOpacity = useTransform(scrollY, [200, 500], [1, 0]);
+  const heroScale = useTransform(scrollY, [200, 500], [1, 0.95]);
 
   useEffect(() => {
     loadData();
@@ -87,14 +87,15 @@ export default function Home() {
       <HorizontalScroll className="bg-[#050505]">
 
         {/* Panel 1: Digital Archive */}
-        <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* RED BOLD LABEL - NO TITLE */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 01 •</div>
-          <div className="w-full max-w-6xl flex flex-col items-start">
-            <div className="w-full flex justify-between items-end mb-12">
+        {/* RAISED ALIGNMENT: pt-16 md:pt-24 */}
+        <div className="w-screen h-screen flex-shrink-0 flex items-start justify-center pt-16 md:pt-24 px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
+          {/* RED BOLD LABEL - SMALLER (text-sm) */}
+          <div className="absolute top-12 left-12 text-sm font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 01 •</div>
+          <div className="w-full max-w-6xl flex flex-col items-start h-full">
+            <div className="w-full flex justify-between items-end mb-8 md:mb-12">
               <SectionHeader title="Digital Art" subtitle="Portfolio" align="left" className="mb-0 my-0" />
-              {/* VIEW MORE LINK */}
-              <Link href="/portfolio" className="hidden md:flex items-center gap-2 group">
+              {/* VIEW MORE LINK - MASKED BACKGROUND */}
+              <Link href="/portfolio" className="hidden md:flex items-center gap-2 group bg-[#050505] relative z-10 pl-4 py-1">
                 <span className="text-xs tracking-widest uppercase text-[#8b7d7b] group-hover:text-white transition-colors font-bold">View Gallery</span>
                 <span className="w-8 h-px bg-[#8a1c1c] group-hover:w-16 transition-all duration-500" />
               </Link>
@@ -103,16 +104,37 @@ export default function Home() {
             {loading ? (
               <div className="w-1 h-1 bg-[#8a1c1c] animate-pulse-slow mx-auto" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
                 {digitalArt.length > 0 ? digitalArt.map((art) => (
-                  <Link href="/portfolio" key={art.id} className="group block">
-                    <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700">
-                      {art.imageUrl ? (
-                        <Image src={art.imageUrl} alt={art.title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                      ) : <div className="w-full h-full bg-[#111]" />}
-                    </div>
-                    <h4 className="text-xs uppercase tracking-widest text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
-                  </Link>
+                  <div key={art.id} className="group relative">
+                    {/* LINK TO DETAIL PAGE */}
+                    <Link href={`/portfolio/${art.id}`} className="block relative z-0">
+                      {/* Smaller Image Container */}
+                      <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
+                        {art.imageUrl ? (
+                          <Image src={art.imageUrl} alt={art.title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        ) : <div className="w-full h-full bg-[#111]" />}
+
+                        {/* Quick Shop Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-end">
+                          <span className="text-[#8a1c1c] text-xs font-bold tracking-widest">${art.price || 50}</span>
+                        </div>
+                      </div>
+
+                      {/* Minimal Details */}
+                      <div className="space-y-1">
+                        <h4 className="text-[10px] uppercase tracking-widest text-[#e5e5e5] group-hover:text-[#8a1c1c] transition-colors truncate">{art.title}</h4>
+                        <p className="text-[10px] text-[#404040] line-clamp-2 leading-relaxed h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                          {art.description || "Limited edition print. Signed by the artist."}
+                        </p>
+                      </div>
+                    </Link>
+
+                    {/* Add to Cart Button (Floating) - Links to detail for now */}
+                    <Link href={`/portfolio/${art.id}`} className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-[#050505] border border-[#1a1a1a] rounded-full text-[#8b7d7b] opacity-0 group-hover:opacity-100 transition-all hover:bg-[#8a1c1c] hover:text-white hover:border-[#8a1c1c] z-20">
+                      <ShoppingBag size={14} strokeWidth={1.5} />
+                    </Link>
+                  </div>
                 )) : <p className="text-xs text-[#404040]">Archive Empty.</p>}
               </div>
             )}
@@ -124,14 +146,15 @@ export default function Home() {
         </div>
 
         {/* Panel 2: Ink Rituals (Tattoos) */}
-        <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* RED BOLD LABEL - NO TITLE */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 02 •</div>
-          <div className="w-full max-w-6xl flex flex-col items-start">
-            <div className="w-full flex justify-between items-end mb-12">
+        {/* RAISED ALIGNMENT */}
+        <div className="w-screen h-screen flex-shrink-0 flex items-start justify-center pt-16 md:pt-24 px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
+          {/* RED BOLD LABEL - SMALLER (text-sm) */}
+          <div className="absolute top-12 left-12 text-sm font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 02 •</div>
+          <div className="w-full max-w-6xl flex flex-col items-start h-full">
+            <div className="w-full flex justify-between items-end mb-8 md:mb-12">
               <SectionHeader title="Tattoos" subtitle="Ink Art" align="left" className="mb-0 my-0" />
-              {/* VIEW MORE LINK -> /tattoos */}
-              <Link href="/tattoos" className="hidden md:flex items-center gap-2 group">
+              {/* VIEW MORE LINK - MASKED BACKGROUND */}
+              <Link href="/tattoos" className="hidden md:flex items-center gap-2 group bg-[#050505] relative z-10 pl-4 py-1">
                 <span className="text-xs tracking-widest uppercase text-[#8b7d7b] group-hover:text-white transition-colors font-bold">View Full Portfolio</span>
                 <span className="w-8 h-px bg-[#8a1c1c] group-hover:w-16 transition-all duration-500" />
               </Link>
@@ -140,18 +163,22 @@ export default function Home() {
             {loading ? (
               <div className="w-1 h-1 bg-[#8a1c1c] animate-pulse-slow mx-auto" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
                 {tattoos.length > 0 ? tattoos.map((art) => (
-                  <Link href="/tattoos" key={art.id} className="group block">
-                    <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700">
+                  <Link href={`/portfolio/${art.id}`} key={art.id} className="group block relative">
+                    {/* Smaller Image Container */}
+                    <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
                       {art.imageUrl ? (
                         <Image src={art.imageUrl} alt={art.title} fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                       ) : <div className="w-full h-full bg-[#111]" />}
                     </div>
-                    <h4 className="text-xs uppercase tracking-widest text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
+
+                    <div className="space-y-1">
+                      <h4 className="text-[10px] uppercase tracking-widest text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
+                    </div>
                   </Link>
                 )) : (
-                  <div className="col-span-4 border border-dashed border-[#1a1a1a] p-12 text-center w-full min-h-[400px] flex items-center justify-center">
+                  <div className="col-span-4 border border-dashed border-[#1a1a1a] p-12 text-center w-full min-h-[300px] flex items-center justify-center">
                     <p className="text-xs text-[#404040] tracking-widest uppercase">No Ink Art Displayed</p>
                   </div>
                 )}
@@ -165,37 +192,49 @@ export default function Home() {
         </div>
 
         {/* Panel 3: The Journal */}
-        <div className="w-screen h-screen flex-shrink-0 flex items-center justify-center px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
-          {/* RED BOLD LABEL - NO TITLE */}
-          <div className="absolute top-12 left-12 text-xl font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 03 •</div>
-          <div className="w-full max-w-6xl flex flex-col items-start">
-            <div className="w-full flex justify-between items-end mb-12">
+        {/* RAISED ALIGNMENT */}
+        <div className="w-screen h-screen flex-shrink-0 flex items-start justify-center pt-16 md:pt-24 px-12 md:px-24 border-r border-[#1a1a1a]/50 relative bg-[#050505]">
+          {/* RED BOLD LABEL - SMALLER (text-sm) */}
+          <div className="absolute top-12 left-12 text-sm font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 03 •</div>
+          <div className="w-full max-w-6xl flex flex-col items-start h-full">
+            <div className="w-full flex justify-between items-end mb-8 md:mb-12">
               <SectionHeader title="Journal" subtitle="Recent Transmission" align="left" className="mb-0 my-0" />
-              {/* VIEW MORE LINK */}
-              <Link href="/blog" className="hidden md:flex items-center gap-2 group">
+              {/* VIEW MORE LINK - MASKED BACKGROUND */}
+              <Link href="/blog" className="hidden md:flex items-center gap-2 group bg-[#050505] relative z-10 pl-4 py-1">
                 <span className="text-xs tracking-widest uppercase text-[#8b7d7b] group-hover:text-white transition-colors font-bold">Read All Entries</span>
                 <span className="w-8 h-px bg-[#8a1c1c] group-hover:w-16 transition-all duration-500" />
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full">
+            {/* REFACTORED JOURNAL LIST: Vertical Stack, Small Images */}
+            <div className="flex flex-col space-y-8 w-full max-w-4xl">
               {journal.length > 0 ? journal.map((post) => (
-                <Link href={`/blog/${post.slug}`} key={post.id} className="group block">
-                  {/* Image for Blog Post */}
-                  <div className="aspect-video bg-[#0a0a0a] relative overflow-hidden mb-6 border border-[#1a1a1a] group-hover:border-[#8a1c1c] transition-colors duration-500">
+                <Link href={`/blog/${post.slug}`} key={post.id} className="group flex gap-8 items-start hover:bg-[#0a0a0a] p-4 -mx-4 rounded-sm transition-colors duration-500">
+
+                  {/* IMAGE: Very Small Museum Frame (20x24 approx) */}
+                  <div className="flex-shrink-0 w-20 h-24 bg-[#0a0a0a] relative overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c] transition-colors duration-500">
                     {post.coverImageUrl ? (
                       <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-[#111]">
-                        <div className="w-2 h-2 bg-[#8a1c1c] rounded-full opacity-50" />
+                        <div className="w-1 h-1 bg-[#8a1c1c] rounded-full opacity-50" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60" />
-                    <span className="absolute bottom-4 left-4 text-[10px] text-white tracking-widest">{new Date(post.createdAt!).toLocaleDateString()}</span>
                   </div>
 
-                  <h3 className="text-xl font-light mb-2 group-hover:text-[#8a1c1c] transition-colors">{post.title}</h3>
-                  <p className="text-xs text-[#8b7d7b] leading-relaxed line-clamp-3">{post.excerpt || 'Read more...'}</p>
+                  {/* TEXT CONTENT: Dominant */}
+                  <div className="flex flex-col space-y-2">
+                    <span className="text-[9px] text-[#8a1c1c] tracking-widest uppercase">{new Date(post.createdAt!).toLocaleDateString()}</span>
+                    <h3 className="text-lg font-light text-[#e5e5e5] group-hover:text-white transition-colors">{post.title}</h3>
+                    <p className="text-xs text-[#8b7d7b] leading-relaxed line-clamp-2 opacity-80 group-hover:opacity-100 max-w-xl">
+                      {post.excerpt || 'Read more...'}
+                    </p>
+                  </div>
+
+                  {/* ARROW: Right aligned */}
+                  <div className="ml-auto flex items-center h-24 text-[#404040] group-hover:text-[#8a1c1c] transition-colors">
+                    →
+                  </div>
                 </Link>
               )) : <p className="text-xs text-[#404040]">The journal is silent.</p>}
             </div>
@@ -214,7 +253,7 @@ export default function Home() {
 
           <div className="w-px h-16 bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent mx-auto" />
 
-          <h2 className="text-4xl md:text-5xl font-light tracking-[0.2em] uppercase text-white">Contact</h2>
+          <h2 className="text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-white">Contact</h2>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 mt-8">
             <a href="https://www.instagram.com/martina_gorozo/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-4">

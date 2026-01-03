@@ -27,7 +27,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
                     align === "right" ? "text-right" : "text-left"
                     }`}
             >
-                <h2 className="text-4xl md:text-5xl font-light tracking-[0.2em] uppercase text-white mb-2">
+                <h2 className="text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-white mb-2">
                     {title}
                 </h2>
                 {subtitle && (
