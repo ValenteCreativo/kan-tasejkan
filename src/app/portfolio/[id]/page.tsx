@@ -2,23 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { artworkService } from '../../../lib/services';
 import ImageMagnifier from '../../../components/ui/ImageMagnifier';
 import PaymentSelector, { PaymentMethod, TokenType } from '../../../components/checkout/PaymentSelector';
-import CryptoPayment from '../../../components/checkout/CryptoPayment';
 import ShippingForm from '../../../components/checkout/ShippingForm';
-import { useWallet } from '../../../hooks/useWallet';
 import { DEFAULT_CHAIN_ID } from '../../../lib/crypto';
 import type { Artwork } from '../../../types';
-import { ArrowLeft, ShoppingBag, Wallet } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Loader2 } from 'lucide-react';
+
+// Dynamic import for Privy-dependent checkout flow
+const CryptoCheckoutFlow = dynamic(
+    () => import('../../../components/checkout/CryptoCheckoutFlow'),
+    {
+        ssr: false,
+        loading: () => (
+            <div className="p-8 border border-[#1a1a1a] flex items-center justify-center">
+                <Loader2 className="w-6 h-6 text-[#8a1c1c] animate-spin" />
+            </div>
+        ),
+    }
+);
 
 export default function ArtworkDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const { isConnected, connect } = useWallet();
     const [artwork, setArtwork] = useState<Artwork | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -90,10 +100,6 @@ export default function ArtworkDetailPage() {
         if (paymentMethod === 'mercadopago') {
             handleMercadoPagoCheckout();
         } else {
-            if (!isConnected) {
-                connect();
-                return;
-            }
             setShowCryptoPayment(true);
         }
     }
@@ -133,7 +139,7 @@ export default function ArtworkDetailPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 items-start">
 
-                    {/* Left: The Vizualisation (Museum Frame) */}
+                    {/* Left: The Visualization (Museum Frame) */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -158,14 +164,14 @@ export default function ArtworkDetailPage() {
                     </motion.div>
 
 
-                    {/* Right: The Museum Label (Details) - CLEAN SANS SERIF */}
+                    {/* Right: The Museum Label (Details) */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 1, delay: 0.3 }}
                         className="flex flex-col space-y-8 pt-8 md:pt-16"
                     >
-                        {/* Header Info - NO ITALIC, NO CORMORANT */}
+                        {/* Header Info */}
                         <div className="space-y-3 border-l-2 border-[#8a1c1c] pl-6">
                             <h1 className="text-3xl md:text-5xl font-light tracking-wide text-[#e5e5e5] uppercase">{artwork.title}</h1>
                             <p className="text-[#8b7d7b] text-xs tracking-[0.3em] uppercase">Martina Gorozo • {artwork.year || new Date().getFullYear()}</p>
@@ -221,17 +227,8 @@ export default function ArtworkDetailPage() {
                                         onClick={handleProceedToPayment}
                                         className="w-full mt-6 btn-ritual flex items-center justify-center gap-3 uppercase tracking-widest text-xs py-4"
                                     >
-                                        {paymentMethod === 'crypto' && !isConnected ? (
-                                            <>
-                                                <Wallet size={14} />
-                                                <span>Connect Wallet to Continue</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ShoppingBag size={14} />
-                                                <span>Proceed to Payment</span>
-                                            </>
-                                        )}
+                                        <ShoppingBag size={14} />
+                                        <span>Proceed to Payment</span>
                                     </button>
                                 </div>
                             )}
@@ -239,28 +236,21 @@ export default function ArtworkDetailPage() {
                             {/* Crypto Payment Flow */}
                             {showCryptoPayment && (
                                 <div className="mb-6">
-                                    <CryptoPayment
+                                    <CryptoCheckoutFlow
                                         artworkId={artwork.id}
                                         artworkTitle={artwork.title}
                                         amountUsd={Number(artwork.price) || 50}
                                         chainId={selectedChain}
                                         token={selectedToken}
-                                        recipientAddress={process.env.NEXT_PUBLIC_MARTINA_WALLET || ''}
                                         onSuccess={handleCryptoSuccess}
                                         onError={(error) => {
                                             console.error('Payment error:', error);
-                                            setShowCryptoPayment(false);
                                         }}
-                                    />
-                                    <button
-                                        onClick={() => {
+                                        onBack={() => {
                                             setShowCryptoPayment(false);
                                             setShowPaymentOptions(true);
                                         }}
-                                        className="w-full mt-4 text-xs text-[#606060] hover:text-[#e5e5e5] transition-colors"
-                                    >
-                                        ← Back to payment options
-                                    </button>
+                                    />
                                 </div>
                             )}
 
