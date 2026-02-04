@@ -1,6 +1,6 @@
 'use client';
 
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy, useWallets, useFundWallet } from '@privy-io/react-auth';
 import { useCallback, useEffect, useState } from 'react';
 import { formatAddress, isAdminEmail } from '../lib/crypto';
 
@@ -17,6 +17,7 @@ interface WalletState {
 export function useWallet() {
   const { ready, authenticated, user, login, logout } = usePrivy();
   const { wallets } = useWallets();
+  const { fundWallet: privyFundWallet } = useFundWallet();
 
   const [walletState, setWalletState] = useState<WalletState>({
     isConnected: false,
@@ -110,11 +111,23 @@ export function useWallet() {
     return embeddedWallet || externalWallet || null;
   }, [wallets]);
 
+  // Fund wallet (buy crypto with card) - only for embedded wallets
+  const fundWallet = useCallback(() => {
+    const embeddedWallet = wallets.find((w) => w.walletClientType === 'privy');
+    if (embeddedWallet) {
+      privyFundWallet({ address: embeddedWallet.address });
+    }
+  }, [wallets, privyFundWallet]);
+
+  // Check if fund wallet is available (only for embedded wallets)
+  const hasFundWallet = wallets.some((w) => w.walletClientType === 'privy');
+
   return {
     ...walletState,
     connect,
     disconnect,
     getActiveWallet,
+    fundWallet: hasFundWallet ? fundWallet : null,
     wallets,
   };
 }
