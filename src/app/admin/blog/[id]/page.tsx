@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { blogService } from '../../../../lib/blog';
-import { WHITELISTED_EMAIL } from '../../../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../../../lib/constants';
 import type { BlogPost, User } from '../../../../types';
 import { Upload } from 'lucide-react';
 import RichTextEditor from '../../../../components/ui/RichTextEditor';

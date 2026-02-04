@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { WHITELISTED_EMAIL } from '../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../lib/constants';
 
 type SalesOrder = {
   id: string;

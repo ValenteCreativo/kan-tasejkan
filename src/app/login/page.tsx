@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { usePrivy } from '@privy-io/react-auth';
 import { useWallet } from '../../hooks/useWallet';
-import { WHITELISTED_EMAIL } from '../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../lib/constants';
 
 export default function LoginPage() {
   const router = useRouter();

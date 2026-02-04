@@ -1,6 +1,7 @@
 import { compare, hash } from 'bcryptjs';
 import { db, users } from '../db';
 import { eq } from 'drizzle-orm';
+import { WHITELISTED_EMAIL } from './constants';
 
 export async function hashPassword(password: string): Promise<string> {
   return hash(password, 12);
@@ -31,8 +32,6 @@ export async function createUser(email: string, password: string, name?: string)
 
   return user;
 }
-
-export const WHITELISTED_EMAIL = 'martinagorozo1@proton.me';
 
 export function isWhitelisted(email: string): boolean {
   return email.toLowerCase() === WHITELISTED_EMAIL.toLowerCase();

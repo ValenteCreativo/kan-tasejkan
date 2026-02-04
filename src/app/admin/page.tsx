@@ -8,7 +8,7 @@ import { blogService } from '../../lib/blog';
 import ArtworkForm from '../../components/admin/ArtworkForm';
 import ArtworkList from '../../components/admin/ArtworkList';
 import SalesDashboard from '../../components/admin/SalesDashboard';
-import { WHITELISTED_EMAIL } from '../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../lib/constants';
 import type { Artwork, ArtworkFormData, BlogPost, User } from '../../types';
 
 export default function AdminPage() {
