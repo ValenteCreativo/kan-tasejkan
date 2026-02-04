@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useWallet } from '../../hooks/useWallet';
 import {
   getTokenAddress,
@@ -23,29 +23,29 @@ const CHAIN_CONFIG = {
   11155111: sepolia,
 } as const;
 
-interface CryptoPaymentProps {
+interface CryptoCheckoutFlowProps {
   artworkId: string;
   artworkTitle: string;
   amountUsd: number;
   chainId: number;
   token: TokenType;
-  recipientAddress: string;
   onSuccess: (txHash: string, orderId: string) => void;
   onError: (error: string) => void;
+  onBack: () => void;
 }
 
 type PaymentStatus = 'idle' | 'connecting' | 'creating-order' | 'awaiting-signature' | 'pending' | 'confirming' | 'success' | 'error';
 
-export default function CryptoPayment({
+export default function CryptoCheckoutFlow({
   artworkId,
   artworkTitle,
   amountUsd,
   chainId,
   token,
-  recipientAddress,
   onSuccess,
   onError,
-}: CryptoPaymentProps) {
+  onBack,
+}: CryptoCheckoutFlowProps) {
   const { isConnected, address, connect, getActiveWallet } = useWallet();
   const [status, setStatus] = useState<PaymentStatus>('idle');
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -97,16 +97,26 @@ export default function CryptoPayment({
       const orderData = await createOrder();
       setOrderId(orderData.orderId);
 
+      const recipientAddress = orderData.recipientAddress;
+      if (!recipientAddress) {
+        throw new Error('Recipient wallet not configured');
+      }
+
       setStatus('awaiting-signature');
 
       // Get active wallet
       const wallet = getActiveWallet();
       if (!wallet) {
-        throw new Error('No wallet connected');
+        throw new Error('No wallet connected. Please reconnect your wallet.');
       }
 
       // Switch to correct chain if needed
-      await wallet.switchChain(chainId);
+      try {
+        await wallet.switchChain(chainId);
+      } catch (switchError: any) {
+        console.error('Chain switch error:', switchError);
+        throw new Error(`Please switch to ${CHAIN_NAMES[chainId]} in your wallet`);
+      }
 
       // Get provider from wallet
       const provider = await wallet.getEthereumProvider();
@@ -160,11 +170,25 @@ export default function CryptoPayment({
         setStatus('success');
         onSuccess(hash as string, orderData.orderId);
       } else {
-        throw new Error('Transaction failed');
+        throw new Error('Transaction failed on blockchain');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Payment error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Payment failed';
+
+      // Better error messages
+      let errorMessage = 'Payment failed';
+      if (err?.message) {
+        if (err.message.includes('rejected')) {
+          errorMessage = 'Transaction rejected by user';
+        } else if (err.message.includes('insufficient')) {
+          errorMessage = `Insufficient ${token} balance`;
+        } else if (err.message.includes('gas')) {
+          errorMessage = 'Insufficient gas for transaction';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+
       setError(errorMessage);
       setStatus('error');
       onError(errorMessage);
@@ -182,7 +206,7 @@ export default function CryptoPayment({
       case 'pending':
         return 'Transaction submitted, waiting for confirmation...';
       case 'confirming':
-        return 'Confirming transaction...';
+        return 'Confirming transaction on blockchain...';
       case 'success':
         return 'Payment successful!';
       case 'error':
@@ -214,6 +238,14 @@ export default function CryptoPayment({
             <span className="text-[#808080]">Amount</span>
             <span className="text-[#e5e5e5] font-medium">{amountUsd.toFixed(2)} {token}</span>
           </div>
+          {address && (
+            <div className="flex justify-between text-sm pt-2 border-t border-[#1a1a1a]">
+              <span className="text-[#808080]">Your Wallet</span>
+              <span className="text-[#8a1c1c] font-mono text-xs">
+                {address.slice(0, 6)}...{address.slice(-4)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -258,7 +290,7 @@ export default function CryptoPayment({
           className={`
             w-full py-4 flex items-center justify-center gap-2
             border border-[#8a1c1c] bg-[#8a1c1c]/10
-            text-[#e5e5e5] font-cinzel uppercase tracking-wider
+            text-[#e5e5e5] uppercase tracking-wider text-sm
             transition-all duration-300
             ${isProcessing
               ? 'opacity-50 cursor-not-allowed'
@@ -281,6 +313,30 @@ export default function CryptoPayment({
               Pay {amountUsd.toFixed(2)} {token}
             </>
           )}
+        </button>
+      )}
+
+      {/* Back Button */}
+      {status !== 'success' && (
+        <button
+          onClick={onBack}
+          disabled={isProcessing}
+          className="w-full text-xs text-[#606060] hover:text-[#e5e5e5] transition-colors disabled:opacity-50"
+        >
+          ← Back to payment options
+        </button>
+      )}
+
+      {/* Error Retry */}
+      {status === 'error' && (
+        <button
+          onClick={() => {
+            setStatus('idle');
+            setError(null);
+          }}
+          className="w-full py-2 text-xs text-[#8a1c1c] hover:text-[#e5e5e5] transition-colors"
+        >
+          Try again
         </button>
       )}
     </div>
