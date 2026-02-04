@@ -17,7 +17,7 @@ export default function NewBlogPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
-  const [published, setPublished] = useState(false);
+  const [published] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function NewBlogPostPage() {
         content,
         excerpt: excerpt || content.substring(0, 200),
         coverImageUrl: coverImageUrl,
-        published,
+        published: true,
         authorId: user.id,
-        publishedAt: published ? new Date() : null,
+        publishedAt: new Date(),
       };
 
       const { error } = await blogService.create(postData);

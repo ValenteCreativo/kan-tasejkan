@@ -19,7 +19,7 @@ export default function EditBlogPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
-  const [published, setPublished] = useState(false);
+  const [published, setPublished] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -99,8 +99,8 @@ export default function EditBlogPostPage() {
         content,
         excerpt: excerpt || content.substring(0, 200),
         coverImageUrl: coverImageUrl,
-        published,
-        publishedAt: published && !post.published ? new Date() : post.publishedAt,
+        published: true,
+        publishedAt: post.published ? post.publishedAt : new Date(),
         updatedAt: new Date(),
       };
 

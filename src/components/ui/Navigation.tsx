@@ -36,13 +36,17 @@ export default function Navigation() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <div className="content-container flex items-center justify-between">
+        <div className="content-container relative flex items-center justify-between">
 
           {/* Left Sigil (Optional/Hidden on desktop if centered) */}
           <div className="hidden md:block w-12" />
 
-          {/* Central Totem */}
-          <Link href="/" className="group flex flex-col items-center">
+          {/* Central Totem - absolutely centered */}
+          <Link
+            href="/"
+            className="group flex flex-col items-center absolute left-1/2 -translate-x-1/2"
+            style={{ opacity: scrolled ? 0 : 1, pointerEvents: scrolled ? 'none' : 'auto', transition: 'opacity 0.5s ease, transform 0.4s ease' }}
+          >
             <span className={`font-light tracking-[0.5em] uppercase transition-all duration-500 ${scrolled ? 'text-xs text-white' : 'text-xl text-white'}`}>
               Martina Gorozo
             </span>
@@ -50,7 +54,7 @@ export default function Navigation() {
           </Link>
 
           {/* Right Side - Wallet + Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ml-auto">
             {/* Wallet Button - Hidden on scroll for cleaner look */}
             <div className={`hidden md:block transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               <ConnectWalletWrapper compact={scrolled} />
@@ -79,7 +83,7 @@ export default function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.5, delay: 0.2 } }}
-            className="fixed inset-0 z-[60] bg-[#050505] flex flex-col items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[999] bg-[#050505] flex flex-col items-center justify-center overflow-hidden"
           >
             {/* Background Texture */}
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none" />
