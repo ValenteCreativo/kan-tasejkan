@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { blogService } from '../../../../lib/blog';
+import { WHITELISTED_EMAIL } from '../../../../lib/auth';
 import { Upload } from 'lucide-react';
 import RichTextEditor from '../../../../components/ui/RichTextEditor';
 
@@ -25,7 +26,12 @@ export default function NewBlogPostPage() {
       router.push('/login');
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const parsed = JSON.parse(storedUser) as User;
+    if (!parsed.isAdmin || parsed.email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
+      router.push('/login');
+      return;
+    }
+    setUser(parsed);
   }, [router]);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {

@@ -7,6 +7,8 @@ import { artworkService } from '../../lib/services';
 import { blogService } from '../../lib/blog';
 import ArtworkForm from '../../components/admin/ArtworkForm';
 import ArtworkList from '../../components/admin/ArtworkList';
+import SalesDashboard from '../../components/admin/SalesDashboard';
+import { WHITELISTED_EMAIL } from '../../lib/auth';
 import type { Artwork, ArtworkFormData, BlogPost, User } from '../../types';
 
 export default function AdminPage() {
@@ -15,7 +17,7 @@ export default function AdminPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [tab, setTab] = useState<'artworks' | 'tattoos' | 'blog'>('artworks');
+  const [tab, setTab] = useState<'artworks' | 'tattoos' | 'blog' | 'sales'>('artworks');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -23,7 +25,12 @@ export default function AdminPage() {
       router.push('/login');
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const parsed = JSON.parse(storedUser) as User & { walletAddress?: string };
+    if (!parsed.isAdmin || parsed.email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
+      router.push('/login');
+      return;
+    }
+    setUser(parsed);
     loadData();
   }, [router]);
 
@@ -157,6 +164,15 @@ export default function AdminPage() {
           >
             Journal
           </button>
+          <button
+            onClick={() => setTab('sales')}
+            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'sales'
+              ? 'minimal-border bg-[#8b7d7b]/10'
+              : 'border border-transparent hover:border-[#8b7d7b]/20'
+              }`}
+          >
+            Sales
+          </button>
         </div>
 
         {tab === 'artworks' && (
@@ -239,6 +255,12 @@ export default function AdminPage() {
                 ))
               )}
             </div>
+          </div>
+        )}
+
+        {tab === 'sales' && (
+          <div className="max-w-6xl mx-auto">
+            <SalesDashboard adminEmail={user.email} />
           </div>
         )}
       </div>

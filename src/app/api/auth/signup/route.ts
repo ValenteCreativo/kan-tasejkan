@@ -7,7 +7,7 @@ export async function POST(request: Request) {
 
     if (!isWhitelisted(email)) {
       return NextResponse.json(
-        { error: 'Email not whitelisted. Only hola@martina.com can create an account.' },
+        { error: 'Email not whitelisted. Solo martinagorozo1@proton.me puede crear cuenta.' },
         { status: 403 }
       );
     }

@@ -3,16 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { blogService } from '../../../../lib/blog';
-import type { BlogPost } from '../../../../types';
+import { WHITELISTED_EMAIL } from '../../../../lib/auth';
+import type { BlogPost, User } from '../../../../types';
 import { Upload } from 'lucide-react';
 import RichTextEditor from '../../../../components/ui/RichTextEditor';
-
-// Define a basic User type based on common usage
-interface User {
-  id: string;
-  email: string;
-  // Add other user properties as needed
-}
 
 export default function EditBlogPostPage() {
   const router = useRouter();
@@ -34,7 +28,12 @@ export default function EditBlogPostPage() {
       router.push('/login');
       return;
     }
-    setUser(JSON.parse(storedUser));
+    const parsed = JSON.parse(storedUser) as User;
+    if (!parsed.isAdmin || parsed.email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
+      router.push('/login');
+      return;
+    }
+    setUser(parsed);
 
     async function loadPost() {
       try {
