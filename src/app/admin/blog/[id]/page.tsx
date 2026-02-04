@@ -84,7 +84,7 @@ export default function EditBlogPostPage() {
 
       // Upload new cover image if provided
       if (coverImage) {
-        const { artworkService } = await import('../../../../lib/supabase');
+        const { artworkService } = await import('../../../../lib/services');
         const fileExt = coverImage.name.split('.').pop();
         const fileName = `blog-${Date.now()}.${fileExt}`;
         const { data: uploadData, error: uploadError } = await artworkService.uploadImage(coverImage, fileName);

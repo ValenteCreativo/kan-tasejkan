@@ -26,13 +26,13 @@ export async function createUser(email: string, password: string, name?: string)
     email,
     passwordHash: hashedPassword,
     name,
-    isAdmin: email === 'hola@martina.com', // Only Martina is admin
+    isAdmin: email === 'martinagorozo1@proton.me', // Only Martina is admin
   }).returning();
 
   return user;
 }
 
-export const WHITELISTED_EMAIL = 'hola@martina.com';
+export const WHITELISTED_EMAIL = 'martinagorozo1@proton.me';
 
 export function isWhitelisted(email: string): boolean {
   return email.toLowerCase() === WHITELISTED_EMAIL.toLowerCase();

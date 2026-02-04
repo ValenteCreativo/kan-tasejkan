@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { artworkService } from '../../../lib/supabase';
+import { artworkService } from '../../../lib/services';
 import ImageMagnifier from '../../../components/ui/ImageMagnifier';
 import type { Artwork } from '../../../types';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';

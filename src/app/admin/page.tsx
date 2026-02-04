@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { artworkService } from '../../lib/supabase';
+import { artworkService } from '../../lib/services';
 import { blogService } from '../../lib/blog';
 import ArtworkForm from '../../components/admin/ArtworkForm';
 import ArtworkList from '../../components/admin/ArtworkList';

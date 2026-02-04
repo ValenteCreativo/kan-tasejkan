@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import HorizontalScroll from '../components/HorizontalScroll';
 import SectionHeader from '../components/ui/SectionHeader';
-import { artworkService } from '../lib/supabase';
+import { artworkService } from '../lib/services';
 import { blogService } from '../lib/blog';
 import type { Artwork, BlogPost } from '../types';
 import { Instagram, Mail, ShoppingBag } from 'lucide-react';

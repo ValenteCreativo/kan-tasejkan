@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ConnectWalletWrapper from './ConnectWalletWrapper';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,18 +49,26 @@ export default function Navigation() {
             <span className={`h-px bg-[#8a1c1c] transition-all duration-700 ${scrolled ? 'w-0' : 'w-full mt-2 group-hover:w-1/2'}`} />
           </Link>
 
-          {/* Right Trigger */}
-          <button
-            onClick={() => setIsOpen(true)}
-            className="group flex items-center gap-3 text-white hover:text-[#8a1c1c] transition-colors"
-          >
-            <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              Open
-            </span>
-            <div className="relative">
-              <Menu size={24} strokeWidth={1} className="transition-transform duration-500 group-hover:rotate-90" />
+          {/* Right Side - Wallet + Menu */}
+          <div className="flex items-center gap-4">
+            {/* Wallet Button - Hidden on scroll for cleaner look */}
+            <div className={`hidden md:block transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <ConnectWalletWrapper compact={scrolled} />
             </div>
-          </button>
+
+            {/* Menu Trigger */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="group flex items-center gap-3 text-white hover:text-[#8a1c1c] transition-colors"
+            >
+              <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                Open
+              </span>
+              <div className="relative">
+                <Menu size={24} strokeWidth={1} className="transition-transform duration-500 group-hover:rotate-90" />
+              </div>
+            </button>
+          </div>
         </div>
       </motion.nav>
 
@@ -114,6 +123,17 @@ export default function Navigation() {
                 </motion.div>
               ))}
             </nav>
+
+            {/* Wallet Connect in Menu */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.8, delay: navItems.length * 0.1 + 0.1 }}
+              className="mt-12 pt-8 border-t border-[#1a1a1a]"
+            >
+              <ConnectWalletWrapper />
+            </motion.div>
 
             {/* Decorative Thread */}
             <motion.div
