@@ -19,7 +19,7 @@ export default function EditBlogPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
-  const [published] = useState(true);
+  const [published, setPublished] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function EditBlogPostPage() {
           setContent(data.content);
           setExcerpt(data.excerpt || '');
           setCoverImagePreview(data.coverImageUrl || '');
-          setPublished(data.published || false);
+          setPublished(true);
         }
       } catch (error) {
         console.error('Error loading post:', error);
