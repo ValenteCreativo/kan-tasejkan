@@ -17,7 +17,7 @@ export default function NewBlogPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
-  const [published] = useState(true);
+  const [published, setPublished] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -198,16 +198,16 @@ export default function NewBlogPostPage() {
             </div>
           </div>
 
-          {/* Published Toggle */}
+          {/* Published Toggle (kept for visibility, locked to true) */}
           <div className="flex items-center gap-3">
             <input
               id="published"
               type="checkbox"
               checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-              className="w-4 h-4 accent-[#8b7d7b]"
+              readOnly
+              className="w-4 h-4 accent-[#8b7d7b] cursor-not-allowed"
             />
-            <label htmlFor="published" className="elegant-text text-xs cursor-pointer">
+            <label htmlFor="published" className="elegant-text text-xs cursor-not-allowed text-[#8b7d7b]">
               Publish immediately
             </label>
           </div>
@@ -227,7 +227,7 @@ export default function NewBlogPostPage() {
               className="flex-1 btn-elegant"
               disabled={submitting}
             >
-              {submitting ? 'Saving...' : published ? 'Publish' : 'Save Draft'}
+              {submitting ? 'Publishing...' : 'Publish'}
             </button>
           </div>
         </form>
