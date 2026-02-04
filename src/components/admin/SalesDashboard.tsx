@@ -16,6 +16,9 @@ type SalesOrder = {
   walletAddress: string | null;
   shippingCity: string | null;
   shippingCountry: string | null;
+  shippingAddress: string | null;
+  shippingName: string | null;
+  shippingPhone: string | null;
 };
 
 type SalesSummary = {
@@ -47,13 +50,19 @@ export default function SalesDashboard({ adminEmail }: Props) {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | 'all'>('all');
+  const [limit, setLimit] = useState(25);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/admin/sales', {
+        const params = new URLSearchParams();
+        if (statusFilter !== 'all') params.set('status', statusFilter);
+        params.set('limit', String(limit));
+
+        const res = await fetch(`/api/admin/sales?${params.toString()}`, {
           headers: {
             'x-admin-email': adminEmail,
           },
@@ -72,7 +81,7 @@ export default function SalesDashboard({ adminEmail }: Props) {
     };
 
     load();
-  }, [adminEmail]);
+  }, [adminEmail, statusFilter, limit]);
 
   const recentOrders = useMemo(() => data?.orders.slice(0, 10) || [], [data]);
 
@@ -110,11 +119,35 @@ export default function SalesDashboard({ adminEmail }: Props) {
       </div>
 
       <div className="glass-minimal p-6 rounded-lg">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <h3 className="elegant-text text-sm">Recent sales</h3>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#8b7d7b]">
-            Last 10 orders
-          </span>
+          <div className="flex items-center gap-3 text-xs text-[#8b7d7b]">
+            <label className="flex items-center gap-1">
+              Status:
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="bg-transparent border border-[#1a1a1a] rounded px-2 py-1 text-xs"
+              >
+                <option value="all" className="bg-[#0b0b0b] text-white">All</option>
+                <option value="pending" className="bg-[#0b0b0b] text-white">Pending</option>
+                <option value="paid" className="bg-[#0b0b0b] text-white">Paid</option>
+                <option value="shipped" className="bg-[#0b0b0b] text-white">Shipped</option>
+                <option value="delivered" className="bg-[#0b0b0b] text-white">Delivered</option>
+              </select>
+            </label>
+            <label className="flex items-center gap-1">
+              Limit:
+              <input
+                type="number"
+                min={5}
+                max={200}
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+                className="w-16 bg-transparent border border-[#1a1a1a] rounded px-2 py-1 text-xs"
+              />
+            </label>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -127,6 +160,7 @@ export default function SalesDashboard({ adminEmail }: Props) {
                 <th className="py-2 pr-4">Status</th>
                 <th className="py-2 pr-4">Update</th>
                 <th className="py-2 pr-4">Ship to</th>
+                <th className="py-2 pr-4">Details</th>
                 <th className="py-2 pr-4">Placed</th>
               </tr>
             </thead>
@@ -158,6 +192,9 @@ export default function SalesDashboard({ adminEmail }: Props) {
                   </td>
                   <td className="py-3 pr-4 text-[#e5e5e5]">
                     {order.shippingCity ? `${order.shippingCity}, ${order.shippingCountry}` : '—'}
+                  </td>
+                  <td className="py-3 pr-4 text-[#8b7d7b]">
+                    <ShippingDetailButton order={order} />
                   </td>
                   <td className="py-3 pr-4 text-[#8b7d7b]">
                     {new Date(order.createdAt).toLocaleDateString()}
@@ -194,8 +231,11 @@ function StatusUpdater({ orderId, current }: { orderId: string; current: string 
     try {
       const res = await fetch('/api/admin/sales/status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, status: next, adminEmail: WHITELISTED_EMAIL }),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-email': WHITELISTED_EMAIL,
+        },
+        body: JSON.stringify({ orderId, status: next }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'Failed to update');
@@ -223,6 +263,42 @@ function StatusUpdater({ orderId, current }: { orderId: string; current: string 
       </select>
       {saving && <span className="text-[10px] text-[#8b7d7b]">Saving...</span>}
       {error && <span className="text-[10px] text-[#a33]">{error}</span>}
+    </div>
+  );
+}
+
+function ShippingDetailButton({ order }: { order: SalesOrder }) {
+  const [open, setOpen] = useState(false);
+  if (!order.shippingAddress && !order.shippingName) return <span>—</span>;
+
+  return (
+    <div className="text-xs">
+      <button
+        onClick={() => setOpen(true)}
+        className="underline underline-offset-4 text-[#e5e5e5] hover:text-[#8a1c1c]"
+      >
+        View
+      </button>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="glass-minimal p-6 rounded-lg w-full max-w-md relative">
+            <button
+              className="absolute top-3 right-3 text-[#8b7d7b] text-sm"
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </button>
+            <h4 className="elegant-text text-sm mb-3">Shipping Details</h4>
+            <div className="space-y-2 text-[#e5e5e5] text-sm">
+              <div><span className="text-[#8b7d7b]">Name: </span>{order.shippingName || '—'}</div>
+              <div><span className="text-[#8b7d7b]">Address: </span>{order.shippingAddress || '—'}</div>
+              <div><span className="text-[#8b7d7b]">City: </span>{order.shippingCity || '—'}</div>
+              <div><span className="text-[#8b7d7b]">Country: </span>{order.shippingCountry || '—'}</div>
+              <div><span className="text-[#8b7d7b]">Phone: </span>{order.shippingPhone || '—'}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -23,4 +23,3 @@ describe('admin utils', () => {
     expect(summary.totalRevenueUsd).toBe(200);
   });
 });
-

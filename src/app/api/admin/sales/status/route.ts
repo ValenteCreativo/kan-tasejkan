@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db, cryptoOrders } from '../../../../../db';
 import { eq } from 'drizzle-orm';
 import { WHITELISTED_EMAIL } from '../../../../../lib/auth';
-import { summarizeOrders } from '../../../../../lib/admin';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { orderId, status, adminEmail } = await request.json();
+    const { orderId, status } = await request.json();
+    const adminEmail = request.headers.get('x-admin-email');
     if (!orderId || !status) {
       return NextResponse.json({ error: 'Missing orderId or status' }, { status: 400 });
     }

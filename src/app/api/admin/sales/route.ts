@@ -1,17 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db, cryptoOrders, artworks, walletUsers, shippingAddresses } from '../../../../db';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { WHITELISTED_EMAIL } from '../../../../lib/auth';
 import { summarizeOrders } from '../../../../lib/admin';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const adminEmail = request.headers.get('x-admin-email');
   if (!adminEmail || adminEmail.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const orders = await db
+    const { searchParams } = new URL(request.url);
+    const statusFilter = searchParams.get('status');
+    const limit = Math.min(Number(searchParams.get('limit') || 50), 200);
+
+    const query = db
       .select({
         id: cryptoOrders.id,
         status: cryptoOrders.status,
@@ -25,13 +29,18 @@ export async function GET(request: Request) {
         walletAddress: walletUsers.walletAddress,
         shippingCity: shippingAddresses.city,
         shippingCountry: shippingAddresses.country,
+        shippingAddress: shippingAddresses.address,
+        shippingName: shippingAddresses.fullName,
+        shippingPhone: shippingAddresses.phone,
       })
       .from(cryptoOrders)
-      .leftJoin(artworks, artworks.id.eq(cryptoOrders.artworkId))
-      .leftJoin(walletUsers, walletUsers.id.eq(cryptoOrders.buyerId))
-      .leftJoin(shippingAddresses, shippingAddresses.id.eq(cryptoOrders.shippingAddressId))
+      .leftJoin(artworks, eq(artworks.id, cryptoOrders.artworkId))
+      .leftJoin(walletUsers, eq(walletUsers.id, cryptoOrders.buyerId))
+      .leftJoin(shippingAddresses, eq(shippingAddresses.id, cryptoOrders.shippingAddressId))
       .orderBy(desc(cryptoOrders.createdAt))
-      .limit(50);
+      .limit(limit);
+
+    const orders = statusFilter ? await query.where(eq(cryptoOrders.status, statusFilter)) : await query;
 
     const summary = summarizeOrders(orders as any);
 
