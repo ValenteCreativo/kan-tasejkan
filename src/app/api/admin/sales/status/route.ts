@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, cryptoOrders, walletUsers } from '../../../../../db';
 import { eq } from 'drizzle-orm';
-import { WHITELISTED_EMAIL } from '../../../../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../../../../lib/constants';
 
 export async function POST(request: NextRequest) {
   try {

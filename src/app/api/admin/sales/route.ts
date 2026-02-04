@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, cryptoOrders, artworks, walletUsers, shippingAddresses } from '../../../../db';
 import { desc, eq } from 'drizzle-orm';
-import { WHITELISTED_EMAIL } from '../../../../lib/auth';
+import { WHITELISTED_EMAIL } from '../../../../lib/constants';
 import { summarizeOrders } from '../../../../lib/admin';
 
 export async function GET(request: NextRequest) {
