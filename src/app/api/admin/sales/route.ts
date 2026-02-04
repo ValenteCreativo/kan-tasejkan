@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db, cryptoOrders, artworks, walletUsers, shippingAddresses } from '../../../../db';
 import { desc } from 'drizzle-orm';
 import { WHITELISTED_EMAIL } from '../../../../lib/auth';
+import { summarizeOrders } from '../../../../lib/admin';
 
 export async function GET(request: Request) {
   const adminEmail = request.headers.get('x-admin-email');
@@ -32,18 +33,7 @@ export async function GET(request: Request) {
       .orderBy(desc(cryptoOrders.createdAt))
       .limit(50);
 
-    const summary = orders.reduce(
-      (acc, order) => {
-        acc.totalOrders += 1;
-        if (order.status === 'paid' || order.status === 'delivered' || order.status === 'shipped') {
-          acc.paidOrders += 1;
-          acc.totalRevenueUsd += Number(order.amountUsd);
-        }
-        if (order.status === 'pending') acc.pendingOrders += 1;
-        return acc;
-      },
-      { totalOrders: 0, paidOrders: 0, pendingOrders: 0, totalRevenueUsd: 0 }
-    );
+    const summary = summarizeOrders(orders as any);
 
     return NextResponse.json({
       summary,

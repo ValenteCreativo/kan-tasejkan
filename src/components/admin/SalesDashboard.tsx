@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { WHITELISTED_EMAIL } from '../../lib/auth';
 
 type SalesOrder = {
   id: string;
@@ -21,6 +22,8 @@ type SalesSummary = {
   totalOrders: number;
   paidOrders: number;
   pendingOrders: number;
+  shippedOrders: number;
+  deliveredOrders: number;
   totalRevenueUsd: number;
 };
 
@@ -97,6 +100,8 @@ export default function SalesDashboard({ adminEmail }: Props) {
         <StatCard label="Total Orders" value={data.summary.totalOrders} />
         <StatCard label="Paid" value={data.summary.paidOrders} accent />
         <StatCard label="Pending" value={data.summary.pendingOrders} />
+        <StatCard label="Shipped" value={data.summary.shippedOrders} />
+        <StatCard label="Delivered" value={data.summary.deliveredOrders} />
         <StatCard
           label="Revenue (USD)"
           value={`$${data.summary.totalRevenueUsd.toFixed(2)}`}
@@ -120,6 +125,7 @@ export default function SalesDashboard({ adminEmail }: Props) {
                 <th className="py-2 pr-4">Buyer</th>
                 <th className="py-2 pr-4">Amount</th>
                 <th className="py-2 pr-4">Status</th>
+                <th className="py-2 pr-4">Update</th>
                 <th className="py-2 pr-4">Ship to</th>
                 <th className="py-2 pr-4">Placed</th>
               </tr>
@@ -147,6 +153,9 @@ export default function SalesDashboard({ adminEmail }: Props) {
                   <td className={`py-3 pr-4 ${STATUS_COLOR[order.status] || 'text-[#e5e5e5]'}`}>
                     {order.status}
                   </td>
+                  <td className="py-3 pr-4">
+                    <StatusUpdater orderId={order.id} current={order.status} />
+                  </td>
                   <td className="py-3 pr-4 text-[#e5e5e5]">
                     {order.shippingCity ? `${order.shippingCity}, ${order.shippingCountry}` : '—'}
                   </td>
@@ -168,6 +177,52 @@ function StatCard({ label, value, accent = false }: { label: string; value: stri
     <div className={`glass-minimal p-4 rounded-lg ${accent ? 'border border-[#8a1c1c]/30' : ''}`}>
       <p className="text-xs text-[#8b7d7b] uppercase tracking-[0.2em] mb-2">{label}</p>
       <p className="text-2xl text-[#e5e5e5] font-light">{value}</p>
+    </div>
+  );
+}
+
+function StatusUpdater({ orderId, current }: { orderId: string; current: string }) {
+  const [status, setStatus] = useState(current);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const options = ['pending', 'paid', 'shipped', 'delivered'] as const;
+
+  const updateStatus = async (next: string) => {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/sales/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status: next, adminEmail: WHITELISTED_EMAIL }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Failed to update');
+      setStatus(next);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-1 text-xs text-[#e5e5e5]">
+      <select
+        value={status}
+        onChange={(e) => updateStatus(e.target.value)}
+        disabled={saving}
+        className="bg-transparent border border-[#1a1a1a] rounded px-2 py-1 text-xs"
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt} className="bg-[#0b0b0b] text-white">
+            {opt}
+          </option>
+        ))}
+      </select>
+      {saving && <span className="text-[10px] text-[#8b7d7b]">Saving...</span>}
+      {error && <span className="text-[10px] text-[#a33]">{error}</span>}
     </div>
   );
 }
