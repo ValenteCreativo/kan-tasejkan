@@ -11,6 +11,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const [adminUser] = await db
+      .select()
+      .from(walletUsers)
+      .where(eq(walletUsers.email, adminEmail.toLowerCase()));
+
+    if (!adminUser || !adminUser.isWhitelisted) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const statusFilter = searchParams.get('status');
     const limit = Math.min(Number(searchParams.get('limit') || 50), 200);

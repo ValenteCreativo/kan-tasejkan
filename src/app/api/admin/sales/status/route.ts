@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, cryptoOrders } from '../../../../../db';
+import { db, cryptoOrders, walletUsers } from '../../../../../db';
 import { eq } from 'drizzle-orm';
 import { WHITELISTED_EMAIL } from '../../../../../lib/auth';
 
@@ -12,6 +12,16 @@ export async function POST(request: NextRequest) {
     }
 
     if (!adminEmail || adminEmail.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const [adminUser] = await db
+      .select()
+      .from(walletUsers)
+      .where(eq(walletUsers.email, adminEmail.toLowerCase()))
+      .limit(1);
+
+    if (!adminUser || !adminUser.isWhitelisted) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
