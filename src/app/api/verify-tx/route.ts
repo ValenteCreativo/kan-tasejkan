@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify recipient (Martina's wallet)
-    const recipientAddress = process.env.MARTINA_WALLET_ADDRESS?.toLowerCase();
+    const recipientAddress = process.env.NEXT_PUBLIC_MARTINA_WALLET?.toLowerCase();
     if (!recipientAddress) {
       console.error('MARTINA_WALLET_ADDRESS not configured');
       return NextResponse.json(

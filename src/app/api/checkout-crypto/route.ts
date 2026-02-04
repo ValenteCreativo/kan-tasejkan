@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       amount: amountUsd,
       chainId,
       tokenAddress,
-      recipientAddress: process.env.MARTINA_WALLET_ADDRESS,
+      recipientAddress: process.env.NEXT_PUBLIC_MARTINA_WALLET,
       status: 'pending',
     });
   } catch (error) {
