@@ -45,11 +45,12 @@ export async function GET(request: NextRequest) {
       .from(cryptoOrders)
       .leftJoin(artworks, eq(artworks.id, cryptoOrders.artworkId))
       .leftJoin(walletUsers, eq(walletUsers.id, cryptoOrders.buyerId))
-      .leftJoin(shippingAddresses, eq(shippingAddresses.id, cryptoOrders.shippingAddressId))
+      .leftJoin(shippingAddresses, eq(shippingAddresses.id, cryptoOrders.shippingAddressId));
+
+    const orders = await query
+      .where(statusFilter ? eq(cryptoOrders.status, statusFilter) : undefined)
       .orderBy(desc(cryptoOrders.createdAt))
       .limit(limit);
-
-    const orders = statusFilter ? await query.where(eq(cryptoOrders.status, statusFilter)) : await query;
 
     const summary = summarizeOrders(orders as any);
 
