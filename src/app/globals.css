@@ -453,6 +453,26 @@ h6 {
   background: var(--border);
 }
 
+/* admin-input: minimal input style for admin panel */
+.admin-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #1a1a1a;
+  border-radius: 6px;
+  color: #e5e5e5;
+  font-size: 0.875rem;
+  font-weight: 300;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+.admin-input:focus {
+  border-color: #8a1c1c;
+}
+.admin-input::placeholder {
+  color: #555;
+}
+
 /* ritual-input: form input for the ritual/reservation aesthetic */
 .ritual-input {
   width: 100%;

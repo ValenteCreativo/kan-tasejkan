@@ -4,7 +4,7 @@ export type { User, NewUser, Category, NewCategory, Artwork, NewArtwork, BlogPos
 // Form data types for frontend
 export interface ArtworkFormData {
   title: string;
-  description: string;
+  description: string;  // kept as string but empty is acceptable
   category: string;
   year?: number;
   medium?: string;
