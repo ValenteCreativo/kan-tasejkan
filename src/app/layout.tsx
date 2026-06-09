@@ -10,6 +10,10 @@ const cormorant = Cormorant_Garamond({ variable: "--font-cormorant", subsets: ["
 export const metadata: Metadata = {
   title: "Martina - Sacred Geometry Art",
   description: "Contemporary art inspired by sacred geometry and ancient symbolism",
+  icons: {
+    icon: '/Heart.png',
+    apple: '/Heart.png',
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -119,33 +119,45 @@ export default function Home() {
             className="absolute inset-0 flex flex-col items-center justify-center px-6"
             style={{ opacity: textOpacity, y: textY, zIndex: 6 }}
           >
-            <div className="w-px h-14 bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent opacity-60 mb-6" />
+            {/* Upper sigil line */}
+            <div className="w-px h-20 bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent opacity-50 mb-10" />
 
-            {/* Name — only appears here, after the image */}
-            <span
-              className="text-[11px] md:text-xs uppercase tracking-[0.7em] text-[#c8bfba] mb-6"
+            {/* Name — refined, elegant, branded */}
+            <h1
+              className="text-2xl md:text-4xl uppercase text-white/90 font-normal tracking-[0.45em] text-center"
               style={{ fontFamily: 'var(--font-heading), serif' }}
             >
               Martina Gorozo
-            </span>
+            </h1>
 
+            {/* Thin accent underline below the name */}
+            <div className="w-24 h-px bg-[#8a1c1c] mt-5 mb-8 opacity-70" />
+
+            {/* Subtitle — the channeled phrase, whispered */}
             <p
-              className="text-xl md:text-3xl font-light text-[#e5e5e5] tracking-[0.04em] leading-relaxed italic text-center max-w-2xl"
+              className="text-sm md:text-lg font-light text-[#c8bfba]/80 tracking-[0.02em] leading-relaxed italic text-center max-w-lg"
               style={{ fontFamily: 'var(--font-body), serif' }}
             >
               Te acompaño en el camino de recordar tu esencia
               con herramientas de reconexión con el Ser.
             </p>
-            <div className="w-px h-14 bg-gradient-to-b from-[#8a1c1c] to-transparent opacity-60 mt-8" />
 
-            {/* Scroll indicator instead of link */}
-            <div className="mt-10 flex flex-col items-center gap-2 pointer-events-none select-none">
-              <span
-                className="text-[9px] uppercase tracking-[0.5em] text-[#c8bfba]"
-                style={{ fontFamily: 'var(--font-heading), serif' }}
+            {/* Lower sigil line */}
+            <div className="w-px h-20 bg-gradient-to-b from-[#8a1c1c] via-transparent to-transparent opacity-50 mt-10" />
+
+            {/* Scroll indicator — small, ethereal */}
+            <div className="mt-8 flex flex-col items-center gap-1.5 pointer-events-none select-none opacity-60">
+              <motion.div
+                animate={{ y: [0, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               >
-                Scroll ↓
-              </span>
+                <span
+                  className="text-[8px] uppercase tracking-[0.6em] text-[#c8bfba]"
+                  style={{ fontFamily: 'var(--font-heading), serif' }}
+                >
+                  ↓
+                </span>
+              </motion.div>
             </div>
           </motion.div>
 
