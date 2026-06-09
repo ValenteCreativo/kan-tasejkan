@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Cinzel, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navigation from "../components/ui/Navigation";
-import IntroScreen from "../components/ui/IntroScreen";
 import Providers from "./providers";
 
 const cinzel = Cinzel({ variable: "--font-cinzel", subsets: ["latin"] });
@@ -18,7 +17,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${cinzel.variable} ${cormorant.variable} antialiased sacred-bg`}>
         <Providers>
-          <IntroScreen />
           <Navigation />
           {children}
         </Providers>

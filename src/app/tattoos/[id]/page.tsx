@@ -78,7 +78,7 @@ export default function TattooDetailPage() {
             <div className="content-container max-w-6xl">
 
                 {/* Back Navigation */}
-                <Link href="/tattoos" className="inline-flex items-center gap-2 text-[#8b7d7b] hover:text-[#8a1c1c] transition-colors mb-12 group">
+                <Link href="/tattoos" className="inline-flex items-center gap-2 text-[#c8bfba] hover:text-[#8a1c1c] transition-colors mb-12 group">
                     <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                     <span className="text-[10px] uppercase tracking-[0.2em]">Return to Ink Rituals</span>
                 </Link>
@@ -114,26 +114,26 @@ export default function TattooDetailPage() {
                         {/* Header Info */}
                         <div className="space-y-3 border-l-2 border-[#8a1c1c] pl-6">
                             <h1 className="text-3xl md:text-5xl font-light tracking-wide text-[#e5e5e5] uppercase">{artwork.title}</h1>
-                            <p className="text-[#8b7d7b] text-xs tracking-[0.3em] uppercase">Martina Gorozo • {artwork.year || new Date().getFullYear()}</p>
+                            <p className="text-[#c8bfba] text-xs tracking-[0.3em] uppercase">Martina Gorozo • {artwork.year || new Date().getFullYear()}</p>
                         </div>
 
                         {/* Technical Specs */}
                         <div className="grid grid-cols-2 gap-8 py-8 border-y border-[#1a1a1a]">
                             <div>
-                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Technique/Medium</span>
+                                <span className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-1">Technique/Medium</span>
                                 <span className="text-sm font-light text-[#e5e5e5]">
                                     {artwork.technique || artwork.medium || 'Handpoke / Machine'}
                                 </span>
                             </div>
                             <div>
-                                <span className="block text-[9px] uppercase tracking-widest text-[#404040] mb-1">Placement/Size</span>
+                                <span className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-1">Placement/Size</span>
                                 <span className="text-sm font-light text-[#e5e5e5]">{artwork.dimensions || 'Custom'}</span>
                             </div>
                         </div>
 
                         {/* Description */}
                         <div className="prose prose-invert">
-                            <p className="text-[#8b7d7b] font-light leading-relaxed text-sm">
+                            <p className="text-[#c8bfba] font-light leading-relaxed text-sm">
                                 {artwork.description || "A permanent mark, a ritual of ink and skin."}
                             </p>
                         </div>
@@ -142,7 +142,7 @@ export default function TattooDetailPage() {
                         <div className="pt-8 mt-auto">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex flex-col">
-                                    <span className="text-[9px] uppercase tracking-widest text-[#404040]">Deposit / Price</span>
+                                    <span className="text-[9px] uppercase tracking-widest text-[#9a9a9a]">Deposit / Price</span>
                                     <span className="text-2xl font-light text-[#8a1c1c]">${artwork.price || 50} USD</span>
                                 </div>
                                 <div className="text-right">

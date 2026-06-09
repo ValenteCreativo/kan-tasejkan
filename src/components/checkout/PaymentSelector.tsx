@@ -130,7 +130,7 @@ export default function PaymentSelector({
                 {priceUsd.toFixed(2)} {selectedToken}
               </span>
             </div>
-            <p className="text-xs text-[#404040] mt-1">
+            <p className="text-xs text-[#9a9a9a] mt-1">
               Stablecoins are pegged 1:1 to USD
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function PaymentSelector({
                 ${priceUsd.toFixed(2)} USD
               </span>
             </div>
-            <p className="text-xs text-[#404040] mt-1">
+            <p className="text-xs text-[#9a9a9a] mt-1">
               Pay with credit/debit card or bank transfer via MercadoPago
             </p>
           </div>

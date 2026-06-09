@@ -4,136 +4,149 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 
 interface HorizontalScrollProps {
-    children: React.ReactNode;
-    className?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
-export default function HorizontalScroll({ children, className = "" }: HorizontalScrollProps) {
-    const targetRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: targetRef,
-    });
+// Progress thresholds
+const ENTRY_SNAP_START  = 0.005;  // show entry bar
+const ENTRY_SNAP_END    = 0.02;   // hide entry bar
+const EXIT_LOCK_FROM    = 0.82;   // panels done traveling — lock starts
+const EXIT_UNLOCK_AT    = 0.97;   // hold complete → release scroll + click
 
-    // Movement: 0% to -66.66% (3 panels)
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-66.66%"]);
+export default function HorizontalScroll({ children, className = '' }: HorizontalScrollProps) {
+  const targetRef  = useRef<HTMLDivElement>(null);
+  const progressRef = useRef(0);  // raw value readable in event handlers
 
-    // Tactile Feedback States
-    const [isLocked, setIsLocked] = useState(false);
-    const [isReleased, setIsReleased] = useState(false);
-    const [hasSnapped, setHasSnapped] = useState(false);
-    const [showClickIndicator, setShowClickIndicator] = useState(false);
+  const { scrollYProgress } = useScroll({ target: targetRef });
 
-    // Haptic feedback for mobile devices
-    const triggerHaptic = useCallback(() => {
-        if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-            navigator.vibrate(10); // Short 10ms vibration
+  // Horizontal movement: panels travel over 0%–82% of the scroll range.
+  // The remaining 18% = Journal stays locked in place (buffer/hold).
+  const x = useTransform(scrollYProgress, [0, 0.82], ['0%', '-66.66%']);
+
+  // ── UI states ──
+  const [entryBar,   setEntryBar]   = useState(false);
+  const [hasSnapped, setHasSnapped] = useState(false);
+  const [exitFlash,  setExitFlash]  = useState(false);  // the "click" flash
+  const [exitLocked, setExitLocked] = useState(false);  // true = blocking downward scroll
+
+  // Haptic
+  const triggerHaptic = useCallback(() => {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([12]);
+    }
+  }, []);
+
+  // Sync progress to ref
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    progressRef.current = v;
+
+    // ── Entry snap ──
+    if (v > ENTRY_SNAP_START && v < ENTRY_SNAP_END && !hasSnapped) {
+      setHasSnapped(true);
+      setEntryBar(true);
+      triggerHaptic();
+      setTimeout(() => setEntryBar(false), 280);
+    }
+    if (v < 0.003) setHasSnapped(false);
+
+    // ── Exit lock range ──
+    if (v >= EXIT_LOCK_FROM && v < EXIT_UNLOCK_AT) {
+      setExitLocked(true);
+    } else if (v >= EXIT_UNLOCK_AT) {
+      // Fully done — fire the "click" once
+      if (exitLocked) {
+        setExitLocked(false);
+        setExitFlash(true);
+        triggerHaptic();
+        setTimeout(() => setExitFlash(false), 350);
+      }
+    } else {
+      setExitLocked(false);
+    }
+  });
+
+  // ── TOPE 2: block downward wheel scroll while exit lock is active ──
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY <= 0) return;          // scrolling up → never block
+      if (!progressRef.current) return;
+
+      const v = progressRef.current;
+      if (v >= EXIT_LOCK_FROM && v < EXIT_UNLOCK_AT) {
+        // Still traveling — block the vertical scroll so the
+        // horizontal panels finish their journey first.
+        e.preventDefault();
+
+        // Keep feeding scroll so the horizontal keeps moving
+        if (targetRef.current) {
+          const maxScroll = targetRef.current.scrollHeight || 0;
+          const nudge = Math.min(window.scrollY + e.deltaY * 0.5,
+            (targetRef.current.offsetTop || 0) + maxScroll);
+          window.scrollTo({ top: nudge, behavior: 'instant' });
         }
-    }, []);
+      }
+    };
 
-    useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        // SNAP EFFECT: Prominent "click" at the exact moment horizontal scroll begins
-        // Triggers at 0.5-1.5% progress - the exact moment the user enters the horizontal section
-        if (latest > 0.005 && latest < 0.02 && !hasSnapped) {
-            setHasSnapped(true);
-            setShowClickIndicator(true);
-            triggerHaptic();
+    // passive:false required for preventDefault to work
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
+  }, []);
 
-            // Brief flash of the click indicator
-            setTimeout(() => {
-                setShowClickIndicator(false);
-            }, 300);
-        }
+  // ── Touch equivalent ──
+  useEffect(() => {
+    let lastY = 0;
+    const onStart = (e: TouchEvent) => { lastY = e.touches[0].clientY; };
+    const onMove  = (e: TouchEvent) => {
+      const v = progressRef.current;
+      const currentY = e.touches[0].clientY;
+      const down = currentY < lastY;
+      lastY = currentY;
+      if (!down) return;
+      if (v >= EXIT_LOCK_FROM && v < EXIT_UNLOCK_AT) e.preventDefault();
+    };
+    window.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove',  onMove,  { passive: false });
+    return () => {
+      window.removeEventListener('touchstart', onStart);
+      window.removeEventListener('touchmove',  onMove);
+    };
+  }, []);
 
-        // Reset snap state when user scrolls back up
-        if (latest < 0.003) {
-            setHasSnapped(false);
-        }
+  return (
+    <section ref={targetRef} className={`relative h-[420vh] ${className}`}>
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
-        // Entry Lock: Visual feedback at 1-10% progress
-        if (latest > 0.01 && latest < 0.1) {
-            if (!isLocked) setIsLocked(true);
-        } else {
-            if (isLocked) setIsLocked(false);
-        }
+        {/* Entry bar — top flash on first scroll */}
+        <div className={`
+          absolute top-0 left-0 right-0 h-px bg-[#8a1c1c] z-50
+          transition-all duration-200 origin-left
+          ${entryBar ? 'scale-x-100 opacity-90 shadow-[0_0_16px_rgba(138,28,28,0.6)]' : 'scale-x-0 opacity-0'}
+        `} />
 
-        // Exit Click: Flash briefly at 95-99% progress
-        if (latest > 0.95 && latest < 0.999) {
-            if (!isReleased) {
-                setIsReleased(true);
-                triggerHaptic();
-            }
-        } else {
-            if (isReleased) setIsReleased(false);
-        }
-    });
+        {/* Exit "click" flash — bottom bar that slams in when unlocked */}
+        <div className={`
+          absolute bottom-0 left-0 right-0 h-px bg-[#8a1c1c] z-50
+          transition-all duration-180 origin-left
+          ${exitFlash ? 'scale-x-100 opacity-100 shadow-[0_0_20px_rgba(138,28,28,0.7)]' : 'scale-x-0 opacity-0'}
+        `} />
 
-    return (
-        <section ref={targetRef} className={`relative h-[350vh] bg-background ${className}`}>
-            <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        {/* Exit lock indicator — thin red border while blocked */}
+        <div className={`
+          absolute inset-0 pointer-events-none z-40 border
+          transition-all duration-300
+          ${exitLocked ? 'border-[#8a1c1c]/15' : 'border-transparent'}
+        `} />
 
-                {/* SNAP INDICATOR - The "Click" moment */}
-                <div
-                    className={`
-                        absolute inset-0 z-40 pointer-events-none
-                        transition-all duration-150 ease-out
-                        ${showClickIndicator
-                            ? 'bg-[#8a1c1c]/5 border-2 border-[#8a1c1c]/30'
-                            : 'bg-transparent border-transparent'
-                        }
-                    `}
-                />
+        {/* Panels */}
+        <motion.div
+          style={{ x }}
+          className="flex h-screen items-center w-[300vw]"
+        >
+          {children}
+        </motion.div>
 
-                {/* MECHANICAL ENTRY GATE - Enhanced with glow */}
-                <div
-                    className={`
-                        absolute top-0 left-0 right-0 h-1 bg-[#8a1c1c] z-50
-                        transition-all duration-200 origin-left
-                        ${isLocked ? 'scale-x-100 opacity-80' : 'scale-x-0 opacity-0'}
-                        ${hasSnapped && isLocked ? 'shadow-[0_0_20px_rgba(138,28,28,0.5)]' : ''}
-                    `}
-                />
-
-                {/* Side indicators showing scroll is now horizontal */}
-                <div
-                    className={`
-                        absolute left-0 top-1/2 -translate-y-1/2 w-1 h-20
-                        bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent
-                        z-50 transition-all duration-300
-                        ${hasSnapped && isLocked ? 'opacity-40' : 'opacity-0'}
-                    `}
-                />
-                <div
-                    className={`
-                        absolute right-0 top-1/2 -translate-y-1/2 w-1 h-20
-                        bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent
-                        z-50 transition-all duration-300
-                        ${hasSnapped && isLocked ? 'opacity-40' : 'opacity-0'}
-                    `}
-                />
-
-                <motion.div
-                    ref={contentRef}
-                    style={{ x }}
-                    className={`
-                        flex h-screen items-center w-[300vw]
-                        transition-transform duration-75
-                        ${showClickIndicator ? 'scale-[1.002]' : 'scale-100'}
-                    `}
-                >
-                    {children}
-                </motion.div>
-
-                {/* MECHANICAL EXIT GATE - Enhanced */}
-                <div
-                    className={`
-                        absolute bottom-0 left-0 right-0 h-1 bg-[#8a1c1c] z-50
-                        transition-all duration-200 origin-right
-                        ${isReleased ? 'scale-x-100 opacity-80 shadow-[0_0_20px_rgba(138,28,28,0.5)]' : 'scale-x-0 opacity-0'}
-                    `}
-                />
-
-            </div>
-        </section>
-    );
+      </div>
+    </section>
+  );
 }

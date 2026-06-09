@@ -15,7 +15,7 @@ function PendingContent() {
             <div className="text-center p-8 max-w-md">
                 <div className="flex justify-center mb-6">
                     <div className="w-16 h-16 rounded-full border border-[#8b7d7b]/40 flex items-center justify-center">
-                        <Clock size={32} className="text-[#8b7d7b]" />
+                        <Clock size={32} className="text-[#c8bfba]" />
                     </div>
                 </div>
 
@@ -25,16 +25,16 @@ function PendingContent() {
                     Pago en Proceso
                 </h1>
 
-                <p className="text-[#8b7d7b] mb-4 font-light leading-relaxed">
+                <p className="text-[#c8bfba] mb-4 font-light leading-relaxed">
                     Tu pago está siendo procesado por MercadoPago. Esto puede tomar unos minutos.
                 </p>
-                <p className="text-[#8b7d7b] mb-8 font-light leading-relaxed text-sm">
+                <p className="text-[#c8bfba] mb-8 font-light leading-relaxed text-sm">
                     Recibirás una confirmación por email una vez que sea aprobado. No es necesario que hagas nada más.
                 </p>
 
                 {externalReference && (
                     <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a] text-left mb-6">
-                        <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
+                        <div className="text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-2">
                             Referencia de orden
                         </div>
                         <span className="text-sm text-[#e5e5e5] font-mono">
@@ -45,7 +45,7 @@ function PendingContent() {
 
                 {paymentId && (
                     <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a] text-left mb-6">
-                        <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
+                        <div className="text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-2">
                             ID de pago MercadoPago
                         </div>
                         <span className="text-sm text-[#e5e5e5] font-mono">

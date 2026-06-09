@@ -45,13 +45,13 @@ function SuccessContent() {
 
                 {isCrypto ? (
                     <div className="space-y-4 text-left">
-                        <p className="text-[#8b7d7b] font-light text-center leading-relaxed">
+                        <p className="text-[#c8bfba] font-light text-center leading-relaxed">
                             Your crypto payment has been verified on-chain. Martina will contact you soon to arrange delivery of your new artwork.
                         </p>
 
                         {txHash && (
                             <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a]">
-                                <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
+                                <div className="text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-2">
                                     Transaction Hash
                                 </div>
                                 <a
@@ -68,7 +68,7 @@ function SuccessContent() {
 
                         {orderId && (
                             <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a]">
-                                <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
+                                <div className="text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-2">
                                     Order Reference
                                 </div>
                                 <span className="text-sm text-[#e5e5e5] font-mono">
@@ -78,7 +78,7 @@ function SuccessContent() {
                         )}
                     </div>
                 ) : (
-                    <p className="text-[#8b7d7b] mb-8 font-light leading-relaxed">
+                    <p className="text-[#c8bfba] mb-8 font-light leading-relaxed">
                         Your acquisition has been confirmed. We will reach out to you shortly via email to coordinate delivery or appointment details.
                     </p>
                 )}

@@ -130,7 +130,7 @@ export default function Navigation() {
                       {item.label}
                     </span>
                     {/* Sub-label */}
-                    <span className="text-[9px] text-[#404040] tracking-[0.5em] uppercase mt-0.5 group-hover:tracking-[0.9em] transition-all duration-500">
+                    <span className="text-[9px] text-[#9a9a9a] tracking-[0.5em] uppercase mt-0.5 group-hover:tracking-[0.9em] transition-all duration-500">
                       {item.sub}
                     </span>
                     {/* underline thread */}

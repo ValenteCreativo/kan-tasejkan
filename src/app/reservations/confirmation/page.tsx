@@ -25,11 +25,11 @@ export default function ReservationConfirmationPage() {
                     Request Received
                 </h1>
 
-                <p className="text-[#8b7d7b] mb-4 font-light leading-relaxed">
+                <p className="text-[#c8bfba] mb-4 font-light leading-relaxed">
                     Thank you for reaching out. Martina will review your request and get back to you within 2–3 business days.
                 </p>
 
-                <p className="text-[#404040] text-sm font-light">
+                <p className="text-[#9a9a9a] text-sm font-light">
                     Check your email for confirmation.
                 </p>
 

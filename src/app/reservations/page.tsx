@@ -111,12 +111,12 @@ export default function ReservationsPage() {
             <h1 className="text-4xl md:text-5xl font-light tracking-[0.2em] uppercase text-white mb-4">
               Reservations
             </h1>
-            <p className="text-[#8b7d7b] text-sm tracking-widest uppercase">Tattoo · Consultation</p>
+            <p className="text-[#c8bfba] text-sm tracking-widest uppercase">Tattoo · Consultation</p>
             <div className="w-px h-12 bg-gradient-to-b from-[#8a1c1c] to-transparent mx-auto mt-8 opacity-50" />
           </div>
 
           {/* Intro text */}
-          <p className="text-[#8b7d7b] font-light leading-relaxed text-center mb-12 text-sm">
+          <p className="text-[#c8bfba] font-light leading-relaxed text-center mb-12 text-sm">
             Fill out the form below and Martina will get back to you within 2–3 business days to confirm availability and discuss your vision.
           </p>
 
@@ -143,7 +143,7 @@ export default function ReservationsPage() {
 
                 <Field label="Email *" id="email">
                   <div className="relative">
-                    <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#404040]" />
+                    <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a]" />
                     <input
                       id="email" type="email" required value={form.email}
                       onChange={(e) => set('email', e.target.value)}
@@ -164,7 +164,7 @@ export default function ReservationsPage() {
 
                 <Field label="Instagram" id="instagram">
                   <div className="relative">
-                    <Instagram size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#404040]" />
+                    <Instagram size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a]" />
                     <input
                       id="instagram" type="text" value={form.instagram}
                       onChange={(e) => set('instagram', e.target.value)}
@@ -193,7 +193,7 @@ export default function ReservationsPage() {
 
                 {/* Session Type */}
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#404040] mb-3">Session Type *</label>
+                  <label className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-3">Session Type *</label>
                   <div className="flex gap-3">
                     {(['tattoo', 'consultation'] as SessionType[]).map((type) => (
                       <button
@@ -234,7 +234,7 @@ export default function ReservationsPage() {
                     </Field>
 
                     <div>
-                      <label className="block text-[9px] uppercase tracking-widest text-[#404040] mb-3">
+                      <label className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-3">
                         <Ruler size={12} className="inline mr-1" />
                         Approximate Size
                       </label>
@@ -260,7 +260,7 @@ export default function ReservationsPage() {
 
                 {/* Reference Image */}
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#404040] mb-3">Reference Image (optional)</label>
+                  <label className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-3">Reference Image (optional)</label>
                   <div className="border border-[#1a1a1a] p-4">
                     {referencePreview ? (
                       <div className="text-center space-y-3">
@@ -269,13 +269,13 @@ export default function ReservationsPage() {
                         <button
                           type="button"
                           onClick={() => { setReferenceImage(null); setReferencePreview(''); }}
-                          className="text-xs text-[#8b7d7b] hover:text-white transition-colors"
+                          className="text-xs text-[#c8bfba] hover:text-white transition-colors"
                         >
                           Remove
                         </button>
                       </div>
                     ) : (
-                      <label className="cursor-pointer flex flex-col items-center gap-3 py-6 text-[#404040] hover:text-[#8b7d7b] transition-colors">
+                      <label className="cursor-pointer flex flex-col items-center gap-3 py-6 text-[#9a9a9a] hover:text-[#c8bfba] transition-colors">
                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                         <Upload size={24} />
                         <span className="text-xs tracking-widest uppercase">Upload reference</span>
@@ -288,7 +288,7 @@ export default function ReservationsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Preferred Date" id="preferredDate">
                     <div className="relative">
-                      <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#404040]" />
+                      <Calendar size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a]" />
                       <input
                         id="preferredDate" type="date" value={form.preferredDate}
                         onChange={(e) => set('preferredDate', e.target.value)}
@@ -323,7 +323,7 @@ export default function ReservationsPage() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="px-6 py-4 border border-[#1a1a1a] text-[#8b7d7b] hover:border-[#2a2a2a] transition-colors text-xs uppercase tracking-widest"
+                    className="px-6 py-4 border border-[#1a1a1a] text-[#c8bfba] hover:border-[#2a2a2a] transition-colors text-xs uppercase tracking-widest"
                   >
                     ← Back
                   </button>
@@ -348,7 +348,7 @@ export default function ReservationsPage() {
 function Field({ label, id, children }: { label: string; id: string; children: React.ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-[9px] uppercase tracking-widest text-[#404040] mb-2">
+      <label htmlFor={id} className="block text-[9px] uppercase tracking-widest text-[#9a9a9a] mb-2">
         {label}
       </label>
       {children}
@@ -360,7 +360,7 @@ function StepDot({ active, label }: { active: boolean; label: string }) {
   return (
     <div className="flex flex-col items-center gap-1">
       <div className={`w-2 h-2 rounded-full transition-colors ${active ? 'bg-[#8a1c1c]' : 'bg-[#1a1a1a]'}`} />
-      <span className={`text-[9px] uppercase tracking-widest ${active ? 'text-[#8a1c1c]' : 'text-[#404040]'}`}>{label}</span>
+      <span className={`text-[9px] uppercase tracking-widest ${active ? 'text-[#8a1c1c]' : 'text-[#9a9a9a]'}`}>{label}</span>
     </div>
   );
 }

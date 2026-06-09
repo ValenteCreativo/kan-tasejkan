@@ -105,7 +105,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
             className="p-2 hover:bg-[#8b7d7b]/20 rounded transition-colors group relative"
             title={item.label}
           >
-            <item.icon size={18} className="text-[#8b7d7b] group-hover:text-white transition-colors" />
+            <item.icon size={18} className="text-[#c8bfba] group-hover:text-white transition-colors" />
             <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-black/90 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
               {item.label}
             </span>
@@ -151,7 +151,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
                 setLinkUrl('');
                 setLinkText('');
               }}
-              className="flex-1 px-4 py-2 border border-[#8b7d7b]/30 text-[#8b7d7b] hover:bg-[#8b7d7b]/10 rounded elegant-text text-xs transition-colors"
+              className="flex-1 px-4 py-2 border border-[#8b7d7b]/30 text-[#c8bfba] hover:bg-[#8b7d7b]/10 rounded elegant-text text-xs transition-colors"
             >
               Cancel
             </button>
@@ -169,7 +169,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
       />
 
       {/* Help Text */}
-      <div className="text-xs text-[#8b7d7b] font-light space-y-1">
+      <div className="text-xs text-[#c8bfba] font-light space-y-1">
         <p>✨ Supports Markdown and HTML formatting</p>
         <p>💡 Select text and click a formatting button to apply styles</p>
       </div>

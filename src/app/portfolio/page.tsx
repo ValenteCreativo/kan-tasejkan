@@ -76,7 +76,7 @@ export default function PortfolioPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4 }}
-            className="text-center text-[#8b7d7b] font-light mb-14 max-w-xl mx-auto leading-relaxed"
+            className="text-center text-[#c8bfba] font-light mb-14 max-w-xl mx-auto leading-relaxed"
             style={{ fontSize: 'var(--text-body)' }}
           >
             {filter === 'digital'
@@ -139,7 +139,7 @@ function TabButton({
       className={`relative px-8 py-3 transition-all duration-300 group ${
         active
           ? 'bg-[#8a1c1c]/10 text-[#e5e5e5]'
-          : 'bg-transparent text-[#404040] hover:text-[#8b7d7b]'
+          : 'bg-transparent text-[#9a9a9a] hover:text-[#c8bfba]'
       }`}
       style={{ fontFamily: 'var(--font-cinzel), serif' }}
     >
@@ -194,7 +194,7 @@ function DigitalCard({ art, index }: { art: Artwork; index: number }) {
                           flex items-end justify-between p-4">
             <span className="price-label">${art.price || 50}</span>
             <div className="w-8 h-8 flex items-center justify-center bg-[#050505]/80 border border-[#2a2a2a] rounded-full">
-              <ShoppingBag size={13} className="text-[#8b7d7b]" strokeWidth={1.5} />
+              <ShoppingBag size={13} className="text-[#c8bfba]" strokeWidth={1.5} />
             </div>
           </div>
 
@@ -248,7 +248,7 @@ function TattooCard({ art, index }: { art: Artwork; index: number }) {
                             bg-gradient-to-t from-black/80 to-transparent
                             translate-y-full group-hover:translate-y-0
                             transition-transform duration-500">
-              <p className="meta-label text-[#8b7d7b]">{art.title}</p>
+              <p className="meta-label text-[#c8bfba]">{art.title}</p>
               {art.year && <p className="meta-label mt-0.5 opacity-50">{art.year}</p>}
             </div>
           </div>

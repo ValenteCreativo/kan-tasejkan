@@ -76,7 +76,7 @@ export default function LoginPage() {
               <div className="sacred-dot animate-subtle-glow" style={{ animationDelay: '2s' }} />
             </div>
             <h1 className="text-3xl font-light tracking-wider mb-2">Acceso admin</h1>
-            <p className="text-sm text-[#8b7d7b] font-light">
+            <p className="text-sm text-[#c8bfba] font-light">
               Inicia con Privy usando el correo whitelisted.
             </p>
           </div>

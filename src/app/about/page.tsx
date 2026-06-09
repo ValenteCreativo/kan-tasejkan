@@ -21,13 +21,13 @@ export default function AboutPage() {
           </div>
 
           <div className="prose prose-invert max-w-none space-y-8">
-            <p className="text-lg font-light leading-relaxed text-[#8b7d7b]">
+            <p className="text-lg font-light leading-relaxed text-[#c8bfba]">
               I am Martina, a handpoke tattoo artist working at the intersection of ancient wisdom and contemporary art. Through deep meditation and conscious channeling, I receive sacred geometric patterns and symbols from higher dimensions.
             </p>
-            <p className="text-lg font-light leading-relaxed text-[#8b7d7b]">
+            <p className="text-lg font-light leading-relaxed text-[#c8bfba]">
               Each tattoo is a unique collaboration between your energy, my hand, and the divine intelligence that flows through this work. The handpoke method creates a meditative, intimate experience where intention and artistry merge to create permanent marks of transformation.
             </p>
-            <p className="text-lg font-light leading-relaxed text-[#8b7d7b]">
+            <p className="text-lg font-light leading-relaxed text-[#c8bfba]">
               My practice is rooted in respect for the body as a sacred vessel, and each piece is created with deep presence, care, and connection to something greater than ourselves.
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function AboutPage() {
               </a>
             </div>
             <div className="mt-12 text-center">
-              <p className="text-sm font-light text-[#8b7d7b] leading-relaxed">
+              <p className="text-sm font-light text-[#c8bfba] leading-relaxed">
                 Sessions are held in a private, sacred space.<br />
                 Please reach out with your vision, and we&apos;ll co-create something eternal.
               </p>

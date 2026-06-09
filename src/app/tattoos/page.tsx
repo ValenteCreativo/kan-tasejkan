@@ -36,7 +36,7 @@ export default function TattoosPage() {
 
                 {/* Navigation Back */}
                 <div className="mb-12">
-                    <Link href="/" className="inline-flex items-center gap-2 text-[#8b7d7b] hover:text-[#8a1c1c] transition-colors uppercase tracking-widest text-xs">
+                    <Link href="/" className="inline-flex items-center gap-2 text-[#c8bfba] hover:text-[#8a1c1c] transition-colors uppercase tracking-widest text-xs">
                         <ArrowLeft size={14} />
                         <span>Back to Grimoire</span>
                     </Link>
@@ -45,7 +45,7 @@ export default function TattoosPage() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
                     <div className="mb-24 text-center">
                         <h1 className="text-4xl md:text-5xl font-light mb-2 tracking-[0.2em] uppercase text-white">Ink Rituals</h1>
-                        <p className="text-[#8b7d7b] tracking-[0.2em] uppercase text-xs mt-4">Sacred Geometry • Eternal</p>
+                        <p className="text-[#c8bfba] tracking-[0.2em] uppercase text-xs mt-4">Sacred Geometry • Eternal</p>
                         <div className="w-px h-12 bg-gradient-to-b from-[#8a1c1c] to-transparent mx-auto mt-8 opacity-50" />
                     </div>
 
@@ -55,7 +55,7 @@ export default function TattoosPage() {
                         </div>
                     ) : artworks.length === 0 ? (
                         <div className="text-center py-20">
-                            <p className="text-[#404040] font-light italic">No ink rituals found.</p>
+                            <p className="text-[#9a9a9a] font-light italic">No ink rituals found.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24 w-full">

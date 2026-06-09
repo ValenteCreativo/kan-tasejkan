@@ -11,7 +11,7 @@ export default function FailurePage() {
                     <XCircle size={64} className="text-red-500" />
                 </div>
                 <h1 className="text-3xl font-light uppercase tracking-widest mb-4">Payment Failed</h1>
-                <p className="text-[#8b7d7b] mb-8 font-light">
+                <p className="text-[#c8bfba] mb-8 font-light">
                     There was an issue processing your payment. No charges were made.
                 </p>
                 <Link href="/" className="btn-ritual">

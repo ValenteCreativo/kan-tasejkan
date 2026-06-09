@@ -43,7 +43,7 @@ export default function BlogPage() {
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-[#404040] font-light italic">The pages are blank.</p>
+              <p className="text-[#9a9a9a] font-light italic">The pages are blank.</p>
             </div>
           ) : (
             <div className="flex flex-col space-y-16">
@@ -81,13 +81,13 @@ export default function BlogPage() {
 
                       <h2 className="text-2xl font-light mb-3 tracking-wide text-[#e5e5e5] group-hover:text-white transition-colors">{post.title}</h2>
 
-                      <p className="text-sm text-[#8b7d7b] leading-relaxed line-clamp-2 md:line-clamp-2 font-light">
+                      <p className="text-sm text-[#c8bfba] leading-relaxed line-clamp-2 md:line-clamp-2 font-light">
                         {post.excerpt || 'Read the full entry...'}
                       </p>
                     </div>
 
                     {/* Arrow Indicator */}
-                    <div className="hidden md:block text-[#404040] group-hover:text-[#8a1c1c] transition-colors transform group-hover:translate-x-2 duration-500">
+                    <div className="hidden md:block text-[#9a9a9a] group-hover:text-[#8a1c1c] transition-colors transform group-hover:translate-x-2 duration-500">
                       →
                     </div>
 

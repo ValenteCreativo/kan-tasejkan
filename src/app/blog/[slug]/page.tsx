@@ -50,7 +50,7 @@ export default function BlogPostPage() {
     return (
       <main className="min-h-screen pt-32 pb-16 sacred-minimal">
         <div className="content-container text-center">
-          <p className="text-[#8b7d7b] font-light">Entry not found</p>
+          <p className="text-[#c8bfba] font-light">Entry not found</p>
         </div>
       </main>
     );
@@ -73,7 +73,7 @@ export default function BlogPostPage() {
           <div className="mb-8">
             <h1 className="page-title mb-4 leading-tight normal-case" style={{ textTransform: 'none', letterSpacing: '0.02em' }}>{post.title}</h1>
             <div className="flex items-center justify-between">
-              <time className="meta-label text-[#8b7d7b]/60">
+              <time className="meta-label text-[#c8bfba]/60">
                 {new Date(post.createdAt!).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -82,11 +82,11 @@ export default function BlogPostPage() {
               </time>
               <div className="flex gap-4">
                 <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer"
-                  className="text-[#8b7d7b] hover:text-white transition-colors">
+                  className="text-[#c8bfba] hover:text-white transition-colors">
                   <Twitter size={16} />
                 </a>
                 <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer"
-                  className="text-[#8b7d7b] hover:text-white transition-colors">
+                  className="text-[#c8bfba] hover:text-white transition-colors">
                   <Facebook size={16} />
                 </a>
               </div>
@@ -97,7 +97,7 @@ export default function BlogPostPage() {
 
           <div className="prose prose-invert max-w-none prose-lg">
             <div
-              className="font-light leading-relaxed text-[#8b7d7b]"
+              className="font-light leading-relaxed text-[#c8bfba]"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
