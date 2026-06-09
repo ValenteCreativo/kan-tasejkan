@@ -105,6 +105,65 @@ export const cryptoOrders = pgTable('crypto_orders', {
     updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+// MercadoPago orders — Tracks card/transfer payments via MercadoPago
+export const mercadoPagoOrders = pgTable('mercadopago_orders', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    artworkId: uuid('artwork_id').references(() => artworks.id),
+
+    // MercadoPago data
+    preferenceId: varchar('preference_id', { length: 255 }),
+    paymentId: varchar('payment_id', { length: 255 }),
+    externalReference: varchar('external_reference', { length: 255 }),
+
+    // Buyer info (from MercadoPago callback or webhook)
+    buyerEmail: varchar('buyer_email', { length: 255 }),
+    buyerName: varchar('buyer_name', { length: 255 }),
+
+    // Amount
+    amountArs: decimal('amount_ars', { precision: 12, scale: 2 }),
+    amountUsd: decimal('amount_usd', { precision: 10, scale: 2 }),
+
+    // Order status: pending, approved, rejected, cancelled
+    status: varchar('status', { length: 50 }).default('pending'),
+
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Reservations — Tattoo appointment booking
+export const reservations = pgTable('reservations', {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    // Client info
+    name: varchar('name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    phone: varchar('phone', { length: 50 }),
+    instagram: varchar('instagram', { length: 255 }),
+
+    // Session details
+    sessionType: varchar('session_type', { length: 100 }).notNull(), // 'tattoo' | 'consultation'
+    description: text('description').notNull(),
+    placement: varchar('placement', { length: 255 }),   // body placement
+    sizeApprox: varchar('size_approx', { length: 100 }), // small / medium / large
+
+    // References / inspiration
+    referenceImageUrl: text('reference_image_url'),
+    additionalNotes: text('additional_notes'),
+
+    // Preferred date/time (informational — Martina confirms)
+    preferredDate: varchar('preferred_date', { length: 100 }),
+    preferredTime: varchar('preferred_time', { length: 100 }),
+
+    // Status: pending, contacted, confirmed, completed, cancelled
+    status: varchar('status', { length: 50 }).default('pending'),
+
+    // Admin notes
+    adminNotes: text('admin_notes'),
+
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 // Type exports for use in application code
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -126,3 +185,9 @@ export type NewShippingAddress = typeof shippingAddresses.$inferInsert;
 
 export type CryptoOrder = typeof cryptoOrders.$inferSelect;
 export type NewCryptoOrder = typeof cryptoOrders.$inferInsert;
+
+export type MercadoPagoOrder = typeof mercadoPagoOrders.$inferSelect;
+export type NewMercadoPagoOrder = typeof mercadoPagoOrders.$inferInsert;
+
+export type Reservation = typeof reservations.$inferSelect;
+export type NewReservation = typeof reservations.$inferInsert;
