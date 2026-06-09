@@ -233,9 +233,9 @@ export default function ArtworkForm({ onSubmit, initialData, isEdit = false, def
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-6 py-3 bg-[#8B0000] hover:bg-[#DC143C] text-white rounded-lg
-                 transition-all duration-300 sacred-border hover-glow disabled:opacity-50
-                 disabled:cursor-not-allowed font-medium"
+        className="w-full px-6 py-3 bg-[#8B0000] hover:bg-[#8a1c1c] text-white rounded-lg
+                 transition-all duration-300 disabled:opacity-50
+                 disabled:cursor-not-allowed font-medium tracking-widest text-sm"
       >
         {loading ? 'Uploading...' : isEdit ? 'Update Artwork' : 'Add Artwork'}
       </button>

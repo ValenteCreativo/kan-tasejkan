@@ -5,6 +5,7 @@ import { WHITELISTED_EMAIL } from '../../lib/constants';
 
 type SalesOrder = {
   id: string;
+  paymentType: 'crypto' | 'mercadopago';
   status: string;
   amountUsd: number;
   tokenAddress: string;
@@ -155,11 +156,11 @@ export default function SalesDashboard({ adminEmail }: Props) {
             <thead>
               <tr className="text-left text-[#8b7d7b]">
                 <th className="py-2 pr-4">Artwork</th>
+                <th className="py-2 pr-4">Method</th>
                 <th className="py-2 pr-4">Buyer</th>
                 <th className="py-2 pr-4">Amount</th>
                 <th className="py-2 pr-4">Status</th>
                 <th className="py-2 pr-4">Update</th>
-                <th className="py-2 pr-4">Ship to</th>
                 <th className="py-2 pr-4">Details</th>
                 <th className="py-2 pr-4">Placed</th>
               </tr>
@@ -172,6 +173,15 @@ export default function SalesDashboard({ adminEmail }: Props) {
                     <div className="text-[11px] text-[#8b7d7b]">
                       {order.tokenAddress.slice(0, 6)}... on chain {order.chainId}
                     </div>
+                  </td>
+                  <td className="py-3 pr-4">
+                    <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded border ${
+                      order.paymentType === 'crypto'
+                        ? 'border-[#8a1c1c]/40 text-[#8a1c1c] bg-[#8a1c1c]/5'
+                        : 'border-sky-900/40 text-sky-400 bg-sky-900/5'
+                    }`}>
+                      {order.paymentType === 'crypto' ? 'Crypto' : 'MP'}
+                    </span>
                   </td>
                   <td className="py-3 pr-4">
                     <div className="text-[#e5e5e5]">{order.buyerEmail || 'Wallet'}</div>
@@ -189,9 +199,6 @@ export default function SalesDashboard({ adminEmail }: Props) {
                   </td>
                   <td className="py-3 pr-4">
                     <StatusUpdater orderId={order.id} current={order.status} />
-                  </td>
-                  <td className="py-3 pr-4 text-[#e5e5e5]">
-                    {order.shippingCity ? `${order.shippingCity}, ${order.shippingCountry}` : '—'}
                   </td>
                   <td className="py-3 pr-4 text-[#8b7d7b]">
                     <ShippingDetailButton order={order} />

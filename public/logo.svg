@@ -1,0 +1,17 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#050505"/>
+  <!-- Outer circle -->
+  <circle cx="100" cy="100" r="80" stroke="#8a1c1c" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <!-- Inner circle -->
+  <circle cx="100" cy="100" r="50" stroke="#8a1c1c" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <!-- Cross lines -->
+  <line x1="100" y1="20" x2="100" y2="180" stroke="#8a1c1c" stroke-width="0.5" opacity="0.3"/>
+  <line x1="20" y1="100" x2="180" y2="100" stroke="#8a1c1c" stroke-width="0.5" opacity="0.3"/>
+  <!-- Diagonal lines -->
+  <line x1="43" y1="43" x2="157" y2="157" stroke="#8a1c1c" stroke-width="0.5" opacity="0.2"/>
+  <line x1="157" y1="43" x2="43" y2="157" stroke="#8a1c1c" stroke-width="0.5" opacity="0.2"/>
+  <!-- Center dot -->
+  <circle cx="100" cy="100" r="3" fill="#8a1c1c" opacity="0.8"/>
+  <!-- M initial -->
+  <text x="100" y="108" font-family="serif" font-size="28" font-weight="300" fill="#e5e5e5" text-anchor="middle" letter-spacing="4" opacity="0.9">M</text>
+</svg>

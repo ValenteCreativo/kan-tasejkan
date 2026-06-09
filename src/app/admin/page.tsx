@@ -8,6 +8,7 @@ import { blogService } from '../../lib/blog';
 import ArtworkForm from '../../components/admin/ArtworkForm';
 import ArtworkList from '../../components/admin/ArtworkList';
 import SalesDashboard from '../../components/admin/SalesDashboard';
+import ReservationsDashboard from '../../components/admin/ReservationsDashboard';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
 import type { Artwork, ArtworkFormData, BlogPost, User } from '../../types';
 
@@ -17,7 +18,7 @@ export default function AdminPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [tab, setTab] = useState<'artworks' | 'tattoos' | 'blog' | 'sales'>('artworks');
+  const [tab, setTab] = useState<'artworks' | 'tattoos' | 'blog' | 'sales' | 'reservations'>('artworks');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -173,6 +174,15 @@ export default function AdminPage() {
           >
             Sales
           </button>
+          <button
+            onClick={() => setTab('reservations')}
+            className={`px-6 py-2 elegant-text text-xs transition-all duration-300 rounded ${tab === 'reservations'
+              ? 'minimal-border bg-[#8b7d7b]/10'
+              : 'border border-transparent hover:border-[#8b7d7b]/20'
+              }`}
+          >
+            Reservations
+          </button>
         </div>
 
         {tab === 'artworks' && (
@@ -261,6 +271,12 @@ export default function AdminPage() {
         {tab === 'sales' && (
           <div className="max-w-6xl mx-auto">
             <SalesDashboard adminEmail={user.email} />
+          </div>
+        )}
+
+        {tab === 'reservations' && (
+          <div className="max-w-6xl mx-auto">
+            <ReservationsDashboard adminEmail={user.email} />
           </div>
         )}
       </div>

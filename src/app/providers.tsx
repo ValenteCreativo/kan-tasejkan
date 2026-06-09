@@ -28,7 +28,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           appearance: {
             theme: 'dark',
             accentColor: '#8a1c1c',
-            logo: '/logo.png',
+            logo: '/logo.svg',
           },
           loginMethods: ['email', 'wallet'],
           embeddedWallets: {

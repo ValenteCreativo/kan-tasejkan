@@ -1,7 +1,8 @@
 'use client';
 
-import { Instagram, Mail } from 'lucide-react';
+import { Instagram, Mail, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
@@ -33,13 +34,20 @@ export default function AboutPage() {
 
           <div className="mt-16 glass-minimal p-12 rounded-lg">
             <h2 className="elegant-text text-sm mb-8 text-center">Book a Session</h2>
-            <div className="space-y-6 max-w-md mx-auto">
+            <div className="space-y-4 max-w-md mx-auto">
+              <Link
+                href="/reservations"
+                className="flex items-center justify-center gap-3 btn-elegant w-full text-center"
+              >
+                <Calendar size={18} />
+                Book a Tattoo Session
+              </Link>
               <a href="mailto:hola@martina.com" className="flex items-center justify-center gap-3 btn-elegant w-full">
                 <Mail size={18} />hola@martina.com
               </a>
-              <a href="https://instagram.com/martina" target="_blank" rel="noopener noreferrer"
+              <a href="https://instagram.com/martina_gorozo" target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3 btn-elegant w-full">
-                <Instagram size={18} />@martina
+                <Instagram size={18} />@martina_gorozo
               </a>
             </div>
             <div className="mt-12 text-center">

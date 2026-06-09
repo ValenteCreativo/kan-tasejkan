@@ -24,6 +24,7 @@ export default function Navigation() {
     { href: '/portfolio', label: 'Portfolio', sub: 'Trabajos' },
     { href: '/tattoos', label: 'Tattoos', sub: 'Ink' },
     { href: '/blog', label: 'Journal', sub: 'Blog' },
+    { href: '/reservations', label: 'Book', sub: 'Reservas' },
     { href: '/about', label: 'About', sub: 'Conóceme' },
   ];
 

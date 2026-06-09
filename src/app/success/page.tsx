@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, ExternalLink, Wallet } from 'lucide-react';
+import { CheckCircle, ExternalLink } from 'lucide-react';
 import { Suspense } from 'react';
 
 function SuccessContent() {
@@ -14,7 +14,6 @@ function SuccessContent() {
 
     const isCrypto = paymentType === 'crypto';
 
-    // Get block explorer URL
     const getExplorerUrl = (hash: string, chain: string | null) => {
         const explorers: Record<string, string> = {
             '1': 'https://etherscan.io',
@@ -31,22 +30,27 @@ function SuccessContent() {
     return (
         <main className="min-h-screen bg-[#050505] flex items-center justify-center text-[#e5e5e5] pt-24">
             <div className="text-center p-8 max-w-md">
+
                 <div className="flex justify-center mb-6">
-                    <CheckCircle size={64} className="text-green-500" />
+                    <div className="w-20 h-20 rounded-full border border-green-900/40 flex items-center justify-center">
+                        <CheckCircle size={36} className="text-green-500" />
+                    </div>
                 </div>
+
+                <div className="w-px h-12 bg-gradient-to-b from-transparent via-[#8a1c1c] to-transparent mx-auto mb-8 opacity-50" />
 
                 <h1 className="text-3xl font-light uppercase tracking-widest mb-4">
                     {isCrypto ? 'Payment Confirmed' : 'Payment Successful'}
                 </h1>
 
                 {isCrypto ? (
-                    <div className="space-y-6">
-                        <p className="text-[#8b7d7b] font-light">
-                            Your crypto payment has been verified on-chain. Martina will contact you soon to arrange shipping for your new artwork.
+                    <div className="space-y-4 text-left">
+                        <p className="text-[#8b7d7b] font-light text-center leading-relaxed">
+                            Your crypto payment has been verified on-chain. Martina will contact you soon to arrange delivery of your new artwork.
                         </p>
 
                         {txHash && (
-                            <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a] text-left">
+                            <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a]">
                                 <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
                                     Transaction Hash
                                 </div>
@@ -63,7 +67,7 @@ function SuccessContent() {
                         )}
 
                         {orderId && (
-                            <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a] text-left">
+                            <div className="p-4 border border-[#1a1a1a] bg-[#0a0a0a]">
                                 <div className="text-[9px] uppercase tracking-widest text-[#404040] mb-2">
                                     Order Reference
                                 </div>
@@ -72,19 +76,9 @@ function SuccessContent() {
                                 </span>
                             </div>
                         )}
-
-                        <div className="p-4 border border-[#8a1c1c]/30 bg-[#8a1c1c]/5">
-                            <div className="flex items-center gap-2 text-[#8a1c1c] mb-2">
-                                <Wallet size={16} />
-                                <span className="text-xs uppercase tracking-wider">NFT Certificate</span>
-                            </div>
-                            <p className="text-xs text-[#8b7d7b]">
-                                Your certificate of authenticity NFT will be minted and sent to your wallet within 24-48 hours.
-                            </p>
-                        </div>
                     </div>
                 ) : (
-                    <p className="text-[#8b7d7b] mb-8 font-light">
+                    <p className="text-[#8b7d7b] mb-8 font-light leading-relaxed">
                         Your acquisition has been confirmed. We will reach out to you shortly via email to coordinate delivery or appointment details.
                     </p>
                 )}

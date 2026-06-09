@@ -321,6 +321,28 @@ h6 {
   font-family: var(--font-heading), serif;
 }
 
+/* ritual-input: form input for the ritual/reservation aesthetic */
+.ritual-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: transparent;
+  border: 1px solid #1a1a1a;
+  color: var(--foreground);
+  font-family: var(--font-body), serif;
+  font-size: 0.875rem;
+  font-weight: 300;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+
+.ritual-input:focus {
+  border-color: #2a2a2a;
+}
+
+.ritual-input::placeholder {
+  color: #404040;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

@@ -17,7 +17,7 @@ export default function NewBlogPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
-  const [published, setPublished] = useState(true);
+  const [published, setPublished] = useState(true); // true = publish now, false = save as draft
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function NewBlogPostPage() {
         content,
         excerpt: excerpt || content.substring(0, 200),
         coverImageUrl: coverImageUrl,
-        published: true,
+        published,
         authorId: user.id,
-        publishedAt: new Date(),
+        publishedAt: published ? new Date() : null,
       };
 
       const { error } = await blogService.create(postData);
@@ -198,17 +198,17 @@ export default function NewBlogPostPage() {
             </div>
           </div>
 
-          {/* Published Toggle (kept for visibility, locked to true) */}
+          {/* Published Toggle — functional draft support */}
           <div className="flex items-center gap-3">
             <input
               id="published"
               type="checkbox"
               checked={published}
-              readOnly
-              className="w-4 h-4 accent-[#8b7d7b] cursor-not-allowed"
+              onChange={(e) => setPublished(e.target.checked)}
+              className="w-4 h-4 accent-[#8b7d7b] cursor-pointer"
             />
-            <label htmlFor="published" className="elegant-text text-xs cursor-not-allowed text-[#8b7d7b]">
-              Publish immediately
+            <label htmlFor="published" className="elegant-text text-xs cursor-pointer text-[#8b7d7b]">
+              Publish immediately (uncheck to save as draft)
             </label>
           </div>
 
@@ -227,7 +227,7 @@ export default function NewBlogPostPage() {
               className="flex-1 btn-elegant"
               disabled={submitting}
             >
-              {submitting ? 'Publishing...' : 'Publish'}
+              {submitting ? 'Saving...' : published ? 'Publish' : 'Save as Draft'}
             </button>
           </div>
         </form>

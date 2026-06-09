@@ -83,7 +83,8 @@ export async function POST(req: NextRequest) {
 
             const artworkId = paymentInfo.metadata?.artwork_id || paymentInfo.external_reference;
             const paymentId = String(paymentInfo.id);
-            const preferenceId = paymentInfo.preference_id || '';
+            // preference_id is not typed in the SDK but exists at runtime
+            const preferenceId = (paymentInfo as unknown as Record<string, unknown>)['preference_id'] as string || '';
             const status = paymentInfo.status || 'pending';
             const buyerEmail = paymentInfo.payer?.email || '';
             const buyerName = [

@@ -44,7 +44,7 @@ export default function EditBlogPostPage() {
           setContent(data.content);
           setExcerpt(data.excerpt || '');
           setCoverImagePreview(data.coverImageUrl || '');
-          setPublished(true);
+          setPublished(data.published ?? true);
         }
       } catch (error) {
         console.error('Error loading post:', error);
@@ -99,8 +99,8 @@ export default function EditBlogPostPage() {
         content,
         excerpt: excerpt || content.substring(0, 200),
         coverImageUrl: coverImageUrl,
-        published: true,
-        publishedAt: post.published ? post.publishedAt : new Date(),
+        published,
+        publishedAt: published && !post.published ? new Date() : post.publishedAt,
         updatedAt: new Date(),
       };
 
@@ -241,17 +241,17 @@ export default function EditBlogPostPage() {
             </div>
           </div>
 
-          {/* Published Toggle (locked to true) */}
+          {/* Published Toggle — functional */}
           <div className="flex items-center gap-3">
             <input
               id="published"
               type="checkbox"
               checked={published}
-              readOnly
-              className="w-4 h-4 accent-[#8b7d7b] cursor-not-allowed"
+              onChange={(e) => setPublished(e.target.checked)}
+              className="w-4 h-4 accent-[#8b7d7b] cursor-pointer"
             />
-            <label htmlFor="published" className="elegant-text text-xs cursor-not-allowed text-[#8b7d7b]">
-              Published
+            <label htmlFor="published" className="elegant-text text-xs cursor-pointer text-[#8b7d7b]">
+              {published ? 'Published (uncheck to unpublish)' : 'Draft (check to publish)'}
             </label>
           </div>
 
