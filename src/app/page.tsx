@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import HorizontalScroll from '../components/HorizontalScroll';
 import SectionHeader from '../components/ui/SectionHeader';
+import Carousel from '../components/ui/Carousel';
 import { artworkService } from '../lib/services';
 import { blogService } from '../lib/blog';
 import type { Artwork, BlogPost } from '../types';
@@ -183,9 +184,9 @@ export default function Home() {
             {loading ? (
               <div className="w-1 h-1 bg-[#8a1c1c] animate-pulse-slow mx-auto" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+              <Carousel className="w-full">
                 {digitalArt.length > 0 ? digitalArt.map((art) => (
-                  <div key={art.id} className="group relative">
+                  <div key={art.id} className="group relative flex-shrink-0 w-52 md:w-60">
                     <Link href={`/portfolio/${art.id}`} className="block">
                       <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
                         {art.imageUrl ? <Image src={art.imageUrl} alt={art.title} fill className="object-cover" /> : <div className="w-full h-full bg-[#111]" />}
@@ -200,7 +201,7 @@ export default function Home() {
                     </Link>
                   </div>
                 )) : <p className="meta-label text-[#9a9a9a]">Archive Empty.</p>}
-              </div>
+              </Carousel>
             )}
             <div className="mt-12 md:hidden w-full flex justify-center">
               <Link href="/portfolio" className="btn-ritual">View Gallery</Link>
@@ -222,20 +223,20 @@ export default function Home() {
             {loading ? (
               <div className="w-1 h-1 bg-[#8a1c1c] animate-pulse-slow mx-auto" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+              <Carousel className="w-full">
                 {tattoos.length > 0 ? tattoos.map((art) => (
-                  <Link href={`/portfolio/${art.id}`} key={art.id} className="group block">
+                  <Link href={`/portfolio/${art.id}`} key={art.id} className="group block flex-shrink-0 w-52 md:w-60">
                     <div className="aspect-[3/4] bg-[#0a0a0a] relative overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-700 border border-transparent group-hover:border-[#1a1a1a]">
                       {art.imageUrl ? <Image src={art.imageUrl} alt={art.title} fill className="object-cover" /> : <div className="w-full h-full bg-[#111]" />}
                     </div>
                     <h4 className="meta-label text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
                   </Link>
                 )) : (
-                  <div className="col-span-4 border border-dashed border-[#1a1a1a] p-12 text-center w-full min-h-[300px] flex items-center justify-center">
+                  <div className="w-full border border-dashed border-[#1a1a1a] p-12 text-center min-h-[300px] flex items-center justify-center">
                     <p className="meta-label text-[#9a9a9a]">No Ink Art Displayed</p>
                   </div>
                 )}
-              </div>
+              </Carousel>
             )}
             <div className="mt-12 md:hidden w-full flex justify-center">
               <Link href="/tattoos" className="btn-ritual">View All</Link>
@@ -254,23 +255,22 @@ export default function Home() {
                 <span className="w-8 h-px bg-[#8a1c1c] group-hover:w-16 transition-all duration-500" />
               </Link>
             </div>
-            <div className="flex flex-col space-y-8 w-full max-w-4xl">
+            <Carousel className="w-full">
               {journal.length > 0 ? journal.map((post) => (
-                <Link href={`/blog/${post.slug}`} key={post.id} className="group flex gap-8 items-start hover:bg-[#0a0a0a] p-4 -mx-4 rounded-sm transition-colors duration-500">
+                <Link href={`/blog/${post.slug}`} key={post.id} className="group flex gap-6 items-start hover:bg-[#0a0a0a] p-4 rounded-sm transition-colors duration-500 flex-shrink-0 w-[360px] md:w-[420px]">
                   <div className="flex-shrink-0 w-20 h-24 bg-[#0a0a0a] relative overflow-hidden border border-[#1a1a1a] group-hover:border-[#8a1c1c] transition-colors duration-500">
                     {post.coverImageUrl
                       ? <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                       : <div className="w-full h-full flex items-center justify-center bg-[#111]"><div className="w-1 h-1 bg-[#8a1c1c] rounded-full opacity-50" /></div>}
                   </div>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 min-w-0">
                     <span className="eyebrow text-[#8a1c1c]">{new Date(post.createdAt!).toLocaleDateString()}</span>
-                    <h3 style={{ fontFamily: 'var(--font-body), serif', fontSize: 'var(--text-title)', fontWeight: 300 }} className="text-[#e5e5e5] group-hover:text-white transition-colors">{post.title}</h3>
-                    <p className="text-xs text-[#c8bfba] leading-relaxed line-clamp-2 opacity-80 group-hover:opacity-100 max-w-xl">{post.excerpt || 'Read more...'}</p>
+                    <h3 style={{ fontFamily: 'var(--font-body), serif', fontSize: 'var(--text-title)', fontWeight: 300 }} className="text-[#e5e5e5] group-hover:text-white transition-colors truncate">{post.title}</h3>
+                    <p className="text-xs text-[#c8bfba] leading-relaxed line-clamp-2 opacity-80 group-hover:opacity-100">{post.excerpt || 'Read more...'}</p>
                   </div>
-                  <div className="ml-auto flex items-center h-24 text-[#9a9a9a] group-hover:text-[#8a1c1c] transition-colors">→</div>
                 </Link>
               )) : <p className="meta-label text-[#9a9a9a]">The journal is silent.</p>}
-            </div>
+            </Carousel>
             <div className="mt-12 md:hidden w-full flex justify-center">
               <Link href="/blog" className="btn-ritual">Read Journal</Link>
             </div>
