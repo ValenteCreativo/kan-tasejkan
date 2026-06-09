@@ -9,19 +9,15 @@ interface HorizontalScrollProps {
 }
 
 /**
- * HorizontalScroll with "stops" (topes) between panels.
- *
- * Total height: 520vh — gives plenty of scroll room.
- *
  * Progress zones (3 panels + 2 stops + hold at end):
- *   0.00 – 0.05  → Entry (snap bar)
- *   0.05 – 0.28  → Panel 1 visible (HOLD — x stays at 0%)
- *   0.28 – 0.38  → Travel from Panel 1 → Panel 2
- *   0.38 – 0.58  → Panel 2 visible (HOLD — x stays at -33.33%)
- *   0.58 – 0.68  → Travel from Panel 2 → Panel 3
- *   0.68 – 0.88  → Panel 3 visible (HOLD — x stays at -66.66%)
- *   0.88 – 0.97  → Exit buffer (scroll lock + click)
- *   0.97 – 1.00  → Release to footer
+ *   0.00 – 0.03  → Entry (snap bar)
+ *   0.03 – 0.18  → Panel 1 visible (HOLD)
+ *   0.18 – 0.28  → Travel from Panel 1 → Panel 2
+ *   0.28 – 0.48  → Panel 2 visible (HOLD)
+ *   0.48 – 0.58  → Travel from Panel 2 → Panel 3
+ *   0.58 – 0.78  → Panel 3 visible (HOLD)
+ *   0.78 – 0.95  → Exit buffer
+ *   0.95 – 1.00  → Release to footer
  */
 
 export default function HorizontalScroll({ children, className = '' }: HorizontalScrollProps) {
@@ -30,13 +26,10 @@ export default function HorizontalScroll({ children, className = '' }: Horizonta
 
   const { scrollYProgress } = useScroll({ target: targetRef });
 
-  // Stepped transform: input breakpoints → output x positions
-  // The "flat" segments (same output for different inputs) create the holds/stops
+  // Stepped transform with shorter holds
   const x = useTransform(
     scrollYProgress,
-    // input keyframes
-    [0,     0.05,  0.28,  0.38,  0.58,  0.68,  0.88,  1.0],
-    // output x positions
+    [0,    0.03, 0.18,  0.28,      0.48,      0.58,      0.78,      1.0],
     ['0%', '0%', '0%', '-33.33%', '-33.33%', '-66.66%', '-66.66%', '-66.66%']
   );
 
@@ -64,16 +57,16 @@ export default function HorizontalScroll({ children, className = '' }: Horizonta
     if (v < 0.003) setHasSnapped(false);
 
     // Exit click
-    if (v >= 0.97 && !exitFlash) {
+    if (v >= 0.94 && !exitFlash) {
       setExitFlash(true);
       triggerHaptic();
       setTimeout(() => setExitFlash(false), 350);
     }
-    if (v < 0.96) setExitFlash && setExitFlash(false);
+    if (v < 0.93) setExitFlash && setExitFlash(false);
   });
 
   return (
-    <section ref={targetRef} className={`relative h-[520vh] ${className}`}>
+    <section ref={targetRef} className={`relative h-[400vh] ${className}`}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
         {/* Entry bar flash */}
