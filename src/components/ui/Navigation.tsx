@@ -55,12 +55,8 @@ export default function Navigation() {
             <span className="h-px w-full mt-2 bg-[#8a1c1c] group-hover:w-1/2 transition-all duration-700" />
           </Link>
 
-          {/* Right — wallet + hamburger */}
+          {/* Right — hamburger only (wallet moved to menu overlay) */}
           <div className="flex items-center gap-4 ml-auto">
-            <div className={`hidden md:block transition-opacity duration-500 ${scrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <ConnectWalletWrapper compact={scrolled} />
-            </div>
-
             <button
               onClick={() => setIsOpen(true)}
               className="group flex items-center gap-3 text-white hover:text-[#8a1c1c] transition-colors"

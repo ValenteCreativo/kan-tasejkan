@@ -35,23 +35,6 @@ export default function PaymentSelector({
         <button
           type="button"
           disabled={disabled}
-          onClick={() => onMethodChange('crypto')}
-          className={`
-            flex-1 flex items-center justify-center gap-2 py-3 px-4
-            border transition-all duration-300
-            ${selectedMethod === 'crypto'
-              ? 'border-[#8a1c1c] bg-[#8a1c1c]/10 text-[#e5e5e5]'
-              : 'border-[#1a1a1a] bg-transparent text-[#606060] hover:border-[#303030]'}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          `}
-        >
-          <Wallet className="w-4 h-4" />
-          <span className="text-sm font-cinzel">Crypto</span>
-        </button>
-
-        <button
-          type="button"
-          disabled={disabled}
           onClick={() => onMethodChange('mercadopago')}
           className={`
             flex-1 flex items-center justify-center gap-2 py-3 px-4
@@ -64,6 +47,23 @@ export default function PaymentSelector({
         >
           <CreditCard className="w-4 h-4" />
           <span className="text-sm font-cinzel">Card / Transfer</span>
+        </button>
+
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => onMethodChange('crypto')}
+          className={`
+            flex-1 flex items-center justify-center gap-2 py-3 px-4
+            border transition-all duration-300
+            ${selectedMethod === 'crypto'
+              ? 'border-[#8a1c1c] bg-[#8a1c1c]/10 text-[#e5e5e5]'
+              : 'border-[#1a1a1a] bg-transparent text-[#606060] hover:border-[#303030]'}
+            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          `}
+        >
+          <Wallet className="w-4 h-4" />
+          <span className="text-sm font-cinzel">Crypto</span>
         </button>
       </div>
 

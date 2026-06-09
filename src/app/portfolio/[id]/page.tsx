@@ -34,7 +34,7 @@ export default function ArtworkDetailPage() {
 
     // Payment state
     const [showPaymentOptions, setShowPaymentOptions] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('crypto');
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('mercadopago');
     const [selectedChain, setSelectedChain] = useState(DEFAULT_CHAIN_ID);
     const [selectedToken, setSelectedToken] = useState<TokenType>('USDC');
     const [showCryptoPayment, setShowCryptoPayment] = useState(false);
