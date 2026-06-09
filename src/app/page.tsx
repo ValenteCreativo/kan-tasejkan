@@ -93,8 +93,7 @@ export default function Home() {
           <div className="absolute top-12 left-12 text-sm font-bold uppercase tracking-[0.2em] text-[#8a1c1c] opacity-100 shadow-sm">Page 01 •</div>
           <div className="w-full max-w-6xl flex flex-col items-start h-full">
             <div className="w-full flex justify-between items-end mb-8 md:mb-12">
-              <SectionHeader title="Digital Art" subtitle="Portfolio" align="left" className="mb-0 my-0" />
-              {/* VIEW MORE LINK - MASKED BACKGROUND */}
+              <SectionHeader title="Digital Art" subtitle="Portfolio" align="left" className="mb-0 my-0" />              {/* VIEW MORE LINK - MASKED BACKGROUND */}
               <Link href="/portfolio" className="hidden md:flex items-center gap-2 group bg-[#050505] relative z-10 pl-4 py-1">
                 <span className="text-xs tracking-widest uppercase text-[#8b7d7b] group-hover:text-white transition-colors font-bold">View Gallery</span>
                 <span className="w-8 h-px bg-[#8a1c1c] group-hover:w-16 transition-all duration-500" />
@@ -123,7 +122,7 @@ export default function Home() {
 
                       {/* Minimal Details */}
                       <div className="space-y-1">
-                        <h4 className="text-[10px] uppercase tracking-widest text-[#e5e5e5] group-hover:text-[#8a1c1c] transition-colors truncate">{art.title}</h4>
+                        <h4 className="meta-label text-[#e5e5e5] group-hover:text-[#8a1c1c] transition-colors truncate">{art.title}</h4>
                         <p className="text-[10px] text-[#404040] line-clamp-2 leading-relaxed h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                           {art.description || "Limited edition print. Signed by the artist."}
                         </p>
@@ -174,7 +173,7 @@ export default function Home() {
                     </div>
 
                     <div className="space-y-1">
-                      <h4 className="text-[10px] uppercase tracking-widest text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
+                      <h4 className="meta-label text-center group-hover:text-[#8a1c1c] transition-colors">{art.title}</h4>
                     </div>
                   </Link>
                 )) : (

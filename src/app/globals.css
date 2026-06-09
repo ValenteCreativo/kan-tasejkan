@@ -1,16 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  /* Deep Void Black */
-  --foreground: #e5e5e5;
-  /* Bone White */
-  --accent: #8a1c1c;
-  /* Blood Accent */
-  --muted: #404040;
-  /* Muted Gray */
-  --border: #1a1a1a;
-  /* Very subtle border */
+  --background: #050505;   /* Deep Void Black */
+  --foreground: #e5e5e5;   /* Bone White */
+  --accent: #8a1c1c;       /* Blood Red */
+  --muted: #404040;        /* Muted Gray */
+  --subtle: #8b7d7b;       /* Warm Stone */
+  --border: #1a1a1a;       /* Very subtle border */
+  --border-mid: #2a2a2a;   /* Slightly visible */
+
+  /* ── Typography scale ── */
+  /* Display / Hero */
+  --text-display: clamp(2.5rem, 6vw, 5rem);      /* ~40–80px */
+  /* Section headings (h1 on pages) */
+  --text-section: clamp(1.75rem, 3.5vw, 3rem);   /* ~28–48px */
+  /* Card / panel titles */
+  --text-title: 1.125rem;                          /* 18px */
+  /* Body / description */
+  --text-body: 0.875rem;                           /* 14px */
+  /* Captions / meta */
+  --text-caption: 0.75rem;                         /* 12px */
+  /* Micro labels / tags */
+  --text-micro: 0.625rem;                          /* 10px */
+
+  /* ── Icon scale ── */
+  --icon-sm: 14px;
+  --icon-md: 18px;
+  --icon-lg: 24px;
+
+  /* ── Spacing rhythm ── */
+  --space-section: clamp(4rem, 8vw, 8rem);
+  --space-block: clamp(2rem, 4vw, 4rem);
+  --space-gap: 1.5rem;
 }
 
 @theme inline {
@@ -319,6 +340,117 @@ h6 {
 /* font-cinzel: utility for font-family override inline */
 .font-cinzel {
   font-family: var(--font-heading), serif;
+}
+
+/* ============================================
+   DESIGN SYSTEM — Typography & layout tokens
+   Applied consistently across all pages
+   ============================================ */
+
+/* Page-level h1 */
+.page-title {
+  font-family: var(--font-heading), serif;
+  font-size: var(--text-section);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* Section eyebrow / sub-label above or below a title */
+.eyebrow {
+  font-family: var(--font-heading), serif;
+  font-size: var(--text-micro);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+/* Card title — artwork name, blog title, etc. */
+.card-title {
+  font-family: var(--font-body), serif;
+  font-size: var(--text-title);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+  transition: color 0.4s ease;
+}
+.card-title:hover,
+.group:hover .card-title {
+  color: var(--accent);
+}
+
+/* Meta line — medium, category, date, etc. */
+.meta-label {
+  font-family: var(--font-heading), serif;
+  font-size: var(--text-micro);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Price / accent value */
+.price-label {
+  font-family: var(--font-heading), serif;
+  font-size: var(--text-caption);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Body prose */
+.prose-ritual p,
+.prose-ritual li {
+  font-family: var(--font-body), serif;
+  font-size: var(--text-body);
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--subtle);
+}
+
+/* Accent divider line */
+.accent-line {
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  opacity: 0.5;
+  margin: 0 auto;
+}
+
+/* Tag pill — category badge */
+.tag-pill {
+  display: inline-block;
+  font-family: var(--font-heading), serif;
+  font-size: var(--text-micro);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border-mid);
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+.tag-pill.active,
+.tag-pill:hover {
+  border-color: var(--accent);
+  color: var(--foreground);
+}
+.tag-pill.active {
+  color: var(--accent);
+}
+
+/* Section title bar — horizontal rule with centered label */
+.section-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.section-bar::before,
+.section-bar::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
 /* ritual-input: form input for the ritual/reservation aesthetic */

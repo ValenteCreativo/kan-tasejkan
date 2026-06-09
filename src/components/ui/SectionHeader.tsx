@@ -15,44 +15,41 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     align = "center"
 }) => {
     return (
-        <div className={`relative w-full overflow-hidden my-20 ${className}`}>
-
-            {/* The Text Block */}
+        <div className={`relative w-full overflow-hidden my-16 ${className}`}>
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className={`relative z-10 px-4 mb-4 ${align === "center" ? "text-center" :
-                    align === "right" ? "text-right" : "text-left"
-                    }`}
+                transition={{ duration: 0.7 }}
+                className={`relative z-10 px-4 mb-4 ${
+                    align === "center" ? "text-center" :
+                    align === "right"  ? "text-right"  : "text-left"
+                }`}
             >
-                <h2 className="text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-white mb-2">
+                {/* subtitle → eyebrow above */}
+                {subtitle && (
+                    <p className="eyebrow mb-2">{subtitle}</p>
+                )}
+                <h2
+                    className="font-light tracking-[0.2em] uppercase text-white"
+                    style={{
+                        fontFamily: 'var(--font-heading), serif',
+                        fontSize: 'clamp(1.25rem, 2.5vw, 1.875rem)',
+                    }}
+                >
                     {title}
                 </h2>
-                {subtitle && (
-                    <p className="text-xs md:text-sm text-[#8b7d7b] tracking-[0.3em] uppercase opacity-70 font-mono">
-                        {subtitle}
-                    </p>
-                )}
             </motion.div>
 
-            {/* The Thread (Stitch) */}
+            {/* dashed accent thread */}
             <div className="relative h-[2px] w-full">
-                {/* Thread Line */}
-                <svg
-                    className="w-full h-full absolute top-0 left-0"
-                    preserveAspectRatio="none"
-                >
+                <svg className="w-full h-full absolute top-0 left-0" preserveAspectRatio="none">
                     <line
-                        x1="0"
-                        y1="50%"
-                        x2="100%"
-                        y2="50%"
+                        x1="0" y1="50%" x2="100%" y2="50%"
                         stroke="var(--accent)"
-                        strokeWidth="1"
-                        strokeDasharray="4 12"
-                        opacity="0.8"
+                        strokeWidth="0.8"
+                        strokeDasharray="4 14"
+                        opacity="0.6"
                     />
                 </svg>
             </div>

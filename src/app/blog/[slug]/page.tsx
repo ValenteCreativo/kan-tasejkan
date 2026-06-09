@@ -71,9 +71,9 @@ export default function BlogPostPage() {
           )}
 
           <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-light mb-4 leading-tight">{post.title}</h1>
+            <h1 className="page-title mb-4 leading-tight normal-case" style={{ textTransform: 'none', letterSpacing: '0.02em' }}>{post.title}</h1>
             <div className="flex items-center justify-between">
-              <time className="text-sm elegant-text text-[#8b7d7b]/50">
+              <time className="meta-label text-[#8b7d7b]/60">
                 {new Date(post.createdAt!).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -81,21 +81,13 @@ export default function BlogPostPage() {
                 })}
               </time>
               <div className="flex gap-4">
-                <a
-                  href={shareLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#8b7d7b] hover:text-white transition-colors"
-                >
-                  <Twitter size={18} />
+                <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer"
+                  className="text-[#8b7d7b] hover:text-white transition-colors">
+                  <Twitter size={16} />
                 </a>
-                <a
-                  href={shareLinks.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#8b7d7b] hover:text-white transition-colors"
-                >
-                  <Facebook size={18} />
+                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer"
+                  className="text-[#8b7d7b] hover:text-white transition-colors">
+                  <Facebook size={16} />
                 </a>
               </div>
             </div>
