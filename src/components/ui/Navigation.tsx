@@ -9,9 +9,14 @@ import ConnectWalletWrapper from './ConnectWalletWrapper';
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pastPortal, setPastPortal] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      // Hide entire nav bar while inside the portal (first screen)
+      setPastPortal(window.scrollY > window.innerHeight * 0.85);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -33,8 +38,9 @@ export default function Navigation() {
           scrolled ? 'py-4 mix-blend-difference' : 'py-8'
         }`}
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
+        animate={{ opacity: pastPortal ? 1 : 0, y: pastPortal ? 0 : -20 }}
+        transition={{ duration: 0.6 }}
+        style={{ pointerEvents: pastPortal ? 'auto' : 'none' }}
       >
         <div className="content-container relative flex items-center justify-between">
           <div className="hidden md:block w-12" />

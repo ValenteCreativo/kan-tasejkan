@@ -97,22 +97,33 @@ export default function Home() {
             }} />
           </motion.div>
 
-          {/* Scroll hint */}
+          {/* Scroll hint + Name — visible during the image, fades on first scroll */}
           <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 select-none pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-center select-none pointer-events-none"
             style={{ opacity: hintOpacity, zIndex: 5 }}
           >
-            <motion.div
-              animate={{ y: [0, 7, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-px h-10 bg-gradient-to-b from-[#8a1c1c] to-transparent"
-            />
+            {/* Name on the image */}
             <span
-              className="text-[9px] uppercase tracking-[0.55em] text-[#c8bfba]"
-              style={{ fontFamily: 'var(--font-heading), serif' }}
+              className="text-2xl md:text-4xl uppercase text-white/80 tracking-[0.45em] mb-auto mt-[38vh]"
+              style={{ fontFamily: 'var(--font-heading), serif', textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}
             >
-              Scroll
+              Martina Gorozo
             </span>
+
+            {/* Scroll indicator at bottom */}
+            <div className="mb-10 flex flex-col items-center gap-2">
+              <motion.div
+                animate={{ y: [0, 7, 0] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-px h-10 bg-gradient-to-b from-[#8a1c1c] to-transparent"
+              />
+              <span
+                className="text-[9px] uppercase tracking-[0.55em] text-[#c8bfba]"
+                style={{ fontFamily: 'var(--font-heading), serif' }}
+              >
+                Scroll
+              </span>
+            </div>
           </motion.div>
 
           {/* Hero text — fades in after image is gone, holds until sticky releases */}
