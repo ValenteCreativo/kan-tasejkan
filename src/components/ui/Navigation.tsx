@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConnectWalletWrapper from './ConnectWalletWrapper';
@@ -9,17 +10,25 @@ import ConnectWalletWrapper from './ConnectWalletWrapper';
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [pastPortal, setPastPortal] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
+  const pathname = usePathname();
+  const isHome = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-      // Hide entire nav bar while inside the portal (first screen)
-      setPastPortal(window.scrollY > window.innerHeight * 0.85);
+      // Only hide on the home page during the intro portal
+      if (isHome) {
+        setNavVisible(window.scrollY > window.innerHeight * 0.85);
+      } else {
+        setNavVisible(true);
+      }
     };
+    // On mount, set initial state
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHome]);
 
   const navItems = [
     { href: '/',             label: 'Home',      sub: 'Inicio'    },
@@ -38,9 +47,9 @@ export default function Navigation() {
           scrolled ? 'py-4 mix-blend-difference' : 'py-8'
         }`}
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: pastPortal ? 1 : 0, y: pastPortal ? 0 : -20 }}
+        animate={{ opacity: navVisible ? 1 : 0, y: navVisible ? 0 : -20 }}
         transition={{ duration: 0.6 }}
-        style={{ pointerEvents: pastPortal ? 'auto' : 'none' }}
+        style={{ pointerEvents: navVisible ? 'auto' : 'none' }}
       >
         <div className="content-container relative flex items-center justify-between">
           <div className="hidden md:block w-12" />

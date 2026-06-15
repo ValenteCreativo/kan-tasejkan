@@ -29,7 +29,7 @@ export default function HorizontalScroll({ children, className = '' }: Horizonta
   // Stepped transform with shorter holds
   const x = useTransform(
     scrollYProgress,
-    [0,    0.03, 0.18,  0.28,      0.48,      0.58,      0.78,      1.0],
+    [0,    0.03, 0.18,  0.28,      0.48,      0.58,      0.72,      1.0],
     ['0%', '0%', '0%', '-33.33%', '-33.33%', '-66.66%', '-66.66%', '-66.66%']
   );
 
@@ -66,7 +66,7 @@ export default function HorizontalScroll({ children, className = '' }: Horizonta
   });
 
   return (
-    <section ref={targetRef} className={`relative h-[400vh] ${className}`}>
+    <section ref={targetRef} className={`relative h-[360vh] ${className}`}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
 
         {/* Entry bar flash */}
