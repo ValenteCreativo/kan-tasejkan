@@ -1,6 +1,5 @@
 /**
- * Auth helpers — Privy-based admin authentication.
- * Password-based auth was removed. Admin access is handled via Privy + email whitelist.
+ * Auth helpers — Simple email-based admin authentication.
  */
 import { WHITELISTED_EMAIL } from './constants';
 

@@ -1,34 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;   /* Deep Void Black */
-  --foreground: #e5e5e5;   /* Bone White */
-  --accent: #8a1c1c;       /* Blood Red */
-  --muted: #a0a0a0;        /* Muted Gray — legible on dark */
-  --subtle: #c0b8b5;       /* Warm Stone — legible on dark */
-  --border: #1a1a1a;       /* Very subtle border */
-  --border-mid: #2a2a2a;   /* Slightly visible */
+  /* ── Mindfulverso Palette (from logo) ── */
+  --purple-deep: #4B3A78;
+  --turquoise: #48AFC3;
+  --yellow-warm: #F4E86B;
+  --lila: #B9B8CA;
+  --white-warm: #FAF8F2;
+  --text-dark: #24202F;
+  --text-muted: #6B6580;
+  --border-soft: #E8E5F0;
+  --glow-purple: rgba(75, 58, 120, 0.15);
+  --glow-turquoise: rgba(72, 175, 195, 0.12);
+  --glow-yellow: rgba(244, 232, 107, 0.2);
+
+  /* ── Semantic tokens ── */
+  --background: #FAF8F2;
+  --foreground: #24202F;
+  --accent: #4B3A78;
+  --accent-secondary: #48AFC3;
+  --accent-tertiary: #F4E86B;
+  --muted: #6B6580;
+  --subtle: #B9B8CA;
+  --border: #E8E5F0;
 
   /* ── Typography scale ── */
-  /* Display / Hero */
-  --text-display: clamp(2.5rem, 6vw, 5rem);      /* ~40–80px */
-  /* Section headings (h1 on pages) */
-  --text-section: clamp(1.75rem, 3.5vw, 3rem);   /* ~28–48px */
-  /* Card / panel titles */
-  --text-title: 1.125rem;                          /* 18px */
-  /* Body / description */
-  --text-body: 0.875rem;                           /* 14px */
-  /* Captions / meta */
-  --text-caption: 0.75rem;                         /* 12px */
-  /* Micro labels / tags */
-  --text-micro: 0.625rem;                          /* 10px */
+  --text-display: clamp(2.5rem, 5vw, 4.5rem);
+  --text-section: clamp(1.75rem, 3vw, 2.75rem);
+  --text-title: 1.25rem;
+  --text-body: 1rem;
+  --text-caption: 0.875rem;
+  --text-micro: 0.75rem;
 
-  /* ── Icon scale ── */
-  --icon-sm: 14px;
-  --icon-md: 18px;
-  --icon-lg: 24px;
-
-  /* ── Spacing rhythm ── */
+  /* ── Spacing ── */
   --space-section: clamp(4rem, 8vw, 8rem);
   --space-block: clamp(2rem, 4vw, 4rem);
   --space-gap: 1.5rem;
@@ -38,49 +42,58 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
   --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
   --color-border: var(--border);
+  --color-purple-deep: var(--purple-deep);
+  --color-turquoise: var(--turquoise);
+  --color-yellow-warm: var(--yellow-warm);
+  --color-lila: var(--lila);
+  --color-white-warm: var(--white-warm);
+  --color-text-dark: var(--text-dark);
 
-  --font-heading: var(--font-cinzel);
-  --font-body: var(--font-cormorant);
+  --font-heading: var(--font-inter);
+  --font-body: var(--font-inter);
 
   @keyframes fade-in-up {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes pulse-slow {
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
 
-    0%,
-    100% {
-      opacity: 0.5;
-    }
+  @keyframes orbit-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
-    50% {
-      opacity: 0.8;
-    }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
   }
 }
 
+/* ── Base ── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), serif;
   font-weight: 300;
-  letter-spacing: 0.02em;
-  line-height: 1.8;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
   overflow-x: hidden;
-  position: relative;
 }
 
-/* Quantum Leap: The Leather Binding — z-index 1 so it never covers content */
+/* Subtle warm gradient background */
 body::before {
   content: "";
   position: fixed;
@@ -89,482 +102,312 @@ body::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.22;
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='leather'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23c4c4c4' surfaceScale='3'%3E%3CfeDistantLight azimuth='45' elevation='55'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23leather)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+  z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(75, 58, 120, 0.03), transparent),
+              radial-gradient(ellipse 60% 50% at 80% 70%, rgba(72, 175, 195, 0.02), transparent);
 }
 
-/* Secondary grain layer — adds depth like aged paper fibers */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.06;
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.85' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='1'/%3E%3C/svg%3E");
-  mix-blend-mode: soft-light;
-}
-
-/* Quantum Leap: The Red Thread (Global Structural Element) */
-.red-thread {
-  position: absolute;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
-  opacity: 0.4;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.dashed-thread {
-  position: absolute;
-  width: 1px;
-  background: repeating-linear-gradient(to bottom, var(--accent) 0, var(--accent) 4px, transparent 4px, transparent 12px);
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 9;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading), serif;
-  font-weight: 400;
-  letter-spacing: 0.05em;
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 200;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  /* Debossing — pressed into leather effect */
-  text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.8),
-    0 -1px 0 rgba(255, 255, 255, 0.04);
+  color: var(--text-dark);
 }
 
-/* Stronger deboss for page titles and section headers */
-.page-title,
-.section-bar h2,
-h1 {
-  text-shadow:
-    0 2px 2px rgba(0, 0, 0, 0.9),
-    0 -1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 0 transparent;
-}
-
-/* Subtle deboss for smaller labels */
-.meta-label,
-.eyebrow,
-.elegant-text {
-  text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.6),
-    0 -0.5px 0 rgba(255, 255, 255, 0.03);
-}
-
-/* --- Utilities for Ritual Aesthetic --- */
-
+/* ── Utilities ── */
 .content-container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
-/* Minimal Link */
-.nav-link {
-  font-family: var(--font-heading);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  color: var(--subtle);
-  transition: color 0.5s ease;
-  position: relative;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.nav-link:hover {
-  color: var(--foreground);
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: all 0.4s ease;
-  transform: translateX(-50%);
-}
-
-.nav-link:hover::after {
-  width: 100%;
-}
-
-/* Ritual Button */
-.btn-ritual {
-  display: inline-block;
-  padding: 1rem 3rem;
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  background: transparent;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
-}
-
-.btn-ritual::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: -1;
-}
-
-.btn-ritual:hover {
-  border-color: var(--accent);
-}
-
-.btn-ritual:hover::before {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-/* Card / Archive Item */
-.archive-card {
-  border: 1px solid var(--border);
-  padding: 2rem;
-  transition: border-color 0.5s ease;
-  background: transparent;
-}
-
-.archive-card:hover {
-  border-color: var(--muted);
-}
-
-/* Typography Helpers */
-.text-ritual-muted {
-  color: var(--muted);
-  font-family: var(--font-body);
-  font-style: italic;
-}
-
-.text-ritual-accent {
-  color: var(--accent);
-}
-
-/* Animations */
+/* ── Animations ── */
 .animate-fade-in-up {
-  animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 4s ease-in-out infinite;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-/* ============================================
-   ADMIN / LEGACY COMPONENT CLASSES
-   (Used in admin panel, about, login pages)
-   ============================================ */
+.animate-orbit-slow {
+  animation: orbit-slow 80s linear infinite;
+}
 
-/* sacred-minimal: dark minimal background used as page wrapper */
+.animate-breathe {
+  animation: breathe 8s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* ── Orbital system ── */
+.orbital-ring {
+  border: 1px solid var(--border-soft);
+  border-radius: 50%;
+  position: absolute;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.orbital-ring:hover {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 20px var(--glow-turquoise);
+}
+
+.planet-node {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-tertiary);
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 8px var(--glow-yellow);
+}
+
+.planet-node:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0 20px var(--glow-yellow);
+}
+
+/* ── Buttons ── */
+.btn-mindful {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2.5rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  border-radius: 999px;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-mindful:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px var(--glow-purple);
+}
+
+.btn-mindful-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2.5rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: white;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-mindful-filled:hover {
+  background: var(--purple-deep);
+  box-shadow: 0 4px 20px var(--glow-purple);
+  transform: translateY(-1px);
+}
+
+/* ── Cards ── */
+.glass-card {
+  background: rgba(250, 248, 242, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  transition: all 0.4s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--subtle);
+  box-shadow: 0 8px 32px rgba(75, 58, 120, 0.06);
+  transform: translateY(-2px);
+}
+
+/* ── Admin styles (kept from template) ── */
 .sacred-minimal {
-  background: var(--background);
+  background: #faf8f5;
   color: var(--foreground);
   min-height: 100vh;
 }
 
-/* glass-minimal: subtle frosted card effect */
 .glass-minimal {
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid #1a1a1a;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-soft);
   backdrop-filter: blur(8px);
+  border-radius: 12px;
 }
 
-/* sacred-dot: small pulsing accent dot */
 .sacred-dot {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent);
   opacity: 0.6;
 }
 
-/* animate-subtle-glow: slow opacity pulse for dots */
 .animate-subtle-glow {
-  animation: subtle-glow 3s ease-in-out infinite;
+  animation: pulse-glow 3s ease-in-out infinite;
 }
 
-@keyframes subtle-glow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.8; }
-}
-
-/* divider: horizontal accent line */
 .divider {
   width: 100%;
   height: 1px;
-  background: linear-gradient(to right, transparent, #1a1a1a, transparent);
+  background: linear-gradient(to right, transparent, var(--border-soft), transparent);
 }
 
-/* elegant-text: uppercase tracking heading style */
 .elegant-text {
-  font-family: var(--font-heading), serif;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-weight: 300;
   color: var(--foreground);
 }
 
-/* subtle-accent: muted accent color for secondary actions */
 .subtle-accent {
-  color: #8b7d7b;
+  color: var(--muted);
   transition: color 0.3s ease;
 }
 .subtle-accent:hover {
-  color: var(--foreground);
+  color: var(--accent);
 }
 
-/* minimal-border: subtle border input/container style */
 .minimal-border {
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--border-soft);
 }
 
-/* hover-lift: subtle lift on hover for cards */
 .hover-lift {
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  border-color: #2a2a2a;
+  box-shadow: 0 4px 16px rgba(75, 58, 120, 0.06);
 }
 
-/* btn-elegant: refined admin button */
 .btn-elegant {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem 2rem;
-  font-family: var(--font-heading), serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--foreground);
-  border: 1px solid #8b7d7b;
+  color: var(--accent);
+  border: 1px solid var(--border-soft);
   background: transparent;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: all 0.4s ease;
   cursor: pointer;
   text-decoration: none;
 }
 .btn-elegant:hover {
-  background: rgba(139, 125, 123, 0.1);
-  border-color: var(--foreground);
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
 }
 .btn-elegant:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* font-cinzel: utility for font-family override inline */
-.font-cinzel {
-  font-family: var(--font-heading), serif;
-}
-
-/* ============================================
-   DESIGN SYSTEM — Typography & layout tokens
-   Applied consistently across all pages
-   ============================================ */
-
-/* Page-level h1 */
-.page-title {
-  font-family: var(--font-heading), serif;
-  font-size: var(--text-section);
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-/* Section eyebrow / sub-label above or below a title */
-.eyebrow {
-  font-family: var(--font-heading), serif;
-  font-size: var(--text-micro);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--subtle);
-}
-
-/* Card title — artwork name, blog title, etc. */
-.card-title {
-  font-family: var(--font-body), serif;
-  font-size: var(--text-title);
-  font-weight: 300;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  color: var(--foreground);
-  transition: color 0.4s ease;
-}
-.card-title:hover,
-.group:hover .card-title {
-  color: var(--accent);
-}
-
-/* Meta line — medium, category, date, etc. */
-.meta-label {
-  font-family: var(--font-heading), serif;
-  font-size: var(--text-micro);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--subtle);
-}
-
-/* Price / accent value */
-.price-label {
-  font-family: var(--font-heading), serif;
-  font-size: var(--text-caption);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-/* Body prose */
-.prose-ritual p,
-.prose-ritual li {
-  font-family: var(--font-body), serif;
-  font-size: var(--text-body);
-  font-weight: 300;
-  line-height: 1.9;
-  color: var(--subtle);
-}
-
-/* Accent divider line */
-.accent-line {
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
-  opacity: 0.5;
-  margin: 0 auto;
-}
-
-/* Tag pill — category badge */
-.tag-pill {
-  display: inline-block;
-  font-family: var(--font-heading), serif;
-  font-size: var(--text-micro);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--border-mid);
-  color: var(--muted);
-  transition: all 0.3s ease;
-}
-.tag-pill.active,
-.tag-pill:hover {
-  border-color: var(--accent);
-  color: var(--foreground);
-}
-.tag-pill.active {
-  color: var(--accent);
-}
-
-/* Section title bar — horizontal rule with centered label */
-.section-bar {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-.section-bar::before,
-.section-bar::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* admin-input: minimal input style for admin panel */
+/* ── Form inputs ── */
 .admin-input {
   width: 100%;
-  padding: 0.625rem 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  color: #e5e5e5;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  color: var(--foreground);
   font-size: 0.875rem;
   font-weight: 300;
   transition: border-color 0.3s ease;
   outline: none;
 }
 .admin-input:focus {
-  border-color: #8a1c1c;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow-purple);
 }
 .admin-input::placeholder {
-  color: #555;
+  color: var(--subtle);
 }
 
-/* ritual-input: form input for the ritual/reservation aesthetic */
 .ritual-input {
   width: 100%;
   padding: 0.875rem 1rem;
-  background: transparent;
-  border: 1px solid #1a1a1a;
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
   color: var(--foreground);
-  font-family: var(--font-body), serif;
   font-size: 0.875rem;
   font-weight: 300;
   transition: border-color 0.3s ease;
   outline: none;
 }
-
 .ritual-input:focus {
-  border-color: #2a2a2a;
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 0 3px var(--glow-turquoise);
 }
-
 .ritual-input::placeholder {
-  color: #9a9a9a;
+  color: var(--subtle);
 }
 
-/* Scrollbar */
+/* ── Navigation ── */
+.nav-link {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color 0.4s ease;
+  font-weight: 300;
+}
+.nav-link:hover {
+  color: var(--accent);
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
-
-/* Hide scrollbar for carousels */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--subtle);
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: var(--accent);
 }
 
-/* Selection */
+/* ── Selection ── */
 ::selection {
   background: var(--accent);
-  color: var(--foreground);
+  color: white;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-orbit-slow,
+  .animate-float,
+  .animate-breathe,
+  .animate-pulse-glow {
+    animation: none;
+  }
+  .orbital-ring,
+  .planet-node,
+  .glass-card,
+  .btn-mindful,
+  .btn-mindful-filled {
+    transition: none;
+  }
 }
