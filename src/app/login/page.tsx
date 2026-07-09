@@ -1,95 +1,106 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { usePrivy } from '@privy-io/react-auth';
-import { useWallet } from '../../hooks/useWallet';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { ready, authenticated, user, login, logout } = usePrivy();
-  const { address, isLoading: walletLoading } = useWallet();
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // When Privy session is ready/authenticated, verify whitelist and persist admin flag
-  useEffect(() => {
-    const verify = async () => {
-      if (!ready || !authenticated || !user) return;
-      setIsChecking(true);
-      setError(null);
-
-      const emailAccount = user.linkedAccounts.find((account) => account.type === 'email');
-      const email =
-        emailAccount?.type === 'email'
-          ? (emailAccount as { type: 'email'; address: string }).address
-          : null;
-
-      if (!email || email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
-        setError('Solo el correo whitelisted puede acceder al panel.');
-        await logout();
-        setIsChecking(false);
-        return;
-      }
-
-      if (!address && !walletLoading) {
-        setError('Conecta o crea un wallet en Privy para continuar.');
-        setIsChecking(false);
-        return;
-      }
-
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          email,
-          isAdmin: true,
-          walletAddress: address,
-        })
-      );
-      router.push('/admin');
-    };
-
-    verify();
-  }, [ready, authenticated, user, address, walletLoading, logout, router]);
-
-  const handleLogin = async () => {
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
     setError(null);
-    await login();
-  };
+    setLoading(true);
+
+    // Simple admin check — in production use proper auth
+    if (email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
+      setError('Acceso no autorizado.');
+      setLoading(false);
+      return;
+    }
+
+    // TODO: Implement proper password verification against DB
+    // For now, store admin session in localStorage
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ email, isAdmin: true })
+    );
+    router.push('/admin');
+  }
 
   return (
-    <main className="min-h-screen flex items-center justify-center sacred-minimal">
+    <main className="min-h-screen flex items-center justify-center" style={{ background: 'var(--white-warm)' }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="w-full max-w-md p-8"
       >
-        <div className="glass-minimal p-12 rounded-lg">
+        <div className="glass-minimal p-12">
           <div className="text-center mb-8">
             <div className="flex justify-center gap-2 mb-6">
               <div className="sacred-dot animate-subtle-glow" />
               <div className="sacred-dot animate-subtle-glow" style={{ animationDelay: '1s' }} />
               <div className="sacred-dot animate-subtle-glow" style={{ animationDelay: '2s' }} />
             </div>
-            <h1 className="text-3xl font-light tracking-wider mb-2">Acceso admin</h1>
-            <p className="text-sm text-[#c8bfba] font-light">
-              Inicia con Privy usando el correo whitelisted.
+            <h1 className="text-2xl font-extralight tracking-[0.3em] uppercase mb-2 text-[var(--text-dark)]">
+              Admin
+            </h1>
+            <p className="text-sm text-[var(--muted)] font-light">
+              Panel de administración Mindfulverso
             </p>
           </div>
 
-          {error && <div className="text-sm text-[#4a3434] text-center mb-4">{error}</div>}
+          {error && (
+            <div className="text-sm text-red-600 text-center mb-4 p-2 rounded bg-red-50">
+              {error}
+            </div>
+          )}
 
-          <button
-            onClick={handleLogin}
-            disabled={!ready || walletLoading || isChecking}
-            className="w-full btn-elegant"
-          >
-            {!ready || isChecking ? 'Verificando...' : authenticated ? 'Entrar' : 'Sign in with Privy'}
-          </button>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
+                Correo electrónico
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="admin-input"
+                placeholder="admin@mindfulverso.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="admin-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-mindful-filled mt-6"
+            >
+              {loading ? 'Verificando...' : 'Ingresar'}
+            </button>
+          </form>
         </div>
       </motion.div>
     </main>

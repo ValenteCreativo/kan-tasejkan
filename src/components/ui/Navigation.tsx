@@ -5,86 +5,64 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ConnectWalletWrapper from './ConnectWalletWrapper';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [navVisible, setNavVisible] = useState(true);
+  const [isOnDark, setIsOnDark] = useState(false);
   const pathname = usePathname();
-  const isHome = pathname === '/';
 
+  // Hide nav on admin pages
+  if (pathname?.startsWith('/admin') || pathname === '/login') return null;
+
+  // Detect if we're scrolled in the cosmic intro (dark background)
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      // Only hide on the home page during the intro portal
-      if (isHome) {
-        setNavVisible(window.scrollY > window.innerHeight * 0.85);
-      } else {
-        setNavVisible(true);
-      }
-    };
-    // On mount, set initial state
+    function handleScroll() {
+      const isHome = pathname === '/';
+      setIsOnDark(isHome && window.scrollY < window.innerHeight * 0.7);
+    }
     handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHome]);
+  }, [pathname]);
+
+  const textColor = isOnDark ? 'text-white' : 'text-[#24202F]';
+  const iconColor = isOnDark ? 'text-white' : 'text-[#24202F]';
 
   const navItems = [
-    { href: '/',             label: 'Home',      sub: 'Inicio'    },
-    { href: '/portfolio',    label: 'Portfolio', sub: 'Trabajos'  },
-    { href: '/tattoos',      label: 'Tattoos',   sub: 'Ink'       },
-    { href: '/blog',         label: 'Journal',   sub: 'Blog'      },
-    { href: '/reservations', label: 'Book',      sub: 'Reservas'  },
-    { href: '/about',        label: 'About',     sub: 'Conóceme'  },
+    { href: '/', label: 'Inicio' },
+    { href: '/nosotros', label: 'Nosotros' },
+    { href: '/servicios', label: 'Servicios' },
+    { href: '/calendario', label: 'Calendario' },
+    { href: '/cursos', label: 'Cursos' },
+    { href: '/tienda', label: 'Tienda' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/testimonios', label: 'Testimonios' },
+    { href: '/contacto', label: 'Contacto' },
+    { href: '/reservar', label: 'Reservar' },
   ];
 
   return (
     <>
-      {/* ── Top bar ── */}
-      <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-          scrolled ? 'py-4 mix-blend-difference' : 'py-8'
-        }`}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: navVisible ? 1 : 0, y: navVisible ? 0 : -20 }}
-        transition={{ duration: 0.6 }}
-        style={{ pointerEvents: navVisible ? 'auto' : 'none' }}
-      >
-        <div className="content-container relative flex items-center justify-between">
-          <div className="hidden md:block w-12" />
-
-          {/* Logo centered */}
-          <Link
-            href="/"
-            className="group flex flex-col items-center absolute left-1/2 -translate-x-1/2"
-            style={{
-              opacity: scrolled ? 0 : 1,
-              pointerEvents: scrolled ? 'none' : 'auto',
-              transition: 'opacity 0.5s ease',
-            }}
-          >
-            <span className="text-xl font-light tracking-[0.5em] uppercase text-white transition-all duration-500">
-              Martina Gorozo
+      {/* ── Minimal top bar ── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 py-5 md:py-6 px-5 md:px-8">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          {/* Logo */}
+          <Link href="/" className="relative z-10">
+            <span className={`text-[11px] md:text-xs font-light tracking-[0.35em] uppercase transition-colors duration-500 ${textColor}`}>
+              Mindfulverso
             </span>
-            <span className="h-px w-full mt-2 bg-[#8a1c1c] group-hover:w-1/2 transition-all duration-700" />
           </Link>
 
-          {/* Right — hamburger only (wallet moved to menu overlay) */}
-          <div className="flex items-center gap-4 ml-auto">
-            <button
-              onClick={() => setIsOpen(true)}
-              className="group flex items-center gap-3 text-white hover:text-[#8a1c1c] transition-colors"
-              aria-label="Open menu"
-            >
-              <span className="hidden md:block text-[10px] uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                Menu
-              </span>
-              <Menu size={22} strokeWidth={1} className="transition-transform duration-500 group-hover:rotate-90" />
-            </button>
-          </div>
+          {/* Menu button */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className={`relative z-10 w-9 h-9 flex items-center justify-center rounded-full transition-colors duration-500 ${isOnDark ? 'hover:bg-white/10' : 'hover:bg-[#4B3A78]/5'}`}
+            aria-label="Abrir menú"
+          >
+            <Menu size={18} strokeWidth={1.2} className={`transition-colors duration-500 ${iconColor}`} />
+          </button>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* ── Full-screen overlay menu ── */}
       <AnimatePresence>
@@ -92,84 +70,68 @@ export default function Navigation() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.4, delay: 0.15 } }}
-            className="fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden"
-            style={{ background: '#050505' }}
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
+            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-[#FAF8F2]"
           >
-            {/* menu-burger.png as background at 40% opacity */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage: "url('/menu-burger.png')",
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                opacity: 0.4,
-                mixBlendMode: 'luminosity',
-              }}
-            />
-
-            {/* Dark veil on top of image so text stays legible */}
-            <div className="absolute inset-0 bg-[#050505]/60 pointer-events-none" />
+            {/* Subtle background decorations */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-[#4B3A78]/[0.02] blur-[80px]" />
+              <div className="absolute bottom-1/3 left-1/3 w-60 h-60 rounded-full bg-[#48AFC3]/[0.03] blur-[60px]" />
+            </div>
 
             {/* Close */}
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-8 right-8 md:top-10 md:right-12 text-white/40 hover:text-[#8a1c1c] transition-colors group z-10"
-              aria-label="Close menu"
+              className="absolute top-5 right-5 md:top-6 md:right-8 w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#4B3A78]/5 transition-colors"
+              aria-label="Cerrar menú"
             >
-              <X size={28} strokeWidth={0.8} className="transition-transform duration-500 group-hover:rotate-90" />
-              <span className="block text-[9px] tracking-widest uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Close</span>
+              <X size={18} strokeWidth={1.2} className="text-[#24202F]" />
             </button>
 
+            {/* Logo at top */}
+            <div className="absolute top-5 left-5 md:top-6 md:left-8">
+              <span className="text-[11px] font-light tracking-[0.35em] uppercase text-[#6B6580]">
+                Mindfulverso
+              </span>
+            </div>
+
             {/* Nav links */}
-            <nav className="relative z-10 flex flex-col items-center gap-6 md:gap-7">
+            <nav className="relative z-10 flex flex-col items-center gap-4 md:gap-5">
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.href}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.55, delay: index * 0.07 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.35, delay: index * 0.04 }}
                 >
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="group relative flex flex-col items-center"
+                    className={`relative text-lg md:text-xl font-extralight tracking-[0.2em] uppercase transition-colors duration-300 ${
+                      pathname === item.href
+                        ? 'text-[#4B3A78]'
+                        : 'text-[#24202F] hover:text-[#4B3A78]'
+                    }`}
                   >
-                    {/* Main label — toned-down size */}
-                    <span className="text-2xl md:text-3xl font-light tracking-[0.25em] uppercase text-[#e5e5e5] group-hover:text-[#8a1c1c] transition-colors duration-400">
-                      {item.label}
-                    </span>
-                    {/* Sub-label */}
-                    <span className="text-[9px] text-[#9a9a9a] tracking-[0.5em] uppercase mt-0.5 group-hover:tracking-[0.9em] transition-all duration-500">
-                      {item.sub}
-                    </span>
-                    {/* underline thread */}
-                    <span className="absolute -bottom-2 left-1/2 w-0 h-px bg-[#8a1c1c] group-hover:w-full group-hover:left-0 transition-all duration-500" />
+                    {item.label}
                   </Link>
                 </motion.div>
               ))}
             </nav>
 
-            {/* Wallet */}
+            {/* Bottom tagline */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, delay: navItems.length * 0.07 + 0.1 }}
-              className="relative z-10 mt-10 pt-6 border-t border-[#1a1a1a]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="absolute bottom-6 md:bottom-8 flex flex-col items-center gap-3"
             >
-              <ConnectWalletWrapper />
+              <div className="w-px h-8 bg-gradient-to-b from-transparent via-[#B9B8CA] to-transparent opacity-40" />
+              <span className="text-[10px] font-light tracking-[0.3em] text-[#B9B8CA] uppercase">
+                Bienestar Universal
+              </span>
             </motion.div>
-
-            {/* Decorative vertical thread */}
-            <motion.div
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 1.2, ease: 'easeInOut' }}
-              style={{ transformOrigin: 'top' }}
-              className="absolute left-10 top-0 h-full w-px bg-gradient-to-b from-transparent via-[#8a1c1c]/25 to-transparent hidden md:block"
-            />
           </motion.div>
         )}
       </AnimatePresence>
