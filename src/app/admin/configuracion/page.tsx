@@ -14,11 +14,6 @@ export default function ConfiguracionPage() {
     e.preventDefault();
     setPasswordMsg(null);
 
-    const stored = localStorage.getItem('admin_password') || 'Admin1234';
-    if (currentPassword !== stored) {
-      setPasswordMsg({ type: 'error', text: 'Contraseña actual incorrecta.' });
-      return;
-    }
     if (newPassword.length < 6) {
       setPasswordMsg({ type: 'error', text: 'La nueva contraseña debe tener al menos 6 caracteres.' });
       return;
@@ -28,11 +23,25 @@ export default function ConfiguracionPage() {
       return;
     }
 
-    localStorage.setItem('admin_password', newPassword);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setPasswordMsg({ type: 'success', text: '¡Contraseña actualizada exitosamente!' });
+    fetch('/api/auth/password', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          setPasswordMsg({ type: 'error', text: data.error || 'Error al cambiar contraseña.' });
+        } else {
+          setCurrentPassword('');
+          setNewPassword('');
+          setConfirmPassword('');
+          setPasswordMsg({ type: 'success', text: '¡Contraseña actualizada exitosamente!' });
+        }
+      })
+      .catch(() => {
+        setPasswordMsg({ type: 'error', text: 'Error de conexión.' });
+      });
   }
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
