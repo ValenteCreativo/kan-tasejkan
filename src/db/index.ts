@@ -1,27 +1,27 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from './schema';
 
-/**
- * Lazily initialise the DB connection so that the module can be imported
- * during Next.js build without a DATABASE_URL present.
- * At runtime every API route that hits the DB will have the env var set.
- */
 function getDb() {
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  if (!connectionString) {
-    throw new Error(
-      '[db] DATABASE_URL is not set. Add it to your .env.local or deployment environment.'
-    );
+  const url = process.env.TURSO_DATABASE_URL;
+  const authToken = process.env.TURSO_AUTH_TOKEN;
+
+  if (!url) {
+    throw new Error('[db] TURSO_DATABASE_URL is not set. Add it to your .env.local or deployment environment.');
   }
-  const sql = neon(connectionString);
-  return drizzle(sql, { schema });
+
+  const client = createClient({
+    url,
+    authToken,
+  });
+
+  return drizzle(client, { schema });
 }
 
-// Singleton — created once per worker on first real request
-let _db: ReturnType<typeof drizzle> | null = null;
+// Singleton
+let _db: ReturnType<typeof getDb> | null = null;
 
-export const db = new Proxy({} as ReturnType<typeof drizzle>, {
+export const db = new Proxy({} as ReturnType<typeof getDb>, {
   get(_target, prop) {
     if (!_db) {
       _db = getDb();
@@ -30,5 +30,5 @@ export const db = new Proxy({} as ReturnType<typeof drizzle>, {
   },
 });
 
-// Re-export schema for convenience
+// Re-export schema
 export * from './schema';

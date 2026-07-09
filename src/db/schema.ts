@@ -1,193 +1,215 @@
-import { pgTable, uuid, varchar, text, integer, boolean, timestamp, decimal } from 'drizzle-orm/pg-core';
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
-// Users table - Admin users with password hashes
-export const users = pgTable('users', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    email: varchar('email', { length: 255 }).unique().notNull(),
-    passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-    name: varchar('name', { length: 255 }),
-    isAdmin: boolean('is_admin').default(false),
-    createdAt: timestamp('created_at').defaultNow(),
+// Helper for default random ID
+const randomId = () => sql`(lower(hex(randomblob(16))))`;
+
+// ═══════════════════════════════════════════
+// CORE
+// ═══════════════════════════════════════════
+
+export const users = sqliteTable('users', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    email: text('email').unique().notNull(),
+    passwordHash: text('password_hash').notNull(),
+    name: text('name'),
+    isAdmin: integer('is_admin', { mode: 'boolean' }).default(false),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
 });
 
-// Categories table - Artwork categories with ordering
-export const categories = pgTable('categories', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    name: varchar('name', { length: 255 }).notNull(),
-    slug: varchar('slug', { length: 255 }).unique().notNull(),
+// ═══════════════════════════════════════════
+// SERVICIOS
+// ═══════════════════════════════════════════
+
+export const services = sqliteTable('services', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title').notNull(),
+    slug: text('slug').unique().notNull(),
+    category: text('category').notNull(),
+    shortDescription: text('short_description'),
     description: text('description'),
+    benefits: text('benefits', { mode: 'json' }).$type<string[]>(),
+    audience: text('audience'),
+    duration: text('duration'),
+    modality: text('modality'),
+    location: text('location'),
+    price: text('price'),
+    priceNote: text('price_note'),
+    coverImageUrl: text('cover_image_url'),
+    gallery: text('gallery', { mode: 'json' }).$type<string[]>(),
+    videoUrl: text('video_url'),
+    bookingEnabled: integer('booking_enabled', { mode: 'boolean' }).default(true),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(false),
     orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
 });
 
-// Artworks table - Portfolio pieces with images, pricing, and metadata
-export const artworks = pgTable('artworks', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    title: varchar('title', { length: 255 }).notNull(),
+// ═══════════════════════════════════════════
+// EVENTOS
+// ═══════════════════════════════════════════
+
+export const events = sqliteTable('events', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title').notNull(),
+    slug: text('slug').unique().notNull(),
+    category: text('category').notNull(),
+    serviceId: text('service_id').references(() => services.id),
     description: text('description'),
-    imageUrl: text('image_url').notNull(),
-    thumbnailUrl: text('thumbnail_url'),
-    category: varchar('category', { length: 255 }).notNull(),
-    year: integer('year'),
-    medium: varchar('medium', { length: 255 }),
-    technique: varchar('technique', { length: 255 }),
-    dimensions: varchar('dimensions', { length: 255 }),
-    price: decimal('price', { precision: 10, scale: 2 }),
-    available: boolean('available').default(true),
-    featured: boolean('featured').default(false),
-    orderIndex: integer('order_index').default(0),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    startDate: text('start_date').notNull(),
+    endDate: text('end_date'),
+    location: text('location'),
+    modality: text('modality'),
+    capacity: integer('capacity'),
+    price: text('price'),
+    coverImageUrl: text('cover_image_url'),
+    gallery: text('gallery', { mode: 'json' }).$type<string[]>(),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(false),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
 });
 
-// Blog posts table - Blog content with publishing workflow
-export const blogPosts = pgTable('blog_posts', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    title: varchar('title', { length: 255 }).notNull(),
-    slug: varchar('slug', { length: 255 }).unique().notNull(),
+// ═══════════════════════════════════════════
+// TESTIMONIOS
+// ═══════════════════════════════════════════
+
+export const testimonials = sqliteTable('testimonials', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    name: text('name').notNull(),
+    text: text('text').notNull(),
+    serviceId: text('service_id').references(() => services.id),
+    imageUrl: text('image_url'),
+    rating: integer('rating'),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(false),
+    orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
+// EQUIPO
+// ═══════════════════════════════════════════
+
+export const teamMembers = sqliteTable('team_members', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    name: text('name').notNull(),
+    role: text('role').notNull(),
+    bio: text('bio'),
+    imageUrl: text('image_url'),
+    certifications: text('certifications', { mode: 'json' }).$type<string[]>(),
+    orderIndex: integer('order_index').default(0),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(true),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
+// PRODUCTOS
+// ═══════════════════════════════════════════
+
+export const products = sqliteTable('products', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title').notNull(),
+    slug: text('slug').unique().notNull(),
+    description: text('description'),
+    category: text('category').notNull(),
+    price: text('price').notNull(),
+    compareAtPrice: text('compare_at_price'),
+    imageUrl: text('image_url'),
+    gallery: text('gallery', { mode: 'json' }).$type<string[]>(),
+    stock: integer('stock').default(0),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(false),
+    orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
+// BLOG
+// ═══════════════════════════════════════════
+
+export const blogPosts = sqliteTable('blog_posts', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title').notNull(),
+    slug: text('slug').unique().notNull(),
     content: text('content').notNull(),
     excerpt: text('excerpt'),
     coverImageUrl: text('cover_image_url'),
-    published: boolean('published').default(false),
-    authorId: uuid('author_id').references(() => users.id),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
-    publishedAt: timestamp('published_at'),
+    published: integer('published', { mode: 'boolean' }).default(false),
+    authorId: text('author_id').references(() => users.id),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+    publishedAt: text('published_at'),
 });
 
-// Wallet users - Links Privy authentication with wallet address and email
-export const walletUsers = pgTable('wallet_users', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    privyId: varchar('privy_id', { length: 255 }).unique().notNull(),
-    walletAddress: varchar('wallet_address', { length: 42 }),
-    email: varchar('email', { length: 255 }),
-    isWhitelisted: boolean('is_whitelisted').default(false),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
-});
+// ═══════════════════════════════════════════
+// RESERVAS
+// ═══════════════════════════════════════════
 
-// Shipping addresses for physical artwork delivery
-export const shippingAddresses = pgTable('shipping_addresses', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id').references(() => walletUsers.id),
-    fullName: varchar('full_name', { length: 255 }).notNull(),
-    address: text('address').notNull(),
-    city: varchar('city', { length: 255 }).notNull(),
-    state: varchar('state', { length: 255 }),
-    postalCode: varchar('postal_code', { length: 50 }).notNull(),
-    country: varchar('country', { length: 255 }).notNull(),
-    phone: varchar('phone', { length: 50 }),
-    isDefault: boolean('is_default').default(false),
-    createdAt: timestamp('created_at').defaultNow(),
-});
-
-// Crypto orders - Tracks stablecoin payments and NFT certificates
-export const cryptoOrders = pgTable('crypto_orders', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    artworkId: uuid('artwork_id').references(() => artworks.id),
-    buyerId: uuid('buyer_id').references(() => walletUsers.id),
-    shippingAddressId: uuid('shipping_address_id').references(() => shippingAddresses.id),
-
-    // Payment details
-    txHash: varchar('tx_hash', { length: 66 }),
-    chainId: integer('chain_id').notNull(),
-    tokenAddress: varchar('token_address', { length: 42 }).notNull(),
-    amount: decimal('amount', { precision: 18, scale: 6 }).notNull(),
-    amountUsd: decimal('amount_usd', { precision: 10, scale: 2 }).notNull(),
-
-    // NFT Certificate of Authenticity
-    nftTokenId: varchar('nft_token_id', { length: 78 }),
-    nftContractAddress: varchar('nft_contract_address', { length: 42 }),
-    nftTxHash: varchar('nft_tx_hash', { length: 66 }),
-
-    // Order status: pending, paid, shipped, delivered
-    status: varchar('status', { length: 50 }).default('pending'),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
-});
-
-// MercadoPago orders — Tracks card/transfer payments via MercadoPago
-export const mercadoPagoOrders = pgTable('mercadopago_orders', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    artworkId: uuid('artwork_id').references(() => artworks.id),
-
-    // MercadoPago data
-    preferenceId: varchar('preference_id', { length: 255 }),
-    paymentId: varchar('payment_id', { length: 255 }),
-    externalReference: varchar('external_reference', { length: 255 }),
-
-    // Buyer info (from MercadoPago callback or webhook)
-    buyerEmail: varchar('buyer_email', { length: 255 }),
-    buyerName: varchar('buyer_name', { length: 255 }),
-
-    // Amount
-    amountArs: decimal('amount_ars', { precision: 12, scale: 2 }),
-    amountUsd: decimal('amount_usd', { precision: 10, scale: 2 }),
-
-    // Order status: pending, approved, rejected, cancelled
-    status: varchar('status', { length: 50 }).default('pending'),
-
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
-});
-
-// Reservations — Tattoo appointment booking
-export const reservations = pgTable('reservations', {
-    id: uuid('id').primaryKey().defaultRandom(),
-
-    // Client info
-    name: varchar('name', { length: 255 }).notNull(),
-    email: varchar('email', { length: 255 }).notNull(),
-    phone: varchar('phone', { length: 50 }),
-    instagram: varchar('instagram', { length: 255 }),
-
-    // Session details
-    sessionType: varchar('session_type', { length: 100 }).notNull(), // 'tattoo' | 'consultation'
-    description: text('description').notNull(),
-    placement: varchar('placement', { length: 255 }),   // body placement
-    sizeApprox: varchar('size_approx', { length: 100 }), // small / medium / large
-
-    // References / inspiration
-    referenceImageUrl: text('reference_image_url'),
-    additionalNotes: text('additional_notes'),
-
-    // Preferred date/time (informational — Martina confirms)
-    preferredDate: varchar('preferred_date', { length: 100 }),
-    preferredTime: varchar('preferred_time', { length: 100 }),
-
-    // Status: pending, contacted, confirmed, completed, cancelled
-    status: varchar('status', { length: 50 }).default('pending'),
-
-    // Admin notes
+export const reservations = sqliteTable('reservations', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    phone: text('phone'),
+    serviceId: text('service_id').references(() => services.id),
+    eventId: text('event_id').references(() => events.id),
+    type: text('type').notNull(),
+    message: text('message'),
+    preferredDate: text('preferred_date'),
+    preferredTime: text('preferred_time'),
+    attendeesCount: integer('attendees_count'),
+    status: text('status').default('pending'),
     adminNotes: text('admin_notes'),
-
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
 });
 
-// Type exports for use in application code
+// ═══════════════════════════════════════════
+// LEGACY (artworks kept for gallery/media)
+// ═══════════════════════════════════════════
+
+export const artworks = sqliteTable('artworks', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title').notNull(),
+    description: text('description'),
+    imageUrl: text('image_url').notNull(),
+    thumbnailUrl: text('thumbnail_url'),
+    category: text('category').notNull(),
+    price: text('price'),
+    available: integer('available', { mode: 'boolean' }).default(true),
+    featured: integer('featured', { mode: 'boolean' }).default(false),
+    orderIndex: integer('order_index').default(0),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
+export const categories = sqliteTable('categories', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    name: text('name').notNull(),
+    slug: text('slug').unique().notNull(),
+    description: text('description'),
+    orderIndex: integer('order_index').default(0),
+});
+
+// ═══════════════════════════════════════════
+// TYPE EXPORTS
+// ═══════════════════════════════════════════
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-
-export type Category = typeof categories.$inferSelect;
-export type NewCategory = typeof categories.$inferInsert;
-
-export type Artwork = typeof artworks.$inferSelect;
-export type NewArtwork = typeof artworks.$inferInsert;
-
+export type Service = typeof services.$inferSelect;
+export type NewService = typeof services.$inferInsert;
+export type Event = typeof events.$inferSelect;
+export type NewEvent = typeof events.$inferInsert;
+export type Testimonial = typeof testimonials.$inferSelect;
+export type NewTestimonial = typeof testimonials.$inferInsert;
+export type TeamMember = typeof teamMembers.$inferSelect;
+export type NewTeamMember = typeof teamMembers.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type NewBlogPost = typeof blogPosts.$inferInsert;
-
-export type WalletUser = typeof walletUsers.$inferSelect;
-export type NewWalletUser = typeof walletUsers.$inferInsert;
-
-export type ShippingAddress = typeof shippingAddresses.$inferSelect;
-export type NewShippingAddress = typeof shippingAddresses.$inferInsert;
-
-export type CryptoOrder = typeof cryptoOrders.$inferSelect;
-export type NewCryptoOrder = typeof cryptoOrders.$inferInsert;
-
-export type MercadoPagoOrder = typeof mercadoPagoOrders.$inferSelect;
-export type NewMercadoPagoOrder = typeof mercadoPagoOrders.$inferInsert;
-
 export type Reservation = typeof reservations.$inferSelect;
 export type NewReservation = typeof reservations.$inferInsert;
+export type Artwork = typeof artworks.$inferSelect;
+export type NewArtwork = typeof artworks.$inferInsert;
+export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;
