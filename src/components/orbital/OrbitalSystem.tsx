@@ -42,9 +42,9 @@ export default function OrbitalSystem() {
   useEffect(() => {
     function handleResize() {
       const w = window.innerWidth;
-      if (w >= 1280) { setLogoSize(380); setOrbitRadius(330); setIsMobile(false); }
-      else if (w >= 1024) { setLogoSize(320); setOrbitRadius(290); setIsMobile(false); }
-      else if (w >= 768) { setLogoSize(260); setOrbitRadius(250); setIsMobile(false); }
+      if (w >= 1280) { setLogoSize(380); setOrbitRadius(280); setIsMobile(false); }
+      else if (w >= 1024) { setLogoSize(320); setOrbitRadius(245); setIsMobile(false); }
+      else if (w >= 768) { setLogoSize(260); setOrbitRadius(210); setIsMobile(false); }
       else { setLogoSize(180); setOrbitRadius(0); setIsMobile(true); }
     }
     handleResize();
