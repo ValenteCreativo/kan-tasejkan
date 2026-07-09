@@ -42,9 +42,9 @@ export default function OrbitalSystem() {
   useEffect(() => {
     function handleResize() {
       const w = window.innerWidth;
-      if (w >= 1280) { setLogoSize(380); setOrbitRadius(310); setIsMobile(false); }
-      else if (w >= 1024) { setLogoSize(320); setOrbitRadius(270); setIsMobile(false); }
-      else if (w >= 768) { setLogoSize(260); setOrbitRadius(230); setIsMobile(false); }
+      if (w >= 1280) { setLogoSize(380); setOrbitRadius(330); setIsMobile(false); }
+      else if (w >= 1024) { setLogoSize(320); setOrbitRadius(290); setIsMobile(false); }
+      else if (w >= 768) { setLogoSize(260); setOrbitRadius(250); setIsMobile(false); }
       else { setLogoSize(180); setOrbitRadius(0); setIsMobile(true); }
     }
     handleResize();
@@ -77,17 +77,17 @@ export default function OrbitalSystem() {
         </div>
 
         {/* Grid of nav items */}
-        <div className="grid grid-cols-3 gap-3 w-full max-w-xs">
+        <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.id}
               href={item.href}
-              className="flex flex-col items-center text-center p-2 rounded-xl hover:bg-[#4B3A78]/5 transition-colors"
+              className="flex flex-col items-center text-center p-3 rounded-xl hover:bg-[#4B3A78]/5 transition-colors"
             >
-              <div className="w-10 h-10 rounded-full bg-white/80 border border-[#E8E5F0] flex items-center justify-center mb-1.5">
+              <div className="w-12 h-12 rounded-full bg-white/80 border border-[#E8E5F0] flex items-center justify-center mb-2">
                 {item.icon}
               </div>
-              <span className="text-[9px] font-[600] tracking-[0.04em] uppercase text-[#24202F] leading-tight">
+              <span className="text-[11px] font-[500] tracking-[0.02em] uppercase text-[#24202F] leading-tight">
                 {item.label}
               </span>
             </Link>
@@ -163,20 +163,20 @@ export default function OrbitalSystem() {
               left: x,
               top: y,
               transform: 'translate(-50%, -50%)',
-              width: '95px',
+              width: '120px',
             }}
           >
             <motion.div
-              className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-white/80 backdrop-blur-sm border border-[#E8E5F0] flex items-center justify-center mb-1 group-hover:border-[#49B6D6] group-hover:shadow-md transition-all duration-300"
+              className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/80 backdrop-blur-sm border border-[#E8E5F0] flex items-center justify-center mb-1.5 group-hover:border-[#49B6D6] group-hover:shadow-md transition-all duration-300"
               whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.95 }}
             >
               {item.icon}
             </motion.div>
-            <span className="text-[9px] md:text-[11px] font-[600] tracking-[0.06em] uppercase text-[#24202F] group-hover:text-[#3D3066] transition-colors leading-tight">
+            <span className="text-[11px] md:text-[13px] font-[600] tracking-[0.04em] uppercase text-[#24202F] group-hover:text-[#3D3066] transition-colors leading-tight">
               {item.label}
             </span>
-            <span className="text-[8px] md:text-[9px] font-[300] text-[#6B6580] mt-0.5 leading-tight hidden lg:block">
+            <span className="text-[9px] md:text-[10px] font-[300] text-[#6B6580] mt-0.5 leading-tight hidden lg:block">
               {item.description}
             </span>
           </Link>
