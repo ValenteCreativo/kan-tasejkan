@@ -1,9 +1,39 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { ArrowLeft, Settings, Lock } from 'lucide-react';
 
 export default function ConfiguracionPage() {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordMsg(null);
+
+    const stored = localStorage.getItem('admin_password') || 'Admin1234';
+    if (currentPassword !== stored) {
+      setPasswordMsg({ type: 'error', text: 'Contraseña actual incorrecta.' });
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordMsg({ type: 'error', text: 'La nueva contraseña debe tener al menos 6 caracteres.' });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg({ type: 'error', text: 'Las contraseñas no coinciden.' });
+      return;
+    }
+
+    localStorage.setItem('admin_password', newPassword);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordMsg({ type: 'success', text: '¡Contraseña actualizada exitosamente!' });
+  }
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <div className="max-w-4xl mx-auto p-8">
@@ -100,6 +130,68 @@ export default function ConfiguracionPage() {
               Guardar cambios
             </button>
           </div>
+        </div>
+
+        {/* Password change section */}
+        <div className="bg-white rounded-xl border border-[#F0EEF5] p-6 mt-6">
+          <div className="flex items-center gap-2 mb-6">
+            <Lock size={16} strokeWidth={1.5} className="text-[#3D3066]" />
+            <h3 className="text-sm font-[500] text-[#24202F] uppercase tracking-wider">Cambiar contraseña</h3>
+          </div>
+
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            <div>
+              <label className="block text-[12px] font-[500] uppercase tracking-wider text-[#6B6580] mb-2">
+                Contraseña actual
+              </label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg border border-[#F0EEF5] text-[14px] text-[#24202F] focus:outline-none focus:border-[#4B3A78] transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-[500] uppercase tracking-wider text-[#6B6580] mb-2">
+                Nueva contraseña
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                className="w-full px-4 py-2.5 rounded-lg border border-[#F0EEF5] text-[14px] text-[#24202F] placeholder:text-[#B9B8CA] focus:outline-none focus:border-[#4B3A78] transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-[500] uppercase tracking-wider text-[#6B6580] mb-2">
+                Confirmar nueva contraseña
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg border border-[#F0EEF5] text-[14px] text-[#24202F] focus:outline-none focus:border-[#4B3A78] transition-colors"
+                required
+              />
+            </div>
+
+            {passwordMsg && (
+              <p className={`text-sm ${passwordMsg.type === 'error' ? 'text-red-500' : 'text-green-600'}`}>
+                {passwordMsg.text}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4B3A78] text-white text-[13px] font-[400] rounded-lg hover:bg-[#3D3066] transition-colors"
+            >
+              <Lock size={14} strokeWidth={1.5} />
+              Cambiar contraseña
+            </button>
+          </form>
         </div>
       </div>
     </div>

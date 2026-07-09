@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { WHITELISTED_EMAIL } from '../../lib/constants';
+import { WHITELISTED_EMAIL, DEFAULT_ADMIN_PASSWORD } from '../../lib/constants';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,15 +17,20 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    // Simple admin check — in production use proper auth
+    // Simple admin check — verifies email + password
     if (email.toLowerCase() !== WHITELISTED_EMAIL.toLowerCase()) {
       setError('Acceso no autorizado.');
       setLoading(false);
       return;
     }
 
-    // TODO: Implement proper password verification against DB
-    // For now, store admin session in localStorage
+    // Check password (uses stored password from localStorage, or default)
+    const storedPassword = localStorage.getItem('admin_password') || DEFAULT_ADMIN_PASSWORD;
+    if (password !== storedPassword) {
+      setError('Contraseña incorrecta.');
+      setLoading(false);
+      return;
+    }
     localStorage.setItem(
       'user',
       JSON.stringify({ email, isAdmin: true })

@@ -1,6 +1,8 @@
 // Mindfulverso — shared constants (safe for client and server)
 
-export const WHITELISTED_EMAIL = 'veronica@mindfulverso.com'; // TODO: Update with real admin email
+export const WHITELISTED_EMAIL = 'veromafud09@gmail.com';
+
+export const DEFAULT_ADMIN_PASSWORD = 'Admin1234';
 
 export const SITE_NAME = 'Mindfulverso';
 export const SITE_TAGLINE = 'Bienestar Universal';
