@@ -77,7 +77,7 @@ export default function NewBlogPostPage() {
         coverImageUrl: coverImageUrl,
         published,
         authorId: user.id,
-        publishedAt: published ? new Date() : null,
+        publishedAt: published ? new Date().toISOString() : null,
       };
 
       const { error } = await blogService.create(postData);

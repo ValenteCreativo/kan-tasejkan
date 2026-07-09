@@ -100,8 +100,8 @@ export default function EditBlogPostPage() {
         excerpt: excerpt || content.substring(0, 200),
         coverImageUrl: coverImageUrl,
         published,
-        publishedAt: published && !post.published ? new Date() : post.publishedAt,
-        updatedAt: new Date(),
+        publishedAt: published && !post.published ? new Date().toISOString() : post.publishedAt,
+        updatedAt: new Date().toISOString(),
       };
 
       const { error } = await blogService.update(post.id, postData);
