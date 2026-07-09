@@ -1,95 +1,78 @@
-# Martina Store — Portfolio & E-commerce
+# Mindfulverso
 
-Portfolio y tienda para Martina Gorozo — tatuadora y artista digital.
+**Bienestar Universal** — Plataforma web para un centro holístico de bienestar.
+
+## Sobre el proyecto
+
+Mindfulverso es la plataforma digital de Verónica, un centro holístico que ofrece psicoterapia, mindfulness, ceremonias, círculos, retiros, talleres, diplomado y más. El sitio funciona como una experiencia inmersiva donde el logo del proyecto cobra vida como sistema de navegación orbital.
 
 ## Stack
 
-- **Next.js 16** + React 19 (App Router)
-- **Drizzle ORM** + NeonDB (PostgreSQL serverless)
-- **MercadoPago** — método principal de pago
-- **Privy** — autenticación web3 (wallet + email)
-- **viem** — interacción on-chain para pagos cripto (USDC/USDT)
-- **Vercel Blob** — almacenamiento de imágenes
-- **Framer Motion** — animaciones
-- **Tailwind CSS v4**
+- **Framework**: Next.js 16 (App Router)
+- **Lenguaje**: TypeScript
+- **Base de datos**: Turso (libSQL)
+- **ORM**: Drizzle
+- **Estilos**: Tailwind CSS v4
+- **3D**: Three.js + React Three Fiber
+- **Animaciones**: Framer Motion
+- **Storage**: Vercel Blob
+- **Iconos**: Lucide React
+
+## Features
+
+- Intro cósmico 3D (universo estilo James Webb con estrellas, galaxias, nebulosas y planetas)
+- Sistema de navegación orbital basado en el isotipo del logo
+- CMS completo para gestionar servicios, eventos, productos, blog, testimonios y equipo
+- Panel de administración con dashboard, formularios CRUD y upload de imágenes
+- Sistema de reservas con formulario público multi-step
+- Páginas dinámicas que leen contenido de la base de datos
+- Diseño responsive (orbital en desktop, grid en mobile)
+- Paleta basada en el logo: morado profundo, turquesa, amarillo cálido
+
+## Estructura
+
+```
+src/
+├── app/                    # Rutas (App Router)
+│   ├── admin/              # Panel CMS (servicios, eventos, productos, blog, equipo, testimonios)
+│   ├── servicios/          # Páginas públicas de servicios
+│   ├── calendario/         # Eventos próximos
+│   ├── tienda/             # Productos
+│   ├── blog/               # Blog
+│   ├── testimonios/        # Testimonios
+│   ├── nosotros/           # Historia, filosofía, equipo
+│   ├── contacto/           # Formulario de contacto
+│   ├── reservar/           # Formulario de reservas (multi-step)
+│   └── login/              # Auth admin
+├── components/
+│   ├── orbital/            # CosmicIntro (Three.js) + OrbitalSystem (isotipo + nav)
+│   └── ui/                 # Navigation, RichTextEditor
+├── actions/                # Server actions (CRUD para todos los módulos)
+├── db/                     # Schema Drizzle (SQLite/Turso) + conexión
+└── lib/                    # Constants, auth helpers
+```
+
+## Setup local
+
+```bash
+npm install --legacy-peer-deps
+cp .env.local.example .env.local  # agregar TURSO_DATABASE_URL y TURSO_AUTH_TOKEN
+npm run db:push                    # crear tablas en Turso
+npm run dev                        # http://localhost:3000
+```
 
 ## Variables de entorno
 
-Crea un archivo `.env.local` con las siguientes variables:
-
-```env
-# Base de datos (NeonDB)
-DATABASE_URL=postgresql://...
-
-# Privy (autenticación)
-NEXT_PUBLIC_PRIVY_APP_ID=clxxxxx
-
-# MercadoPago
-MERCADO_PAGO_ACCESS_TOKEN=APP_USR-...
-MERCADO_PAGO_WEBHOOK_SECRET=  # Opcional — firma de webhooks (recomendado en prod)
-
-# Wallet de Martina (recibe pagos cripto)
-NEXT_PUBLIC_MARTINA_WALLET=0x...
-
-# URL base del sitio
-NEXT_PUBLIC_BASE_URL=https://tudominio.com
 ```
-
-## Comandos
-
-```bash
-# Desarrollo
-npm run dev
-
-# Build de producción
-npm run build
-
-# Base de datos
-npm run db:generate   # Generar migraciones
-npm run db:migrate    # Aplicar migraciones
-npm run db:push       # Push directo (dev)
-npm run db:studio     # Drizzle Studio (UI de la DB)
-
-# Tests
-npm test
+TURSO_DATABASE_URL=libsql://...
+TURSO_AUTH_TOKEN=eyJ...
+BLOB_READ_WRITE_TOKEN=vercel_blob_...  # para upload de imágenes
 ```
-
-## Rutas principales
-
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Home con scroll horizontal (portfolio, tattoos, journal) |
-| `/portfolio` | Galería de arte digital con compra |
-| `/portfolio/[id]` | Detalle de obra + checkout MP o cripto |
-| `/tattoos` | Galería de tatuajes |
-| `/blog` | Journal / entradas del blog |
-| `/reservations` | Formulario de reserva de sesión de tatuaje |
-| `/about` | Sobre Martina |
-| `/admin` | Panel de administración (requiere Privy + email whitelisted) |
-| `/login` | Login admin via Privy |
-
-## Pagos
-
-### MercadoPago (principal)
-- Flujo: `/api/checkout` → MercadoPago → `/success` o `/failure` o `/pending`
-- Webhook en `/api/webhooks/mercadopago` — verifica firma y actualiza estado
-- Configurar el webhook en el panel de MP apuntando a `https://tudominio.com/api/webhooks/mercadopago`
-
-### Cripto (USDC/USDT)
-- Redes: Base, Polygon, Arbitrum, Ethereum
-- Flujo: `/api/checkout-crypto` → firma en wallet → `/api/verify-tx` → `/success`
-
-## DB Schema
-
-9 tablas: `users`, `wallet_users`, `artworks`, `categories`, `blog_posts`, `shipping_addresses`, `crypto_orders`, `mercadopago_orders`, `reservations`
 
 ## Admin
 
-Acceso via `/login` con Privy usando el email whitelisted (`martinagorozo1@proton.me`).
+Acceder a `/login` con el email configurado en `src/lib/constants.ts`. Desde el panel se puede gestionar todo el contenido del sitio.
 
-Secciones del panel:
-- **Artworks** — CRUD de arte digital
-- **Tattoos** — CRUD de trabajos de tatuaje  
-- **Journal** — CRUD del blog con drafts
-- **Sales** — Dashboard de ventas (cripto + MercadoPago)
-- **Reservations** — Gestión de solicitudes de reserva de sesión
+## Desarrollado por
+
+[Valente Creativo](https://github.com/ValenteCreativo)
