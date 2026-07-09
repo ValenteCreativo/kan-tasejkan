@@ -45,7 +45,7 @@ export default function Home() {
 
         {/* Header */}
         <motion.header
-          className="relative z-20 pt-6 md:pt-8 flex flex-col items-center text-center"
+          className="relative z-20 pt-16 md:pt-8 flex flex-col items-center text-center"
           initial={{ opacity: 0, y: -10 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
