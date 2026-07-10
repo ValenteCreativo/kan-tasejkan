@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { WHATSAPP_URL } from '../../lib/constants';
+import { getSiteSettings } from '../../actions';
 
 const SERVICE_TYPES = [
   'Sesión individual',
@@ -22,6 +22,7 @@ export default function ReservarPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState('#');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,6 +32,13 @@ export default function ReservarPage() {
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTime, setPreferredTime] = useState('');
   const [attendees, setAttendees] = useState('1');
+
+  useEffect(() => {
+    getSiteSettings().then(({ data }) => {
+      const number = data?.['whatsapp_number'] || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+525555555555';
+      setWhatsappUrl(`https://wa.me/${number.replace(/[^0-9]/g, '')}`);
+    });
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -82,7 +90,7 @@ export default function ReservarPage() {
             <Link href="/" className="btn-mindful text-xs">
               Volver al inicio
             </Link>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-mindful-filled text-xs">
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-mindful-filled text-xs">
               Escribir por WhatsApp
             </a>
           </div>
@@ -286,7 +294,7 @@ export default function ReservarPage() {
         {/* Alternative */}
         <p className="text-center text-xs font-[300] text-[#B9B8CA] mt-8">
           ¿Prefieres escribirnos directamente?{' '}
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-[#49B6D6] hover:underline">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-[#49B6D6] hover:underline">
             WhatsApp
           </a>
         </p>

@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { db, users } from '../../../../db';
 import { eq } from 'drizzle-orm';
 import { WHITELISTED_EMAIL } from '../../../../lib/constants';
 import { hashPassword, verifyPassword } from '../../../../lib/auth';
+import { validateSessionToken, SESSION_COOKIE_NAME } from '../../../../lib/session';
 
 export async function PUT(request: NextRequest) {
   try {
+    // Verify admin session
+    const cookieStore = await cookies();
+    const session = cookieStore.get(SESSION_COOKIE_NAME);
+    if (!session?.value) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    }
+    const { valid } = await validateSessionToken(session.value);
+    if (!valid) {
+      return NextResponse.json({ error: 'Sesión expirada' }, { status: 401 });
+    }
+
     const { currentPassword, newPassword } = await request.json();
 
     if (!currentPassword || !newPassword) {

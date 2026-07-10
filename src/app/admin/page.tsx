@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
-import { LayoutDashboard, Sparkles, Calendar, MessageSquare, Users, ShoppingBag, FileText, Star, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Sparkles, Calendar, MessageSquare, Users, ShoppingBag, FileText, Star, Settings, LogOut, Navigation2 } from 'lucide-react';
 
 type User = { email: string; isAdmin: boolean };
 
@@ -17,6 +17,7 @@ const ADMIN_SECTIONS = [
   { id: 'blog', label: 'Blog', icon: FileText, href: '/admin/blog' },
   { id: 'testimonials', label: 'Testimonios', icon: Star, href: '/admin/testimonios' },
   { id: 'team', label: 'Equipo', icon: Users, href: '/admin/equipo' },
+  { id: 'navigation', label: 'Navegación Landing', icon: Navigation2, href: '/admin/navegacion' },
   { id: 'settings', label: 'Configuración', icon: Settings, href: '/admin/configuracion' },
 ];
 
@@ -36,8 +37,9 @@ export default function AdminPage() {
     setLoading(false);
   }, [router]);
 
-  function handleLogout() {
+  async function handleLogout() {
     localStorage.removeItem('user');
+    await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
   }
 

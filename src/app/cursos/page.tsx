@@ -1,11 +1,18 @@
 import { Metadata } from 'next';
+import { getAllEvents } from '../../actions';
+import CursosContent from '../../components/CursosContent';
 
 export const metadata: Metadata = {
   title: 'Cursos — Mindfulverso',
   description: 'Formaciones presenciales y grabadas en mindfulness, bienestar y desarrollo personal.',
 };
 
-export default function CursosPage() {
+export default async function CursosPage() {
+  const { data: allEvents } = await getAllEvents(true);
+  const cursos = (allEvents || []).filter(e => 
+    e.category.toLowerCase() === 'cursos' || e.category.toLowerCase() === 'diplomado'
+  );
+
   return (
     <main className="min-h-screen pt-28 pb-20" style={{ background: 'var(--white-warm)' }}>
       <div className="content-container max-w-5xl">
@@ -22,32 +29,7 @@ export default function CursosPage() {
           </p>
         </div>
 
-        {/* Two categories */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          <div className="glass-card p-10 text-center">
-            <div className="w-12 h-12 rounded-full bg-[var(--accent)]/10 mx-auto mb-5 flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full bg-[var(--accent)] opacity-50" />
-            </div>
-            <h3 className="text-base font-light tracking-wider uppercase text-[var(--text-dark)] mb-2">
-              Presenciales
-            </h3>
-            <p className="text-sm font-light text-[var(--muted)]">
-              Experiencias en vivo con acompañamiento directo.
-            </p>
-          </div>
-
-          <div className="glass-card p-10 text-center">
-            <div className="w-12 h-12 rounded-full bg-[var(--turquoise)]/10 mx-auto mb-5 flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full bg-[var(--turquoise)] opacity-50" />
-            </div>
-            <h3 className="text-base font-light tracking-wider uppercase text-[var(--text-dark)] mb-2">
-              Grabados
-            </h3>
-            <p className="text-sm font-light text-[var(--muted)]">
-              A tu ritmo, desde cualquier lugar.
-            </p>
-          </div>
-        </div>
+        <CursosContent cursos={cursos} />
       </div>
     </main>
   );

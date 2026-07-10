@@ -4,11 +4,13 @@ import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getNavigationItems } from '../../actions';
 
 /**
  * Sistema orbital de Mindfulverso.
  * Desktop/Tablet: Logo centrado con etiquetas en círculo alrededor.
  * Mobile: Logo arriba + grid de etiquetas debajo.
+ * Items are loaded from DB if available, otherwise falls back to defaults.
  */
 
 interface NavItem {
@@ -16,28 +18,70 @@ interface NavItem {
   label: string;
   description: string;
   href: string;
-  icon: React.ReactNode;
+  icon: string;
   angle: number;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { id: 'nosotros', label: '¿Quiénes somos?', description: 'Conoce nuestra historia, propósito y equipo.', href: '/nosotros', icon: <IconHeart />, angle: 0 },
-  { id: 'servicios', label: 'Servicios', description: 'Terapias, ceremonias y más para tu bienestar.', href: '/servicios', icon: <IconFlower />, angle: 40 },
-  { id: 'retiros', label: 'Retiros', description: 'Experiencias transformadoras en lugares sagrados.', href: '/servicios/retiros', icon: <IconMountain />, angle: 80 },
-  { id: 'cursos', label: 'Cursos', description: 'Formaciones para profundizar tu práctica.', href: '/cursos', icon: <IconLotus />, angle: 120 },
-  { id: 'mindfulness', label: 'Mindfulness', description: 'Prácticas y entrenamientos para tu día a día.', href: '/servicios/mindfulness', icon: <IconPerson />, angle: 160 },
-  { id: 'contacto', label: 'Contacto', description: 'Estamos aquí para acompañarte.', href: '/contacto', icon: <IconMail />, angle: 200 },
-  { id: 'testimonios', label: 'Testimonios', description: 'Historias reales de transformación.', href: '/testimonios', icon: <IconChat />, angle: 240 },
-  { id: 'tienda', label: 'Tienda', description: 'Productos conscientes para tu camino.', href: '/tienda', icon: <IconBag />, angle: 280 },
-  { id: 'calendario', label: 'Calendario', description: 'Eventos, talleres y próximas fechas.', href: '/calendario', icon: <IconCalendar />, angle: 320 },
+const DEFAULT_NAV_ITEMS: NavItem[] = [
+  { id: 'nosotros', label: '¿Quiénes somos?', description: 'Conoce nuestra historia, propósito y equipo.', href: '/nosotros', icon: 'heart', angle: 0 },
+  { id: 'servicios', label: 'Servicios', description: 'Terapias, ceremonias y más para tu bienestar.', href: '/servicios', icon: 'flower', angle: 40 },
+  { id: 'retiros', label: 'Retiros', description: 'Experiencias transformadoras en lugares sagrados.', href: '/servicios#retiros', icon: 'mountain', angle: 80 },
+  { id: 'cursos', label: 'Cursos', description: 'Formaciones para profundizar tu práctica.', href: '/cursos', icon: 'lotus', angle: 120 },
+  { id: 'mindfulness', label: 'Mindfulness', description: 'Prácticas y entrenamientos para tu día a día.', href: '/servicios#mindfulness', icon: 'person', angle: 160 },
+  { id: 'contacto', label: 'Contacto', description: 'Estamos aquí para acompañarte.', href: '/contacto', icon: 'mail', angle: 200 },
+  { id: 'testimonios', label: 'Testimonios', description: 'Historias reales de transformación.', href: '/testimonios', icon: 'chat', angle: 240 },
+  { id: 'tienda', label: 'Tienda', description: 'Productos conscientes para tu camino.', href: '/tienda', icon: 'bag', angle: 280 },
+  { id: 'calendario', label: 'Calendario', description: 'Eventos, talleres y próximas fechas.', href: '/calendario', icon: 'calendar', angle: 320 },
 ];
+
+// Icon map
+function getIcon(iconName: string) {
+  switch (iconName) {
+    case 'heart': return <IconHeart />;
+    case 'flower': return <IconFlower />;
+    case 'mountain': return <IconMountain />;
+    case 'lotus': return <IconLotus />;
+    case 'person': return <IconPerson />;
+    case 'mail': return <IconMail />;
+    case 'chat': return <IconChat />;
+    case 'bag': return <IconBag />;
+    case 'calendar': return <IconCalendar />;
+    case 'star': return <IconStar />;
+    case 'book': return <IconBook />;
+    default: return <IconFlower />;
+  }
+}
 
 export default function OrbitalSystem() {
   const [logoSize, setLogoSize] = useState(380);
   const [orbitRadius, setOrbitRadius] = useState(300);
   const [isMobile, setIsMobile] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [navItems, setNavItems] = useState<NavItem[]>(DEFAULT_NAV_ITEMS);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Load nav items from DB
+    getNavigationItems().then(({ data }) => {
+      if (data && data.length > 0) {
+        const visibleItems = data.filter(item => item.isVisible);
+        if (visibleItems.length > 0) {
+          const angleStep = 360 / visibleItems.length;
+          const mapped: NavItem[] = visibleItems.map((item, idx) => ({
+            id: item.id,
+            label: item.label,
+            description: item.description || '',
+            href: item.href,
+            icon: item.icon,
+            angle: idx * angleStep,
+          }));
+          setNavItems(mapped);
+        }
+      }
+    }).catch(() => {
+      // Keep defaults on error
+    });
+  }, []);
 
   useEffect(() => {
     function handleResize() {
@@ -78,14 +122,14 @@ export default function OrbitalSystem() {
 
         {/* Grid of nav items */}
         <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.id}
               href={item.href}
               className="flex flex-col items-center text-center p-3 rounded-xl hover:bg-[#4B3A78]/5 transition-colors"
             >
               <div className="w-12 h-12 rounded-full bg-white/80 border border-[#E8E5F0] flex items-center justify-center mb-2">
-                {item.icon}
+                {getIcon(item.icon)}
               </div>
               <span className="text-[11px] font-[500] tracking-[0.02em] uppercase text-[#24202F] leading-tight">
                 {item.label}
@@ -149,7 +193,7 @@ export default function OrbitalSystem() {
       </motion.div>
 
       {/* Navigation labels in a circle */}
-      {NAV_ITEMS.map((item) => {
+      {navItems.map((item) => {
         const angleRad = ((item.angle - 90) * Math.PI) / 180;
         const x = totalSize / 2 + orbitRadius * Math.cos(angleRad);
         const y = totalSize / 2 + orbitRadius * Math.sin(angleRad);
@@ -171,7 +215,7 @@ export default function OrbitalSystem() {
               whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.95 }}
             >
-              {item.icon}
+              {getIcon(item.icon)}
             </motion.div>
             <span className="text-[11px] md:text-[13px] font-[600] tracking-[0.04em] uppercase text-[#24202F] group-hover:text-[#3D3066] transition-colors leading-tight">
               {item.label}
@@ -226,3 +270,5 @@ function IconPerson() { return <svg width="16" height="16" viewBox="0 0 24 24" f
 function IconChat() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3D3066" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>; }
 function IconMail() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3D3066" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>; }
 function IconHeart() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3D3066" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>; }
+function IconStar() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3D3066" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>; }
+function IconBook() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3D3066" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>; }

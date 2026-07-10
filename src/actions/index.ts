@@ -4,6 +4,7 @@ import { db, artworks, categories, blogPosts, services, events, testimonials, te
 import { eq, asc, desc } from 'drizzle-orm';
 import { put, del } from '@vercel/blob';
 import type { NewArtwork, NewCategory, NewBlogPost, NewService, NewEvent, NewTestimonial, NewTeamMember, NewProduct } from '../db/schema';
+import { requireAdmin } from '../lib/server-auth';
 
 // --- Artwork Actions ---
 
@@ -39,6 +40,8 @@ export async function getArtworksByCategory(category: string) {
 }
 
 export async function createArtwork(artwork: NewArtwork) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(artworks).values(artwork).returning();
         return { data, error: null };
@@ -48,6 +51,8 @@ export async function createArtwork(artwork: NewArtwork) {
 }
 
 export async function updateArtwork(id: string, artwork: Partial<NewArtwork>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(artworks).set({ ...artwork, updatedAt: new Date().toISOString() }).where(eq(artworks.id, id)).returning();
         return { data, error: null };
@@ -57,6 +62,8 @@ export async function updateArtwork(id: string, artwork: Partial<NewArtwork>) {
 }
 
 export async function deleteArtwork(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(artworks).where(eq(artworks.id, id));
         return { error: null };
@@ -77,6 +84,8 @@ export async function getAllCategories() {
 }
 
 export async function createCategory(category: NewCategory) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(categories).values(category).returning();
         return { data, error: null };
@@ -86,6 +95,8 @@ export async function createCategory(category: NewCategory) {
 }
 
 export async function updateCategory(id: string, category: Partial<NewCategory>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
         return { data, error: null };
@@ -95,6 +106,8 @@ export async function updateCategory(id: string, category: Partial<NewCategory>)
 }
 
 export async function deleteCategory(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(categories).where(eq(categories.id, id));
         return { error: null };
@@ -137,6 +150,8 @@ export async function getBlogPostById(id: string) {
 }
 
 export async function createBlogPost(post: NewBlogPost) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(blogPosts).values(post).returning();
         return { data, error: null };
@@ -147,6 +162,8 @@ export async function createBlogPost(post: NewBlogPost) {
 }
 
 export async function updateBlogPost(id: string, post: Partial<NewBlogPost>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(blogPosts).set({ ...post, updatedAt: new Date().toISOString() }).where(eq(blogPosts.id, id)).returning();
         return { data, error: null };
@@ -156,6 +173,8 @@ export async function updateBlogPost(id: string, post: Partial<NewBlogPost>) {
 }
 
 export async function deleteBlogPost(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(blogPosts).where(eq(blogPosts.id, id));
         return { error: null };
@@ -167,6 +186,8 @@ export async function deleteBlogPost(id: string) {
 // --- File Storage Actions ---
 
 export async function uploadFile(file: File, pathname: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { url: null, error: 'No autorizado' };
     try {
         const blob = await put(pathname, file, { access: 'public' });
         return { url: blob.url, error: null };
@@ -176,6 +197,8 @@ export async function uploadFile(file: File, pathname: string) {
 }
 
 export async function deleteFile(url: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await del(url);
         return { error: null };
@@ -219,6 +242,8 @@ export async function getServiceById(id: string) {
 }
 
 export async function createService(service: NewService) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(services).values(service).returning();
         return { data, error: null };
@@ -228,6 +253,8 @@ export async function createService(service: NewService) {
 }
 
 export async function updateService(id: string, service: Partial<NewService>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(services).set({ ...service, updatedAt: new Date().toISOString() }).where(eq(services.id, id)).returning();
         return { data, error: null };
@@ -237,6 +264,8 @@ export async function updateService(id: string, service: Partial<NewService>) {
 }
 
 export async function deleteService(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(services).where(eq(services.id, id));
         return { error: null };
@@ -295,6 +324,8 @@ export async function getEventById(id: string) {
 }
 
 export async function createEvent(event: NewEvent) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(events).values(event).returning();
         return { data, error: null };
@@ -304,6 +335,8 @@ export async function createEvent(event: NewEvent) {
 }
 
 export async function updateEvent(id: string, event: Partial<NewEvent>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(events).set({ ...event, updatedAt: new Date().toISOString() }).where(eq(events.id, id)).returning();
         return { data, error: null };
@@ -313,6 +346,8 @@ export async function updateEvent(id: string, event: Partial<NewEvent>) {
 }
 
 export async function deleteEvent(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(events).where(eq(events.id, id));
         return { error: null };
@@ -337,6 +372,8 @@ export async function getAllTestimonials(publishedOnly?: boolean) {
 }
 
 export async function createTestimonial(testimonial: NewTestimonial) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(testimonials).values(testimonial).returning();
         return { data, error: null };
@@ -346,6 +383,8 @@ export async function createTestimonial(testimonial: NewTestimonial) {
 }
 
 export async function updateTestimonial(id: string, testimonial: Partial<NewTestimonial>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(testimonials).set(testimonial).where(eq(testimonials.id, id)).returning();
         return { data, error: null };
@@ -355,6 +394,8 @@ export async function updateTestimonial(id: string, testimonial: Partial<NewTest
 }
 
 export async function deleteTestimonial(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(testimonials).where(eq(testimonials.id, id));
         return { error: null };
@@ -379,6 +420,8 @@ export async function getAllTeamMembers(publishedOnly?: boolean) {
 }
 
 export async function createTeamMember(member: NewTeamMember) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(teamMembers).values(member).returning();
         return { data, error: null };
@@ -388,6 +431,8 @@ export async function createTeamMember(member: NewTeamMember) {
 }
 
 export async function updateTeamMember(id: string, member: Partial<NewTeamMember>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(teamMembers).set(member).where(eq(teamMembers.id, id)).returning();
         return { data, error: null };
@@ -397,6 +442,8 @@ export async function updateTeamMember(id: string, member: Partial<NewTeamMember
 }
 
 export async function deleteTeamMember(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(teamMembers).where(eq(teamMembers.id, id));
         return { error: null };
@@ -439,6 +486,8 @@ export async function getProductById(id: string) {
 }
 
 export async function createProduct(product: NewProduct) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.insert(products).values(product).returning();
         return { data, error: null };
@@ -448,6 +497,8 @@ export async function createProduct(product: NewProduct) {
 }
 
 export async function updateProduct(id: string, product: Partial<NewProduct>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
     try {
         const [data] = await db.update(products).set({ ...product, updatedAt: new Date().toISOString() }).where(eq(products.id, id)).returning();
         return { data, error: null };
@@ -457,8 +508,113 @@ export async function updateProduct(id: string, product: Partial<NewProduct>) {
 }
 
 export async function deleteProduct(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
     try {
         await db.delete(products).where(eq(products.id, id));
+        return { error: null };
+    } catch (error) {
+        return { error: (error as Error).message };
+    }
+}
+
+
+// --- Site Settings Actions ---
+
+import { siteSettings, navigationItems } from '../db/schema';
+import type { NewNavigationItem } from '../db/schema';
+
+export async function getSiteSettings() {
+    try {
+        const data = await db.select().from(siteSettings);
+        const settings: Record<string, string> = {};
+        for (const row of data) {
+            settings[row.key] = row.value;
+        }
+        return { data: settings, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+}
+
+export async function getSiteSetting(key: string) {
+    try {
+        const [data] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+        return { data: data?.value || null, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+}
+
+export async function updateSiteSettings(settings: Record<string, string>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
+    try {
+        for (const [key, value] of Object.entries(settings)) {
+            const [existing] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+            if (existing) {
+                await db.update(siteSettings).set({ value, updatedAt: new Date().toISOString() }).where(eq(siteSettings.key, key));
+            } else {
+                await db.insert(siteSettings).values({ key, value });
+            }
+        }
+        return { error: null };
+    } catch (error) {
+        return { error: (error as Error).message };
+    }
+}
+
+// --- Navigation Items Actions ---
+
+export async function getNavigationItems() {
+    try {
+        const data = await db.select().from(navigationItems).orderBy(asc(navigationItems.orderIndex));
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+}
+
+export async function createNavigationItem(item: NewNavigationItem) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
+    try {
+        const [data] = await db.insert(navigationItems).values(item).returning();
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error: (error as Error).message };
+    }
+}
+
+export async function updateNavigationItem(id: string, item: Partial<NewNavigationItem>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
+    try {
+        const [data] = await db.update(navigationItems).set({ ...item, updatedAt: new Date().toISOString() }).where(eq(navigationItems.id, id)).returning();
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error: (error as Error).message };
+    }
+}
+
+export async function deleteNavigationItem(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
+    try {
+        await db.delete(navigationItems).where(eq(navigationItems.id, id));
+        return { error: null };
+    } catch (error) {
+        return { error: (error as Error).message };
+    }
+}
+
+export async function reorderNavigationItems(orderedIds: string[]) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
+    try {
+        for (let i = 0; i < orderedIds.length; i++) {
+            await db.update(navigationItems).set({ orderIndex: i, updatedAt: new Date().toISOString() }).where(eq(navigationItems.id, orderedIds[i]));
+        }
         return { error: null };
     } catch (error) {
         return { error: (error as Error).message };

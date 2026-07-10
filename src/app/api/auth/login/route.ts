@@ -3,6 +3,7 @@ import { db, users } from '../../../../db';
 import { eq } from 'drizzle-orm';
 import { WHITELISTED_EMAIL, DEFAULT_ADMIN_PASSWORD } from '../../../../lib/constants';
 import { hashPassword, verifyPassword } from '../../../../lib/auth';
+import { createSessionToken, SESSION_COOKIE_NAME, SESSION_DURATION_MS } from '../../../../lib/session';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,10 +36,22 @@ export async function POST(request: NextRequest) {
         isAdmin: true,
       }).returning();
 
-      return NextResponse.json({
+      // Create session cookie
+      const token = await createSessionToken(newUser.email);
+      const response = NextResponse.json({
         success: true,
         user: { id: newUser.id, email: newUser.email, name: newUser.name, isAdmin: true },
       });
+
+      response.cookies.set(SESSION_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: SESSION_DURATION_MS / 1000,
+      });
+
+      return response;
     }
 
     // User exists — verify password
@@ -47,10 +60,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Contraseña incorrecta' }, { status: 401 });
     }
 
-    return NextResponse.json({
+    // Create session cookie
+    const token = await createSessionToken(existingUser.email);
+    const response = NextResponse.json({
       success: true,
       user: { id: existingUser.id, email: existingUser.email, name: existingUser.name, isAdmin: existingUser.isAdmin },
     });
+
+    response.cookies.set(SESSION_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: SESSION_DURATION_MS / 1000,
+    });
+
+    return response;
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Error en el servidor' }, { status: 500 });

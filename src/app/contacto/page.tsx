@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import { WHATSAPP_URL } from '../../lib/constants';
+import ContactForm from '../../components/ContactForm';
+import ContactOptions from '../../components/ContactOptions';
 
 export const metadata: Metadata = {
   title: 'Contacto — Mindfulverso',
@@ -23,83 +24,11 @@ export default function ContactoPage() {
           </p>
         </div>
 
-        {/* Contact options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="glass-card p-8 text-center group"
-          >
-            <div className="w-12 h-12 rounded-full bg-green-50 mx-auto mb-4 flex items-center justify-center group-hover:bg-green-100 transition-colors">
-              <span className="text-xl">💬</span>
-            </div>
-            <h3 className="text-base font-light tracking-wider uppercase text-[var(--text-dark)] mb-2">
-              WhatsApp
-            </h3>
-            <p className="text-sm font-light text-[var(--muted)]">
-              Respuesta rápida y directa
-            </p>
-          </a>
-
-          <a
-            href="mailto:contacto@mindfulverso.com"
-            className="glass-card p-8 text-center group"
-          >
-            <div className="w-12 h-12 rounded-full bg-[var(--accent)]/5 mx-auto mb-4 flex items-center justify-center group-hover:bg-[var(--accent)]/10 transition-colors">
-              <span className="text-xl">✉️</span>
-            </div>
-            <h3 className="text-base font-light tracking-wider uppercase text-[var(--text-dark)] mb-2">
-              Email
-            </h3>
-            <p className="text-sm font-light text-[var(--muted)]">
-              contacto@mindfulverso.com
-            </p>
-          </a>
-        </div>
+        {/* Contact options (WhatsApp + Email) */}
+        <ContactOptions />
 
         {/* Contact form */}
-        <div className="glass-card p-8 md:p-12">
-          <h2 className="text-lg font-extralight tracking-wider uppercase text-[var(--text-dark)] mb-6 text-center">
-            Envíanos un mensaje
-          </h2>
-          <form className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
-                  Nombre
-                </label>
-                <input type="text" className="ritual-input" placeholder="Tu nombre" />
-              </div>
-              <div>
-                <label className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
-                  Email
-                </label>
-                <input type="email" className="ritual-input" placeholder="tu@email.com" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
-                Asunto
-              </label>
-              <input type="text" className="ritual-input" placeholder="¿En qué podemos ayudarte?" />
-            </div>
-            <div>
-              <label className="block text-xs font-light tracking-wider uppercase text-[var(--muted)] mb-2">
-                Mensaje
-              </label>
-              <textarea
-                className="ritual-input min-h-[120px] resize-y"
-                placeholder="Cuéntanos más..."
-              />
-            </div>
-            <div className="text-center pt-2">
-              <button type="submit" className="btn-mindful-filled">
-                Enviar mensaje
-              </button>
-            </div>
-          </form>
-        </div>
+        <ContactForm />
       </div>
     </main>
   );

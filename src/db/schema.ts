@@ -190,6 +190,33 @@ export const categories = sqliteTable('categories', {
 });
 
 // ═══════════════════════════════════════════
+// CONFIGURACIÓN DEL SITIO
+// ═══════════════════════════════════════════
+
+export const siteSettings = sqliteTable('site_settings', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    key: text('key').unique().notNull(),
+    value: text('value').notNull(),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
+// NAVEGACIÓN LANDING (Orbital)
+// ═══════════════════════════════════════════
+
+export const navigationItems = sqliteTable('navigation_items', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    label: text('label').notNull(),
+    description: text('description'),
+    href: text('href').notNull(),
+    icon: text('icon').notNull().default('flower'),
+    orderIndex: integer('order_index').default(0),
+    isVisible: integer('is_visible', { mode: 'boolean' }).default(true),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+    updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
 // TYPE EXPORTS
 // ═══════════════════════════════════════════
 
@@ -213,3 +240,7 @@ export type Artwork = typeof artworks.$inferSelect;
 export type NewArtwork = typeof artworks.$inferInsert;
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type NewSiteSetting = typeof siteSettings.$inferInsert;
+export type NavigationItem = typeof navigationItems.$inferSelect;
+export type NewNavigationItem = typeof navigationItems.$inferInsert;
