@@ -133,18 +133,11 @@ export default function GaleriaAdminPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-5 md:px-8">
-        {/* Selección de sección */}
+        {/* Sección actual */}
         <div className="mt-6 mb-4">
-          <label className="text-xs font-[600] tracking-[0.1em] uppercase text-[#4A4A4A] block mb-2">¿A qué sección pertenecen las fotos?</label>
-          <select
-            value={uploadSection}
-            onChange={(e) => setUploadSection(e.target.value)}
-            className="w-full px-4 py-3 bg-white border border-[#E0DDD5] rounded-xl text-base text-[#1A1A1A] focus:border-[#1B4332] focus:outline-none"
-          >
-            {SECTIONS.map((s) => (
-              <option key={s.value} value={s.value}>{s.label}</option>
-            ))}
-          </select>
+          <p className="text-sm text-[#4A4A4A]">
+            Subiendo a: <span className="font-[600] text-[#1B4332]">{SECTIONS.find(s => s.value === uploadSection)?.label || 'General'}</span>
+          </p>
         </div>
 
         {/* Upload zone - grande y táctil */}
