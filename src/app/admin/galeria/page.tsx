@@ -58,14 +58,29 @@ function GaleriaContent() {
       alert('Selecciona primero una sección');
       return;
     }
+
+    // Filter out unsupported formats (HEIC) with a friendly message
+    const supported = acceptedFiles.filter(f => {
+      const name = f.name.toLowerCase();
+      if (name.endsWith('.heic') || name.endsWith('.heif')) {
+        alert(`"${f.name}" está en formato HEIC. Por favor cambia la configuración de tu cámara a JPG (Ajustes > Cámara > Formatos > Más compatible) o envíatela por WhatsApp primero para convertirla.`);
+        return false;
+      }
+      return true;
+    });
+
+    if (supported.length === 0) return;
+
     setUploading(true);
-    setUploadTotal(acceptedFiles.length);
+    setUploadTotal(supported.length);
     setUploadCount(0);
 
-    for (const file of acceptedFiles) {
+    let errors = 0;
+
+    for (const file of supported) {
       try {
         const isVideo = file.type.startsWith('video/');
-        const ext = file.name.split('.').pop();
+        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
         const pathname = `media/${activeSection}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
         const formData = new FormData();
@@ -74,7 +89,8 @@ function GaleriaContent() {
 
         const { url, error: uploadError } = await uploadFile(formData);
         if (uploadError || !url) {
-          alert(`Error subiendo ${file.name}: ${uploadError || 'sin URL'}`);
+          errors++;
+          console.error(`Error: ${file.name}`, uploadError);
           continue;
         }
 
@@ -87,11 +103,17 @@ function GaleriaContent() {
         });
         setUploadCount((c) => c + 1);
       } catch (err) {
+        errors++;
         console.error('Upload error:', err);
-        alert(`Error con ${file.name}`);
       }
     }
+
     setUploading(false);
+
+    if (errors > 0) {
+      alert(`Se subieron ${supported.length - errors} de ${supported.length} archivos. ${errors} tuvieron error (puede ser que sean muy pesados, intenta de nuevo o sube menos a la vez).`);
+    }
+
     loadMedia();
   }, [activeSection, loadMedia]);
 
@@ -204,6 +226,7 @@ function GaleriaContent() {
                       src={item.url}
                       alt={item.title || ''}
                       fill
+                      unoptimized
                       className="object-cover"
                       sizes="(max-width: 768px) 50vw, 33vw"
                     />

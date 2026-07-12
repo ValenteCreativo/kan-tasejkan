@@ -683,6 +683,11 @@ export async function deleteMedia(id: string) {
     const { authorized } = await requireAdmin();
     if (!authorized) return { error: 'No autorizado' };
     try {
+        // Get the URL before deleting from DB
+        const [item] = await db.select().from(media).where(eq(media.id, id));
+        if (item?.url) {
+            try { await del(item.url); } catch { /* blob might already be gone */ }
+        }
         await db.delete(media).where(eq(media.id, id));
         return { error: null };
     } catch (error) {
