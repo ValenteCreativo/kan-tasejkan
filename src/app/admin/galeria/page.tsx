@@ -69,9 +69,13 @@ export default function GaleriaAdminPage() {
         const ext = file.name.split('.').pop();
         const pathname = `media/${uploadSection}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-        const { url, error: uploadError } = await uploadFile(file, pathname);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('pathname', pathname);
+
+        const { url, error: uploadError } = await uploadFile(formData);
         if (uploadError || !url) {
-          alert(`Error subiendo ${file.name}`);
+          alert(`Error subiendo ${file.name}: ${uploadError || 'sin URL'}`);
           continue;
         }
 

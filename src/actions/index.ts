@@ -185,14 +185,17 @@ export async function deleteBlogPost(id: string) {
 
 // --- File Storage Actions ---
 
-export async function uploadFile(file: File, pathname: string) {
+export async function uploadFile(formData: FormData) {
     const { authorized } = await requireAdmin();
     if (!authorized) return { url: null, error: 'No autorizado' };
     try {
+        const file = formData.get('file') as File;
+        const pathname = formData.get('pathname') as string;
+        if (!file || !pathname) return { url: null, error: 'Archivo y ruta requeridos' };
         const blob = await put(pathname, file, { access: 'public' });
         return { url: blob.url, error: null };
     } catch (error) {
-        return { url: null, error };
+        return { url: null, error: (error as Error).message };
     }
 }
 

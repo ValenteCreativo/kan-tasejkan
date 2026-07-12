@@ -53,7 +53,7 @@ export default function NuevoServicioPage() {
       if (coverImage) {
         const ext = coverImage.name.split('.').pop();
         const pathname = `services/${slug}-${Date.now()}.${ext}`;
-        const { url, error: uploadError } = await uploadFile(coverImage, pathname);
+        const fd = new FormData(); fd.append("file", coverImage); fd.append("pathname", pathname); const { url, error: uploadError } = await uploadFile(fd);
         if (uploadError) throw new Error('Error subiendo imagen');
         coverImageUrl = url || '';
       }

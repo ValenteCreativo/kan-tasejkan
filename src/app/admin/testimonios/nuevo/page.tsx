@@ -31,7 +31,7 @@ export default function NuevoTestimonioPage() {
       if (image) {
         const ext = image.name.split('.').pop();
         const pathname = `testimonials/${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${ext}`;
-        const { url, error: uploadError } = await uploadFile(image, pathname);
+        const fd = new FormData(); fd.append("file", image); fd.append("pathname", pathname); const { url, error: uploadError } = await uploadFile(fd);
         if (uploadError) throw new Error('Error subiendo imagen');
         imageUrl = url || '';
       }
