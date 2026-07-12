@@ -89,20 +89,10 @@ export default function PreciosPage() {
             ))}
           </div>
 
-          {/* Promociones */}
+          {/* Promociones - flyers del cliente */}
           <div className="mt-12">
             <h2 className="text-xl font-[300] text-[#1B4332] mb-6 text-center">Promociones</h2>
-            <div className="bg-[#1B4332]/5 border border-[#E0DDD5] rounded-xl p-8 text-center">
-              <p className="text-[#4A4A4A] text-sm">
-                Próximamente: paquetes y promociones especiales.
-                <br />Contáctanos para grupos y eventos.
-              </p>
-            </div>
-          </div>
-
-          {/* Galería de precios/promos si suben fotos */}
-          <div className="mt-12">
-            <SectionGallery section="general" columns={2} showEmpty={false} />
+            <SectionGallery section="precios" columns={2} showEmpty />
           </div>
         </div>
       </section>

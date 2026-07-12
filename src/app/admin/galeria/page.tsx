@@ -29,6 +29,7 @@ const SECTIONS = [
   { value: 'bodas', label: 'Bodas', icon: Heart },
   { value: 'comunidad', label: 'Comunidad', icon: Users },
   { value: 'premios', label: 'Premios', icon: Award },
+  { value: 'precios', label: 'Precios y Promos', icon: Heart },
   { value: 'paisajes', label: 'Paisajes', icon: TreePine },
 ];
 

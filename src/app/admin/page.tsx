@@ -20,6 +20,7 @@ import {
   Users,
   TreePine,
   Settings,
+  Tag,
 } from 'lucide-react';
 
 type User = { email: string; isAdmin: boolean };
@@ -36,6 +37,7 @@ const GALLERY_SECTIONS = [
   { label: 'Bodas', section: 'bodas', icon: Heart, color: '#D4A853' },
   { label: 'Comunidad', section: 'comunidad', icon: Users, color: '#2D6A4F' },
   { label: 'Premios', section: 'premios', icon: Award, color: '#D4A853' },
+  { label: 'Precios y Promos', section: 'precios', icon: Tag, color: '#D4A853' },
   { label: 'Paisajes', section: 'paisajes', icon: TreePine, color: '#1B4332' },
 ];
 
