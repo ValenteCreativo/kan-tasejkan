@@ -89,25 +89,8 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-lg mx-auto px-5 md:px-8">
-        {/* CTA: Subir fotos */}
-        <Link
-          href="/admin/galeria"
-          className="block -mt-4 bg-[#D4A853] text-white rounded-2xl p-5 shadow-lg active:shadow-md transition-shadow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-              <Camera size={26} className="text-white" />
-            </div>
-            <div className="flex-1">
-              <p className="text-base font-[600]">Subir Fotos y Videos</p>
-              <p className="text-sm text-white/80">Toca aquí para subir desde tu celular</p>
-            </div>
-            <ChevronRight size={22} className="text-white/70 shrink-0" />
-          </div>
-        </Link>
-
         {/* Secciones para subir fotos directo */}
-        <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#4A4A4A] mt-8 mb-3 px-1">
+        <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#4A4A4A] mt-6 mb-3 px-1">
           Subir fotos por sección
         </p>
         <p className="text-xs text-[#8B8B8B] mb-4 px-1">
