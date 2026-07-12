@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Upload, Trash2, Image as ImageIcon, Video, Loader2, Eye, EyeOff, Camera } from 'lucide-react';
+import { ArrowLeft, Trash2, Image as ImageIcon, Video, Loader2, Eye, EyeOff, Camera } from 'lucide-react';
 import { getAllMedia, createMedia, deleteMedia, updateMedia, uploadFile } from '@/actions';
 import { useDropzone } from 'react-dropzone';
 
@@ -37,13 +38,16 @@ const SECTIONS = [
 ];
 
 export default function GaleriaAdminPage() {
+  const searchParams = useSearchParams();
+  const preselectedSection = searchParams.get('seccion') || '';
+
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
   const [uploadTotal, setUploadTotal] = useState(0);
-  const [filterSection, setFilterSection] = useState('');
-  const [uploadSection, setUploadSection] = useState('general');
+  const [filterSection, setFilterSection] = useState(preselectedSection);
+  const [uploadSection, setUploadSection] = useState(preselectedSection || 'general');
 
   const loadMedia = useCallback(async () => {
     setLoading(true);

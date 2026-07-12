@@ -5,20 +5,39 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
 import {
-  Image as ImageIcon,
-  Sparkles,
-  Calendar,
-  MessageSquare,
-  Users,
-  Star,
-  Settings,
-  LogOut,
-  Navigation2,
   Camera,
   ChevronRight,
+  LogOut,
+  Image as ImageIcon,
+  Home,
+  UtensilsCrossed,
+  Mountain,
+  Waves,
+  Tent,
+  Flame,
+  Heart,
+  Award,
+  Users,
+  TreePine,
+  Settings,
 } from 'lucide-react';
 
 type User = { email: string; isAdmin: boolean };
+
+const GALLERY_SECTIONS = [
+  { label: 'Hospedaje', section: 'hospedaje', icon: Home, color: '#1B4332' },
+  { label: 'Restaurante', section: 'restaurant', icon: UtensilsCrossed, color: '#2D6A4F' },
+  { label: 'Aventura', section: 'aventura', icon: Mountain, color: '#52B788' },
+  { label: 'Balneario', section: 'balneario', icon: Waves, color: '#1B4332' },
+  { label: 'Camping', section: 'camping', icon: Tent, color: '#5C4033' },
+  { label: 'Talleres', section: 'talleres', icon: Users, color: '#8B5E3C' },
+  { label: 'Gastronómica', section: 'experiencia-gastronomica', icon: Flame, color: '#D4A853' },
+  { label: 'Rituales', section: 'rituales', icon: Heart, color: '#5C4033' },
+  { label: 'Bodas', section: 'bodas', icon: Heart, color: '#D4A853' },
+  { label: 'Comunidad', section: 'comunidad', icon: Users, color: '#2D6A4F' },
+  { label: 'Premios', section: 'premios', icon: Award, color: '#D4A853' },
+  { label: 'Paisajes', section: 'paisajes', icon: TreePine, color: '#1B4332' },
+];
 
 export default function AdminPage() {
   const router = useRouter();
@@ -51,113 +70,97 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAFA] pb-8">
+    <main className="min-h-screen bg-[#FAFAFA] pb-10">
       {/* Header */}
-      <div className="bg-[#1B4332] text-white px-5 py-6 md:px-8 md:py-8">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <div className="bg-[#1B4332] text-white px-5 py-6 md:px-8">
+        <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-lg md:text-xl font-[400] tracking-[0.2em] uppercase">Kan-Tasejkan</h1>
-            <p className="text-sm text-white/70 mt-0.5">Panel de Administración</p>
+            <h1 className="text-lg font-[500] tracking-[0.15em] uppercase">Kan-Tasejkan</h1>
+            <p className="text-xs text-white/70 mt-0.5">Administración</p>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10"
+            className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-white/10"
           >
-            <LogOut size={16} />
-            <span className="hidden md:inline">Salir</span>
+            <LogOut size={14} />
+            Salir
           </button>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-5 md:px-8">
-        {/* CTA Principal: Subir fotos */}
+      <div className="max-w-lg mx-auto px-5 md:px-8">
+        {/* CTA: Subir fotos */}
         <Link
           href="/admin/galeria"
-          className="block -mt-5 bg-[#D4A853] text-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow"
+          className="block -mt-4 bg-[#D4A853] text-white rounded-2xl p-5 shadow-lg active:shadow-md transition-shadow"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-              <Camera size={28} className="text-white" />
+            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+              <Camera size={26} className="text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg md:text-xl font-[600] text-white">Subir Fotos y Videos</h2>
-              <p className="text-sm text-white/80 mt-0.5">Sube desde tu teléfono las fotos de cada sección</p>
+              <p className="text-base font-[600]">Subir Fotos y Videos</p>
+              <p className="text-sm text-white/80">Toca aquí para subir desde tu celular</p>
             </div>
-            <ChevronRight size={24} className="text-white/70 shrink-0" />
+            <ChevronRight size={22} className="text-white/70 shrink-0" />
           </div>
         </Link>
 
-        {/* Secciones principales */}
-        <h3 className="text-xs font-[600] tracking-[0.15em] uppercase text-[#4A4A4A] mt-8 mb-4 px-1">
-          Gestionar Contenido
-        </h3>
+        {/* Secciones para subir fotos directo */}
+        <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#4A4A4A] mt-8 mb-3 px-1">
+          Subir fotos por sección
+        </p>
+        <p className="text-xs text-[#8B8B8B] mb-4 px-1">
+          Toca una sección para subir fotos directamente ahí
+        </p>
 
-        <div className="grid grid-cols-1 gap-3">
-          {[
-            { label: 'Galería de Fotos', desc: 'Ver, organizar y eliminar fotos subidas', href: '/admin/galeria', icon: ImageIcon, color: '#1B4332' },
-            { label: 'Servicios', desc: 'Hospedaje, restaurante, aventura, balneario, camping', href: '/admin/servicios', icon: Sparkles, color: '#2D6A4F' },
-            { label: 'Eventos y Talleres', desc: 'Programar actividades y talleres', href: '/admin/eventos', icon: Calendar, color: '#52B788' },
-            { label: 'Testimonios', desc: 'Lo que dicen los visitantes', href: '/admin/testimonios', icon: Star, color: '#D4A853' },
-            { label: 'Equipo', desc: 'Miembros de la comunidad', href: '/admin/equipo', icon: Users, color: '#5C4033' },
-            { label: 'Reservas', desc: 'Solicitudes de reservación', href: '/admin/reservas', icon: MessageSquare, color: '#8B5E3C' },
-          ].map((item) => {
+        <div className="grid grid-cols-2 gap-3">
+          {GALLERY_SECTIONS.map((item) => {
             const Icon = item.icon;
             return (
               <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center gap-4 bg-white rounded-xl p-4 md:p-5 border border-[#E0DDD5] hover:border-[#52B788] active:bg-[#F5F0E8] transition-all"
+                key={item.section}
+                href={`/admin/galeria?seccion=${item.section}`}
+                className="flex flex-col items-center gap-2 bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors text-center"
               >
                 <div
-                  className="w-11 h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: `${item.color}15` }}
                 >
-                  <Icon size={20} style={{ color: item.color }} />
+                  <Icon size={18} style={{ color: item.color }} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm md:text-base font-[500] text-[#1A1A1A]">{item.label}</p>
-                  <p className="text-xs text-[#8B8B8B] mt-0.5 truncate">{item.desc}</p>
-                </div>
-                <ChevronRight size={18} className="text-[#8B8B8B] shrink-0" />
+                <span className="text-xs font-[500] text-[#1A1A1A]">{item.label}</span>
               </Link>
             );
           })}
         </div>
 
-        {/* Configuración */}
-        <h3 className="text-xs font-[600] tracking-[0.15em] uppercase text-[#4A4A4A] mt-8 mb-4 px-1">
-          Configuración
-        </h3>
+        {/* Ver galería completa */}
+        <Link
+          href="/admin/galeria"
+          className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-4"
+        >
+          <div className="flex items-center gap-3">
+            <ImageIcon size={18} className="text-[#1B4332]" />
+            <span className="text-sm font-[500] text-[#1A1A1A]">Ver todas las fotos subidas</span>
+          </div>
+          <ChevronRight size={16} className="text-[#8B8B8B]" />
+        </Link>
 
-        <div className="grid grid-cols-1 gap-3">
-          {[
-            { label: 'Navegación del Inicio', desc: 'Editar los botones de la página principal', href: '/admin/navegacion', icon: Navigation2 },
-            { label: 'Ajustes del Sitio', desc: 'Nombre, redes sociales, contacto', href: '/admin/configuracion', icon: Settings },
-          ].map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center gap-4 bg-white rounded-xl p-4 md:p-5 border border-[#E0DDD5] hover:border-[#52B788] active:bg-[#F5F0E8] transition-all"
-              >
-                <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 bg-[#F5F0E8]">
-                  <Icon size={20} className="text-[#4A4A4A]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm md:text-base font-[500] text-[#1A1A1A]">{item.label}</p>
-                  <p className="text-xs text-[#8B8B8B] mt-0.5 truncate">{item.desc}</p>
-                </div>
-                <ChevronRight size={18} className="text-[#8B8B8B] shrink-0" />
-              </Link>
-            );
-          })}
-        </div>
+        {/* Configuración mínima */}
+        <Link
+          href="/admin/configuracion"
+          className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-3"
+        >
+          <div className="flex items-center gap-3">
+            <Settings size={18} className="text-[#4A4A4A]" />
+            <span className="text-sm font-[500] text-[#1A1A1A]">Configuración del sitio</span>
+          </div>
+          <ChevronRight size={16} className="text-[#8B8B8B]" />
+        </Link>
 
-        {/* Info usuario */}
-        <div className="mt-10 text-center">
-          <p className="text-xs text-[#8B8B8B]">{user.email}</p>
-        </div>
+        {/* Info */}
+        <p className="text-center text-[10px] text-[#8B8B8B] mt-8">{user.email}</p>
       </div>
     </main>
   );
