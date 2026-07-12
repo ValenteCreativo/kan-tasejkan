@@ -44,7 +44,7 @@ function GaleriaContent() {
   const [uploadTotal, setUploadTotal] = useState(0);
 
   const loadMedia = useCallback(async () => {
-    if (!activeSection) return;
+    if (!activeSection) { setItems([]); return; }
     setLoading(true);
     const { data } = await getAllMedia(activeSection);
     setItems((data as MediaItem[]) || []);
@@ -76,6 +76,7 @@ function GaleriaContent() {
     setUploadCount(0);
 
     let errors = 0;
+    let success = 0;
 
     for (const file of supported) {
       try {
@@ -90,17 +91,25 @@ function GaleriaContent() {
         const { url, error: uploadError } = await uploadFile(formData);
         if (uploadError || !url) {
           errors++;
-          console.error(`Error: ${file.name}`, uploadError);
+          console.error(`Upload error: ${file.name}`, uploadError);
           continue;
         }
 
-        await createMedia({
+        const { error: dbError } = await createMedia({
           title: file.name.replace(/\.[^.]+$/, ''),
           url,
           type: isVideo ? 'video' : 'image',
           section: activeSection,
           isPublished: true,
         });
+
+        if (dbError) {
+          errors++;
+          console.error(`DB error: ${file.name}`, dbError);
+          continue;
+        }
+
+        success++;
         setUploadCount((c) => c + 1);
       } catch (err) {
         errors++;
@@ -110,8 +119,10 @@ function GaleriaContent() {
 
     setUploading(false);
 
-    if (errors > 0) {
-      alert(`Se subieron ${supported.length - errors} de ${supported.length} archivos. ${errors} tuvieron error (puede ser que sean muy pesados, intenta de nuevo o sube menos a la vez).`);
+    if (errors > 0 && success === 0) {
+      alert('No se pudieron subir las fotos. Intenta cerrar sesión y volver a entrar.');
+    } else if (errors > 0) {
+      alert(`Se subieron ${success} de ${supported.length} archivos. ${errors} fallaron — intenta subirlos de nuevo.`);
     }
 
     loadMedia();
