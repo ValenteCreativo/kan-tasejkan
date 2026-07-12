@@ -20,6 +20,7 @@ export default function Navigation() {
     { href: '/talleres', label: 'Talleres' },
     { href: '/experiencias', label: 'Experiencias' },
     { href: '/premios', label: 'Premios' },
+    { href: '/precios', label: 'Precios' },
     { href: '/contacto', label: 'Contacto' },
   ];
 

@@ -3,6 +3,14 @@
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram } from 'lucide-react';
 import Link from 'next/link';
 
+function TikTokIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.88 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11V9.4a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.7a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.42a8.16 8.16 0 004.76 1.52V7.5a4.85 4.85 0 01-1-.81z"/>
+    </svg>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-[#1B4332]">
@@ -92,6 +100,15 @@ export default function Footer() {
               >
                 <Instagram size={16} className="text-white" />
               </a>
+              <a
+                href="https://vt.tiktok.com/ZSXNr1XAr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
+                aria-label="TikTok"
+              >
+                <TikTokIcon />
+              </a>
             </div>
           </div>
 
@@ -105,6 +122,7 @@ export default function Footer() {
               <Link href="/servicios" className="text-white text-sm hover:text-[#D4A853] transition-colors">Servicios</Link>
               <Link href="/experiencias" className="text-white text-sm hover:text-[#D4A853] transition-colors">Experiencias</Link>
               <Link href="/talleres" className="text-white text-sm hover:text-[#D4A853] transition-colors">Talleres</Link>
+              <Link href="/precios" className="text-white text-sm hover:text-[#D4A853] transition-colors">Precios</Link>
               <Link href="/contacto" className="text-white text-sm hover:text-[#D4A853] transition-colors">Contacto</Link>
             </div>
           </div>

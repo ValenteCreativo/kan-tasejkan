@@ -131,11 +131,11 @@ function GaleriaContent() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     onDropRejected: () => {
-      alert('Máximo 5 archivos a la vez. Sube de poco en poco.');
+      alert('Máximo 10 archivos a la vez. Sube de poco en poco.');
     },
     accept: { 'image/*': [], 'video/*': [] },
     multiple: true,
-    maxFiles: 5,
+    maxFiles: 10,
     noClick: false,
     noKeyboard: true,
   });
@@ -212,7 +212,7 @@ function GaleriaContent() {
               Toca aquí para seleccionar fotos
             </p>
             <p className="text-sm text-[#8B8B8B]">
-              Máximo 5 a la vez
+              Máximo 10 a la vez
             </p>
           </div>
         )}
