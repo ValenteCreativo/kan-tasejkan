@@ -99,11 +99,12 @@ export default function GaleriaAdminPage() {
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
-      'video/*': ['.mp4', '.webm', '.mov'],
+      'image/*': [],
+      'video/*': [],
     },
     multiple: true,
     noClick: false,
+    noKeyboard: true,
   });
 
   async function handleDelete(id: string) {
