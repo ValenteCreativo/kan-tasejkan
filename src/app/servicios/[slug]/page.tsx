@@ -7,9 +7,9 @@ import { getServiceBySlug } from '@/actions';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const { data: service } = await getServiceBySlug(slug);
-  if (!service) return { title: 'Servicio no encontrado — Mindfulverso' };
+  if (!service) return { title: 'Servicio no encontrado — Kan-Tasejkan' };
   return {
-    title: `${service.title} — Mindfulverso`,
+    title: `${service.title} — Kan-Tasejkan`,
     description: service.shortDescription || service.description?.substring(0, 160) || '',
   };
 }

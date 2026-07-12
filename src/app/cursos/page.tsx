@@ -3,8 +3,8 @@ import { getAllEvents } from '../../actions';
 import CursosContent from '../../components/CursosContent';
 
 export const metadata: Metadata = {
-  title: 'Cursos — Mindfulverso',
-  description: 'Formaciones presenciales y grabadas en mindfulness, bienestar y desarrollo personal.',
+  title: 'Cursos — Kan-Tasejkan',
+  description: 'Talleres y formaciones en cultura, gastronomía y tradiciones.',
 };
 
 export default async function CursosPage() {

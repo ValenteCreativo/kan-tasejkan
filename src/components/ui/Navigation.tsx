@@ -1,44 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOnDark, setIsOnDark] = useState(false);
   const pathname = usePathname();
 
   // Hide nav on admin pages
   if (pathname?.startsWith('/admin') || pathname === '/login') return null;
 
-  // Detect if we're scrolled in the cosmic intro (dark background)
-  useEffect(() => {
-    function handleScroll() {
-      const isHome = pathname === '/';
-      setIsOnDark(isHome && window.scrollY < window.innerHeight * 0.7);
-    }
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
-
-  const textColor = isOnDark ? 'text-white' : 'text-[#24202F]';
-  const iconColor = isOnDark ? 'text-white' : 'text-[#24202F]';
-
   const navItems = [
     { href: '/', label: 'Inicio' },
-    { href: '/nosotros', label: 'Nosotros' },
+    { href: '/quienes-somos', label: 'Quiénes Somos' },
     { href: '/servicios', label: 'Servicios' },
-    { href: '/calendario', label: 'Calendario' },
-    { href: '/cursos', label: 'Cursos' },
-    { href: '/tienda', label: 'Tienda' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/testimonios', label: 'Testimonios' },
+    { href: '/talleres', label: 'Talleres' },
+    { href: '/experiencias', label: 'Experiencias' },
+    { href: '/premios', label: 'Premios' },
     { href: '/contacto', label: 'Contacto' },
-    { href: '/reservar', label: 'Reservar' },
   ];
 
   return (
@@ -46,20 +28,20 @@ export default function Navigation() {
       {/* ── Minimal top bar ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 py-5 md:py-6 px-5 md:px-8">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Logo */}
+          {/* Logo text */}
           <Link href="/" className="relative z-10">
-            <span className={`text-[11px] md:text-xs font-light tracking-[0.35em] uppercase transition-colors duration-500 ${textColor}`}>
-              Mindfulverso
+            <span className="text-[11px] md:text-xs font-light tracking-[0.35em] uppercase transition-colors duration-500 text-white drop-shadow-md">
+              Kan-Tasejkan
             </span>
           </Link>
 
           {/* Menu button */}
           <button
             onClick={() => setIsOpen(true)}
-            className={`relative z-10 w-9 h-9 flex items-center justify-center rounded-full transition-colors duration-500 ${isOnDark ? 'hover:bg-white/10' : 'hover:bg-[#4B3A78]/5'}`}
+            className="relative z-10 w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors duration-500"
             aria-label="Abrir menú"
           >
-            <Menu size={18} strokeWidth={1.2} className={`transition-colors duration-500 ${iconColor}`} />
+            <Menu size={18} strokeWidth={1.2} className="text-white transition-colors duration-500 drop-shadow-md" />
           </button>
         </div>
       </nav>
@@ -71,27 +53,28 @@ export default function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.25 } }}
-            className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-[#FAF8F2]"
+            className="fixed inset-0 z-[999] flex flex-col items-center justify-center"
+            style={{ background: 'linear-gradient(160deg, #1B4332 0%, #2D6A4F 50%, #1B4332 100%)' }}
           >
-            {/* Subtle background decorations */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-[#4B3A78]/[0.02] blur-[80px]" />
-              <div className="absolute bottom-1/3 left-1/3 w-60 h-60 rounded-full bg-[#48AFC3]/[0.03] blur-[60px]" />
+            {/* Subtle background texture */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-10">
+              <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-[#D4A853]/20 blur-[80px]" />
+              <div className="absolute bottom-1/3 left-1/3 w-60 h-60 rounded-full bg-[#52B788]/20 blur-[60px]" />
             </div>
 
             {/* Close */}
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-5 right-5 md:top-6 md:right-8 w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#4B3A78]/5 transition-colors"
+              className="absolute top-5 right-5 md:top-6 md:right-8 w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
               aria-label="Cerrar menú"
             >
-              <X size={18} strokeWidth={1.2} className="text-[#24202F]" />
+              <X size={18} strokeWidth={1.2} className="text-white" />
             </button>
 
             {/* Logo at top */}
             <div className="absolute top-5 left-5 md:top-6 md:left-8">
-              <span className="text-[11px] font-light tracking-[0.35em] uppercase text-[#6B6580]">
-                Mindfulverso
+              <span className="text-[11px] font-light tracking-[0.35em] uppercase text-white/60">
+                Kan-Tasejkan
               </span>
             </div>
 
@@ -110,8 +93,8 @@ export default function Navigation() {
                     onClick={() => setIsOpen(false)}
                     className={`relative text-lg md:text-xl font-extralight tracking-[0.2em] uppercase transition-colors duration-300 ${
                       pathname === item.href
-                        ? 'text-[#4B3A78]'
-                        : 'text-[#24202F] hover:text-[#4B3A78]'
+                        ? 'text-[#D4A853]'
+                        : 'text-white hover:text-[#D4A853]'
                     }`}
                   >
                     {item.label}
@@ -127,9 +110,9 @@ export default function Navigation() {
               transition={{ delay: 0.4 }}
               className="absolute bottom-6 md:bottom-8 flex flex-col items-center gap-3"
             >
-              <div className="w-px h-8 bg-gradient-to-b from-transparent via-[#B9B8CA] to-transparent opacity-40" />
-              <span className="text-[10px] font-light tracking-[0.3em] text-[#B9B8CA] uppercase">
-                Bienestar Universal
+              <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
+              <span className="text-[10px] font-light tracking-[0.3em] text-white/50 uppercase">
+                Lugar de Sombras · Ecoturismo Indígena
               </span>
             </motion.div>
           </motion.div>

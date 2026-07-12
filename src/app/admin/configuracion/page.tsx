@@ -6,15 +6,15 @@ import { ArrowLeft, Settings, Lock, Save, Loader2 } from 'lucide-react';
 import { getSiteSettings, updateSiteSettings } from '../../../actions';
 
 const SETTING_KEYS = [
-  { key: 'site_name', label: 'Nombre del sitio', placeholder: 'Mindfulverso', type: 'text' },
-  { key: 'site_tagline', label: 'Tagline', placeholder: 'Bienestar Universal', type: 'text' },
-  { key: 'site_description', label: 'Descripción', placeholder: 'Un espacio para cultivar bienestar...', type: 'textarea' },
+  { key: 'site_name', label: 'Nombre del sitio', placeholder: 'Kan-Tasejkan', type: 'text' },
+  { key: 'site_tagline', label: 'Tagline', placeholder: 'Lugar de Sombras', type: 'text' },
+  { key: 'site_description', label: 'Descripción', placeholder: 'Espacio ecoturístico indígena en Veracruz...', type: 'textarea' },
   { key: 'whatsapp_number', label: 'WhatsApp (con código de país)', placeholder: '+525512345678', type: 'text' },
-  { key: 'contact_email', label: 'Email de contacto', placeholder: 'contacto@mindfulverso.com', type: 'email' },
-  { key: 'instagram_url', label: 'Instagram URL', placeholder: 'https://instagram.com/mindfulverso', type: 'text' },
-  { key: 'facebook_url', label: 'Facebook URL', placeholder: 'https://facebook.com/mindfulverso', type: 'text' },
-  { key: 'youtube_url', label: 'YouTube URL', placeholder: 'https://youtube.com/@mindfulverso', type: 'text' },
-  { key: 'tiktok_url', label: 'TikTok URL', placeholder: 'https://tiktok.com/@mindfulverso', type: 'text' },
+  { key: 'contact_email', label: 'Email de contacto', placeholder: 'contacto@kan-tasejkan.com', type: 'email' },
+  { key: 'instagram_url', label: 'Instagram URL', placeholder: 'https://instagram.com/kantasejkan', type: 'text' },
+  { key: 'facebook_url', label: 'Facebook URL', placeholder: 'https://facebook.com/kantasejkan', type: 'text' },
+  { key: 'youtube_url', label: 'YouTube URL', placeholder: 'https://youtube.com/@kantasejkan', type: 'text' },
+  { key: 'tiktok_url', label: 'TikTok URL', placeholder: 'https://tiktok.com/@kantasejkan', type: 'text' },
 ];
 
 export default function ConfiguracionPage() {

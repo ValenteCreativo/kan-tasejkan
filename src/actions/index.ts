@@ -620,3 +620,69 @@ export async function reorderNavigationItems(orderedIds: string[]) {
         return { error: (error as Error).message };
     }
 }
+
+// --- Media / Galería Actions ---
+
+import { media } from '../db/schema';
+import type { NewMedia } from '../db/schema';
+
+export async function getAllMedia(section?: string) {
+    try {
+        if (section) {
+            const data = await db.select().from(media).where(eq(media.section, section)).orderBy(asc(media.orderIndex));
+            return { data, error: null };
+        }
+        const data = await db.select().from(media).orderBy(asc(media.orderIndex));
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+}
+
+export async function getPublishedMedia(section?: string) {
+    try {
+        if (section) {
+            const data = await db.select().from(media)
+                .where(eq(media.section, section))
+                .orderBy(asc(media.orderIndex));
+            return { data: data.filter(m => m.isPublished), error: null };
+        }
+        const data = await db.select().from(media).orderBy(asc(media.orderIndex));
+        return { data: data.filter(m => m.isPublished), error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+}
+
+export async function createMedia(item: NewMedia) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
+    try {
+        const [data] = await db.insert(media).values(item).returning();
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error: (error as Error).message };
+    }
+}
+
+export async function updateMedia(id: string, item: Partial<NewMedia>) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { data: null, error: 'No autorizado' };
+    try {
+        const [data] = await db.update(media).set(item).where(eq(media.id, id)).returning();
+        return { data, error: null };
+    } catch (error) {
+        return { data: null, error: (error as Error).message };
+    }
+}
+
+export async function deleteMedia(id: string) {
+    const { authorized } = await requireAdmin();
+    if (!authorized) return { error: 'No autorizado' };
+    try {
+        await db.delete(media).where(eq(media.id, id));
+        return { error: null };
+    } catch (error) {
+        return { error: (error as Error).message };
+    }
+}

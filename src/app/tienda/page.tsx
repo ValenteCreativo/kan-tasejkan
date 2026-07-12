@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { getAllProducts } from '@/actions';
 
 export const metadata: Metadata = {
-  title: 'Tienda — Mindfulverso',
-  description: 'Objetos conscientes para tu práctica. Velas, cojines, yoga y cuidado personal.',
+  title: 'Tienda — Kan-Tasejkan',
+  description: 'Artesanías y productos de la comunidad.',
 };
 
 export default async function TiendaPage() {

@@ -1,42 +1,8 @@
-// Mindfulverso — shared constants (safe for client and server)
+// Kan-Tasejkan — shared constants (safe for client and server)
 
-export const WHITELISTED_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'veromafud09@gmail.com';
-
+export const WHITELISTED_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'juanbautista2999@gmail.com';
 export const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin1234';
 
-export const SITE_NAME = 'Mindfulverso';
-export const SITE_TAGLINE = 'Bienestar Universal';
-export const SITE_DESCRIPTION = 'Un espacio para cultivar bienestar, conciencia y transformación.';
-
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+525555555555';
-export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER.replace('+', '')}`;
-
-export const SERVICE_CATEGORIES = [
-  'Psicoterapia',
-  'Mindfulness',
-  'Access Bars',
-  'Ceremonias',
-  'Círculos',
-  'Diplomado',
-  'Talleres',
-  'Retiros',
-] as const;
-
-export const EVENT_CATEGORIES = [
-  'Ceremonias',
-  'Círculos',
-  'Mindfulness',
-  'Retiros',
-  'Talleres',
-  'Cursos',
-  'Diplomado',
-] as const;
-
-export const PRODUCT_CATEGORIES = [
-  'Velas',
-  'Yoga',
-  'Cojines',
-  'Cuidado personal',
-  'Objetos conscientes',
-  'Otros',
-] as const;
+export const SITE_NAME = 'Kan-Tasejkan';
+export const SITE_TAGLINE = 'Lugar de Sombras';
+export const SITE_DESCRIPTION = 'Espacio ecoturístico indígena en la Sierra de Zongolica, Veracruz.';

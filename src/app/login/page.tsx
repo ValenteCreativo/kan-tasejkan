@@ -58,7 +58,7 @@ export default function LoginPage() {
               Admin
             </h1>
             <p className="text-sm text-[var(--muted)] font-light">
-              Panel de administración Mindfulverso
+              Panel de administración Kan-Tasejkan
             </p>
           </div>
 
@@ -79,7 +79,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="admin-input"
-                placeholder="admin@mindfulverso.com"
+                placeholder="admin@kan-tasejkan.com"
                 required
               />
             </div>

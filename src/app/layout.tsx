@@ -7,19 +7,19 @@ import Providers from "./providers";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500"],
+  weight: ["200", "300", "400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Mindfulverso — Bienestar Universal",
-  description: "Un espacio para cultivar bienestar, conciencia y transformación. Centro holístico con psicoterapia, mindfulness, ceremonias, círculos y más.",
+  title: "Kan-Tasejkan — Lugar de Sombras | Ecoturismo Indígena en Veracruz",
+  description: "Espacio ecoturístico indígena en la Sierra de Zongolica, Veracruz. Hospedaje en cabañas, restaurante, deportes de aventura, balneario, camping, talleres culturales y experiencias turísticas comunitarias.",
   icons: {
-    icon: '/isotipo.png',
-    apple: '/isotipo.png',
+    icon: '/logo-nobg.png',
+    apple: '/logo-nobg.png',
   },
   openGraph: {
-    title: "Mindfulverso — Bienestar Universal",
-    description: "Un espacio para cultivar bienestar, conciencia y transformación.",
+    title: "Kan-Tasejkan — Lugar de Sombras",
+    description: "Ecoturismo indígena en la Sierra de Zongolica, Veracruz. Vive experiencias auténticas en contacto con la naturaleza y la cultura ancestral.",
     type: "website",
   },
 };

@@ -201,6 +201,23 @@ export const siteSettings = sqliteTable('site_settings', {
 });
 
 // ═══════════════════════════════════════════
+// GALERÍA / MEDIA
+// ═══════════════════════════════════════════
+
+export const media = sqliteTable('media', {
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: text('title'),
+    url: text('url').notNull(),
+    thumbnailUrl: text('thumbnail_url'),
+    type: text('type').notNull().default('image'), // 'image' | 'video'
+    section: text('section').notNull().default('general'), // 'hospedaje' | 'restaurant' | 'aventura' | etc.
+    description: text('description'),
+    orderIndex: integer('order_index').default(0),
+    isPublished: integer('is_published', { mode: 'boolean' }).default(true),
+    createdAt: text('created_at').default(sql`(datetime('now'))`),
+});
+
+// ═══════════════════════════════════════════
 // NAVEGACIÓN LANDING (Orbital)
 // ═══════════════════════════════════════════
 
@@ -244,3 +261,5 @@ export type SiteSetting = typeof siteSettings.$inferSelect;
 export type NewSiteSetting = typeof siteSettings.$inferInsert;
 export type NavigationItem = typeof navigationItems.$inferSelect;
 export type NewNavigationItem = typeof navigationItems.$inferInsert;
+export type Media = typeof media.$inferSelect;
+export type NewMedia = typeof media.$inferInsert;

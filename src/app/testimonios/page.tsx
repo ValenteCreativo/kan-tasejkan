@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { getAllTestimonials } from '@/actions';
 
 export const metadata: Metadata = {
-  title: 'Testimonios — Mindfulverso',
-  description: 'Experiencias de quienes ya transitaron este camino de bienestar y transformación.',
+  title: 'Testimonios — Kan-Tasejkan',
+  description: 'Experiencias de quienes visitaron Kan-Tasejkan.',
 };
 
 export default async function TestimoniosPage() {

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// Redirect /about to /nosotros
+// Redirect /about to /quienes-somos
 export default function AboutRedirect() {
-  redirect('/nosotros');
+  redirect('/quienes-somos');
 }

@@ -5,7 +5,7 @@ import { getSiteSettings } from '../actions';
 
 export default function ContactOptions() {
   const [whatsappUrl, setWhatsappUrl] = useState('');
-  const [contactEmail, setContactEmail] = useState('contacto@mindfulverso.com');
+  const [contactEmail, setContactEmail] = useState('contacto@kan-tasejkan.com');
 
   useEffect(() => {
     getSiteSettings().then(({ data }) => {

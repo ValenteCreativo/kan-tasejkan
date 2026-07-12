@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { createService, uploadFile } from '@/actions';
 
-const CATEGORIES = ['Psicoterapia', 'Mindfulness', 'Access Bars', 'Ceremonias', 'Círculos', 'Diplomado', 'Talleres', 'Retiros'];
-const MODALITIES = ['presencial', 'virtual', 'híbrido'];
+const CATEGORIES = ['Hospedaje', 'Restaurante', 'Aventura', 'Balneario', 'Camping', 'Talleres', 'Experiencias', 'Bodas'];
+const MODALITIES = ['presencial', 'todo incluido', 'personalizado'];
 
 function generateSlug(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');

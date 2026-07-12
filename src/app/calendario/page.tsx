@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { getAllEvents } from '@/actions';
 
 export const metadata: Metadata = {
-  title: 'Calendario — Mindfulverso',
-  description: 'Próximos eventos, ceremonias, círculos y talleres en Mindfulverso.',
+  title: 'Calendario — Kan-Tasejkan',
+  description: 'Próximos eventos y actividades en Kan-Tasejkan.',
 };
 
 export default async function CalendarioPage() {

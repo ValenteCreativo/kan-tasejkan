@@ -1,28 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Mindfulverso Palette (from logo) ── */
-  --purple-deep: #4B3A78;
-  --turquoise: #48AFC3;
-  --yellow-warm: #F4E86B;
-  --lila: #B9B8CA;
-  --white-warm: #FAF8F2;
-  --text-dark: #24202F;
-  --text-muted: #6B6580;
-  --border-soft: #E8E5F0;
-  --glow-purple: rgba(75, 58, 120, 0.15);
-  --glow-turquoise: rgba(72, 175, 195, 0.12);
-  --glow-yellow: rgba(244, 232, 107, 0.2);
+  /* ── Kan-Tasejkan Palette (naturaleza, tierra, selva) ── */
+  --green-deep: #1B4332;
+  --green-mid: #2D6A4F;
+  --green-light: #52B788;
+  --earth-brown: #5C4033;
+  --earth-warm: #8B5E3C;
+  --gold-accent: #D4A853;
+  --cream: #F5F0E8;
+  --white-warm: #FAFAF5;
+  --text-dark: #1A1A1A;
+  --text-muted: #4A4A4A;
+  --border-soft: #E0DDD5;
+  --glow-green: rgba(82, 183, 136, 0.15);
+  --glow-gold: rgba(212, 168, 83, 0.2);
+  --glow-earth: rgba(92, 64, 51, 0.1);
 
   /* ── Semantic tokens ── */
-  --background: #FAF8F2;
-  --foreground: #24202F;
-  --accent: #4B3A78;
-  --accent-secondary: #48AFC3;
-  --accent-tertiary: #F4E86B;
-  --muted: #6B6580;
-  --subtle: #B9B8CA;
-  --border: #E8E5F0;
+  --background: #FAFAF5;
+  --foreground: #1A1A1A;
+  --accent: #1B4332;
+  --accent-secondary: #52B788;
+  --accent-tertiary: #D4A853;
+  --muted: #4A4A4A;
+  --subtle: #8B8B8B;
+  --border: #E0DDD5;
 
   /* ── Typography scale ── */
   --text-display: clamp(2.5rem, 5vw, 4.5rem);
@@ -47,10 +50,13 @@
   --color-muted: var(--muted);
   --color-subtle: var(--subtle);
   --color-border: var(--border);
-  --color-purple-deep: var(--purple-deep);
-  --color-turquoise: var(--turquoise);
-  --color-yellow-warm: var(--yellow-warm);
-  --color-lila: var(--lila);
+  --color-green-deep: var(--green-deep);
+  --color-green-mid: var(--green-mid);
+  --color-green-light: var(--green-light);
+  --color-earth-brown: var(--earth-brown);
+  --color-earth-warm: var(--earth-warm);
+  --color-gold-accent: var(--gold-accent);
+  --color-cream: var(--cream);
   --color-white-warm: var(--white-warm);
   --color-text-dark: var(--text-dark);
 
@@ -93,26 +99,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle warm gradient background */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(75, 58, 120, 0.03), transparent),
-              radial-gradient(ellipse 60% 50% at 80% 70%, rgba(72, 175, 195, 0.02), transparent);
-}
-
 /* ── Typography ── */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 200;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dark);
+  letter-spacing: 0.06em;
 }
 
 /* ── Utilities ── */
@@ -143,46 +133,17 @@ h1, h2, h3, h4, h5, h6 {
   animation: pulse-glow 4s ease-in-out infinite;
 }
 
-/* ── Orbital system ── */
-.orbital-ring {
-  border: 1px solid var(--border-soft);
-  border-radius: 50%;
-  position: absolute;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.orbital-ring:hover {
-  border-color: var(--accent-secondary);
-  box-shadow: 0 0 20px var(--glow-turquoise);
-}
-
-.planet-node {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--accent-tertiary);
-  position: absolute;
-  cursor: pointer;
-  transition: all 0.4s ease;
-  box-shadow: 0 0 8px var(--glow-yellow);
-}
-
-.planet-node:hover {
-  transform: scale(1.5);
-  box-shadow: 0 0 20px var(--glow-yellow);
-}
-
 /* ── Buttons ── */
-.btn-mindful {
+.btn-kan {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2.5rem;
   font-size: 0.8rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
+  font-weight: 400;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--green-deep);
   border: 1px solid var(--border-soft);
   background: transparent;
   border-radius: 999px;
@@ -190,39 +151,39 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 }
 
-.btn-mindful:hover {
-  background: var(--accent);
+.btn-kan:hover {
+  background: var(--green-deep);
   color: white;
-  border-color: var(--accent);
-  box-shadow: 0 4px 20px var(--glow-purple);
+  border-color: var(--green-deep);
+  box-shadow: 0 4px 20px var(--glow-green);
 }
 
-.btn-mindful-filled {
+.btn-kan-filled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2.5rem;
   font-size: 0.8rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
+  font-weight: 400;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: white;
-  background: var(--accent);
-  border: 1px solid var(--accent);
+  background: var(--green-deep);
+  border: 1px solid var(--green-deep);
   border-radius: 999px;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
-.btn-mindful-filled:hover {
-  background: var(--purple-deep);
-  box-shadow: 0 4px 20px var(--glow-purple);
+.btn-kan-filled:hover {
+  background: var(--green-mid);
+  box-shadow: 0 4px 20px var(--glow-green);
   transform: translateY(-1px);
 }
 
 /* ── Cards ── */
 .glass-card {
-  background: rgba(250, 248, 242, 0.8);
+  background: rgba(250, 250, 245, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
@@ -230,12 +191,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card:hover {
-  border-color: var(--subtle);
-  box-shadow: 0 8px 32px rgba(75, 58, 120, 0.06);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 8px 32px rgba(27, 67, 50, 0.08);
   transform: translateY(-2px);
 }
 
-/* ── Admin styles (kept from template) ── */
+/* ── Admin styles ── */
 .sacred-minimal {
   background: #faf8f5;
   color: var(--foreground);
@@ -291,7 +252,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(75, 58, 120, 0.06);
+  box-shadow: 0 4px 16px rgba(27, 67, 50, 0.08);
 }
 
 .btn-elegant {
@@ -336,7 +297,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .admin-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--glow-purple);
+  box-shadow: 0 0 0 3px var(--glow-green);
 }
 .admin-input::placeholder {
   color: var(--subtle);
@@ -356,7 +317,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .ritual-input:focus {
   border-color: var(--accent-secondary);
-  box-shadow: 0 0 0 3px var(--glow-turquoise);
+  box-shadow: 0 0 0 3px var(--glow-green);
 }
 .ritual-input::placeholder {
   color: var(--subtle);
@@ -391,7 +352,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Selection ── */
 ::selection {
-  background: var(--accent);
+  background: var(--green-deep);
   color: white;
 }
 
@@ -403,11 +364,9 @@ h1, h2, h3, h4, h5, h6 {
   .animate-pulse-glow {
     animation: none;
   }
-  .orbital-ring,
-  .planet-node,
   .glass-card,
-  .btn-mindful,
-  .btn-mindful-filled {
+  .btn-kan,
+  .btn-kan-filled {
     transition: none;
   }
 }

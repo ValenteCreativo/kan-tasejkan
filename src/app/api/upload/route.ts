@@ -23,7 +23,10 @@ export async function POST(request: Request): Promise<NextResponse> {
             request,
             onBeforeGenerateToken: async () => {
                 return {
-                    allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
+                    allowedContentTypes: [
+                        'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+                        'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo',
+                    ],
                     tokenPayload: JSON.stringify({}),
                 };
             },

@@ -3,7 +3,7 @@
  * Uses HMAC-SHA256 for signing session tokens.
  */
 
-const SESSION_SECRET = process.env.SESSION_SECRET || 'mindfulverso-session-secret-change-in-production';
+const SESSION_SECRET = process.env.SESSION_SECRET || 'kan-tasejkan-session-secret-change-in-production';
 const SESSION_COOKIE_NAME = 'admin-session';
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
