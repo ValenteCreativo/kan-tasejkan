@@ -1,64 +1,63 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Trash2, Image as ImageIcon, Video, Loader2, Eye, EyeOff, Camera } from 'lucide-react';
-import { getAllMedia, createMedia, deleteMedia, updateMedia, uploadFile } from '@/actions';
+import { ArrowLeft, Trash2, Image as ImageIcon, Video, Loader2, Camera, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame, Heart, Award, Users, TreePine } from 'lucide-react';
+import { getAllMedia, createMedia, deleteMedia, uploadFile } from '@/actions';
 import { useDropzone } from 'react-dropzone';
 
 type MediaItem = {
   id: string;
   title: string | null;
   url: string;
-  thumbnailUrl: string | null;
   type: string;
   section: string;
-  description: string | null;
-  orderIndex: number | null;
   isPublished: boolean | null;
-  createdAt: string | null;
 };
 
 const SECTIONS = [
-  { value: 'general', label: 'General' },
-  { value: 'hospedaje', label: 'Hospedaje' },
-  { value: 'restaurant', label: 'Restaurante' },
-  { value: 'aventura', label: 'Aventura' },
-  { value: 'balneario', label: 'Balneario' },
-  { value: 'camping', label: 'Camping' },
-  { value: 'talleres', label: 'Talleres' },
-  { value: 'experiencia-gastronomica', label: 'Gastronómica' },
-  { value: 'rituales', label: 'Rituales' },
-  { value: 'bodas', label: 'Bodas' },
-  { value: 'comunidad', label: 'Comunidad' },
-  { value: 'premios', label: 'Premios' },
-  { value: 'paisajes', label: 'Paisajes' },
+  { value: 'hospedaje', label: 'Hospedaje', icon: Home },
+  { value: 'restaurant', label: 'Restaurante', icon: UtensilsCrossed },
+  { value: 'aventura', label: 'Aventura', icon: Mountain },
+  { value: 'balneario', label: 'Balneario', icon: Waves },
+  { value: 'camping', label: 'Camping', icon: Tent },
+  { value: 'talleres', label: 'Talleres', icon: Users },
+  { value: 'experiencia-gastronomica', label: 'Gastronómica', icon: Flame },
+  { value: 'rituales', label: 'Rituales', icon: Heart },
+  { value: 'bodas', label: 'Bodas', icon: Heart },
+  { value: 'comunidad', label: 'Comunidad', icon: Users },
+  { value: 'premios', label: 'Premios', icon: Award },
+  { value: 'paisajes', label: 'Paisajes', icon: TreePine },
 ];
 
-export default function GaleriaAdminPage() {
+function GaleriaContent() {
   const searchParams = useSearchParams();
-  const preselectedSection = searchParams.get('seccion') || '';
+  const paramSection = searchParams.get('seccion') || '';
 
+  const [activeSection, setActiveSection] = useState(paramSection);
   const [items, setItems] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadCount, setUploadCount] = useState(0);
   const [uploadTotal, setUploadTotal] = useState(0);
-  const [filterSection, setFilterSection] = useState(preselectedSection);
-  const [uploadSection, setUploadSection] = useState(preselectedSection || 'general');
 
   const loadMedia = useCallback(async () => {
+    if (!activeSection) return;
     setLoading(true);
-    const { data } = await getAllMedia(filterSection || undefined);
+    const { data } = await getAllMedia(activeSection);
     setItems((data as MediaItem[]) || []);
     setLoading(false);
-  }, [filterSection]);
+  }, [activeSection]);
 
   useEffect(() => { loadMedia(); }, [loadMedia]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (!activeSection) {
+      alert('Selecciona primero una sección');
+      return;
+    }
     setUploading(true);
     setUploadTotal(acceptedFiles.length);
     setUploadCount(0);
@@ -67,7 +66,7 @@ export default function GaleriaAdminPage() {
       try {
         const isVideo = file.type.startsWith('video/');
         const ext = file.name.split('.').pop();
-        const pathname = `media/${uploadSection}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const pathname = `media/${activeSection}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
         const formData = new FormData();
         formData.append('file', file);
@@ -83,7 +82,7 @@ export default function GaleriaAdminPage() {
           title: file.name.replace(/\.[^.]+$/, ''),
           url,
           type: isVideo ? 'video' : 'image',
-          section: uploadSection,
+          section: activeSection,
           isPublished: true,
         });
         setUploadCount((c) => c + 1);
@@ -94,30 +93,145 @@ export default function GaleriaAdminPage() {
     }
     setUploading(false);
     loadMedia();
-  }, [uploadSection, loadMedia]);
+  }, [activeSection, loadMedia]);
 
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      'image/*': [],
-      'video/*': [],
-    },
+    accept: { 'image/*': [], 'video/*': [] },
     multiple: true,
     noClick: false,
     noKeyboard: true,
   });
 
   async function handleDelete(id: string) {
-    if (!confirm('¿Eliminar este archivo?')) return;
+    if (!confirm('¿Eliminar esta foto?')) return;
     await deleteMedia(id);
     loadMedia();
   }
 
-  async function togglePublish(id: string, current: boolean | null) {
-    await updateMedia(id, { isPublished: !current });
-    loadMedia();
+  // Si no hay sección seleccionada, mostrar selector
+  if (!activeSection) {
+    return (
+      <div className="max-w-lg mx-auto px-5 md:px-8 mt-6">
+        <p className="text-base font-[500] text-[#1A1A1A] mb-4 text-center">
+          ¿A qué sección quieres subir fotos?
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {SECTIONS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <button
+                key={s.value}
+                onClick={() => setActiveSection(s.value)}
+                className="flex flex-col items-center gap-2 bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors"
+              >
+                <Icon size={20} className="text-[#1B4332]" />
+                <span className="text-xs font-[500] text-[#1A1A1A]">{s.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
   }
 
+  const sectionLabel = SECTIONS.find(s => s.value === activeSection)?.label || activeSection;
+
+  return (
+    <div className="max-w-4xl mx-auto px-5 md:px-8">
+      {/* Sección activa */}
+      <div className="mt-6 mb-4 flex items-center justify-between">
+        <p className="text-base font-[500] text-[#1A1A1A]">
+          📁 {sectionLabel}
+        </p>
+        <button
+          onClick={() => setActiveSection('')}
+          className="text-xs text-[#1B4332] font-[500] px-3 py-1.5 rounded-full bg-[#1B4332]/5 active:bg-[#1B4332]/10"
+        >
+          Cambiar sección
+        </button>
+      </div>
+
+      {/* Upload zone */}
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors mb-6 ${
+          isDragActive ? 'border-[#52B788] bg-[#52B788]/5' : 'border-[#E0DDD5] bg-white active:bg-[#F5F0E8]'
+        }`}
+      >
+        <input {...getInputProps()} />
+        {uploading ? (
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 size={32} className="animate-spin text-[#1B4332]" />
+            <p className="text-base text-[#1A1A1A] font-[500]">Subiendo {uploadCount} de {uploadTotal}...</p>
+            <p className="text-sm text-[#8B8B8B]">No cierres esta página</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#1B4332]/10 flex items-center justify-center">
+              <Camera size={28} className="text-[#1B4332]" />
+            </div>
+            <p className="text-base text-[#1A1A1A] font-[500]">
+              Toca aquí para seleccionar fotos
+            </p>
+            <p className="text-sm text-[#8B8B8B]">
+              Puedes seleccionar varias a la vez
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Fotos de esta sección */}
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 size={24} className="animate-spin text-[#1B4332]" />
+        </div>
+      ) : items.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-2xl border border-[#E0DDD5]">
+          <ImageIcon size={36} className="mx-auto mb-3 text-[#8B8B8B]" />
+          <p className="text-sm text-[#4A4A4A]">No hay fotos en {sectionLabel}</p>
+          <p className="text-xs text-[#8B8B8B] mt-1">Usa el botón de arriba para subir</p>
+        </div>
+      ) : (
+        <>
+          <p className="text-xs text-[#8B8B8B] mb-3">{items.length} foto{items.length !== 1 ? 's' : ''} en {sectionLabel}</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {items.map((item) => (
+              <div key={item.id} className="relative bg-white rounded-xl border border-[#E0DDD5] overflow-hidden">
+                <div className="aspect-square relative bg-[#F5F0E8]">
+                  {item.type === 'image' ? (
+                    <Image
+                      src={item.url}
+                      alt={item.title || ''}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                      <Video size={28} className="text-[#1B4332]" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-2 flex justify-end">
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center active:bg-red-100"
+                    title="Eliminar"
+                  >
+                    <Trash2 size={14} className="text-red-500" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default function GaleriaAdminPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] pb-8">
       {/* Header */}
@@ -128,136 +242,12 @@ export default function GaleriaAdminPage() {
             Volver al panel
           </Link>
           <h1 className="text-lg md:text-xl font-[500]">Galería de Fotos y Videos</h1>
-          <p className="text-sm text-white/70 mt-0.5">Sube las fotos desde tu teléfono</p>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-5 md:px-8">
-        {/* Sección actual */}
-        <div className="mt-6 mb-4">
-          <p className="text-sm text-[#4A4A4A]">
-            Subiendo a: <span className="font-[600] text-[#1B4332]">{SECTIONS.find(s => s.value === uploadSection)?.label || 'General'}</span>
-          </p>
-        </div>
-
-        {/* Upload zone - grande y táctil */}
-        <div
-          {...getRootProps()}
-          className={`border-2 border-dashed rounded-2xl p-8 md:p-10 text-center cursor-pointer transition-colors mb-6 ${
-            isDragActive ? 'border-[#52B788] bg-[#52B788]/5' : 'border-[#E0DDD5] bg-white hover:border-[#52B788] active:bg-[#F5F0E8]'
-          }`}
-        >
-          <input {...getInputProps()} />
-          {uploading ? (
-            <div className="flex flex-col items-center gap-3">
-              <Loader2 size={32} className="animate-spin text-[#1B4332]" />
-              <p className="text-base text-[#1A1A1A] font-[500]">Subiendo {uploadCount} de {uploadTotal}...</p>
-              <p className="text-sm text-[#8B8B8B]">No cierres esta página</p>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-[#1B4332]/10 flex items-center justify-center">
-                <Camera size={28} className="text-[#1B4332]" />
-              </div>
-              <p className="text-base text-[#1A1A1A] font-[500]">
-                Toca aquí para seleccionar fotos
-              </p>
-              <p className="text-sm text-[#8B8B8B]">
-                Puedes seleccionar varias a la vez
-              </p>
-              <p className="text-xs text-[#8B8B8B] mt-1">JPG, PNG, WebP, MP4, MOV</p>
-            </div>
-          )}
-        </div>
-
-        {/* Filter */}
-        <div className="flex items-center gap-3 mb-4 overflow-x-auto pb-2">
-          <button
-            onClick={() => setFilterSection('')}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-[500] transition-colors ${
-              filterSection === '' ? 'bg-[#1B4332] text-white' : 'bg-[#F5F0E8] text-[#4A4A4A]'
-            }`}
-          >
-            Todas ({items.length})
-          </button>
-          {SECTIONS.map((s) => (
-            <button
-              key={s.value}
-              onClick={() => setFilterSection(s.value)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-[500] transition-colors ${
-                filterSection === s.value ? 'bg-[#1B4332] text-white' : 'bg-[#F5F0E8] text-[#4A4A4A]'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Media grid */}
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 size={24} className="animate-spin text-[#1B4332]" />
-          </div>
-        ) : items.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-[#E0DDD5]">
-            <ImageIcon size={40} className="mx-auto mb-3 text-[#8B8B8B]" />
-            <p className="text-base text-[#4A4A4A] font-[500]">No hay archivos aquí</p>
-            <p className="text-sm text-[#8B8B8B] mt-1">Sube fotos con el botón de arriba</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {items.map((item) => (
-              <div key={item.id} className="relative group bg-white rounded-xl border border-[#E0DDD5] overflow-hidden">
-                {/* Thumbnail */}
-                <div className="aspect-square relative bg-[#F5F0E8]">
-                  {item.type === 'image' ? (
-                    <Image
-                      src={item.url}
-                      alt={item.title || 'Media'}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                      <Video size={32} className="text-[#1B4332]" />
-                    </div>
-                  )}
-
-                  {!item.isPublished && (
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/60 text-[10px] text-white font-[500]">
-                      Oculto
-                    </div>
-                  )}
-                </div>
-
-                {/* Actions - siempre visibles en móvil */}
-                <div className="flex items-center justify-between p-2.5">
-                  <span className="text-[10px] text-[#8B8B8B] uppercase tracking-wider truncate flex-1">
-                    {SECTIONS.find(s => s.value === item.section)?.label || item.section}
-                  </span>
-                  <div className="flex gap-1.5">
-                    <button
-                      onClick={() => togglePublish(item.id, item.isPublished)}
-                      className="w-8 h-8 rounded-lg bg-[#F5F0E8] flex items-center justify-center active:bg-[#E0DDD5] transition-colors"
-                      title={item.isPublished ? 'Ocultar' : 'Mostrar'}
-                    >
-                      {item.isPublished ? <Eye size={14} className="text-[#2D6A4F]" /> : <EyeOff size={14} className="text-[#8B8B8B]" />}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center active:bg-red-100 transition-colors"
-                      title="Eliminar"
-                    >
-                      <Trash2 size={14} className="text-red-500" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <Suspense fallback={<div className="flex justify-center py-12"><Loader2 size={24} className="animate-spin text-[#1B4332]" /></div>}>
+        <GaleriaContent />
+      </Suspense>
     </div>
   );
 }
