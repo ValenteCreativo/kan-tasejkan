@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Loader2, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame, Heart, Award, Users, TreePine, Tag } from 'lucide-react';
 import SectionEditor from '@/components/admin/SectionEditor';
+import PriceEditor from '@/components/admin/PriceEditor';
 
 const SECTIONS = [
   { value: 'hospedaje', label: 'Hospedaje', icon: Home, textKey: 'hospedaje_texto', fallback: 'Cabañas rústicas y acogedoras integradas al entorno natural. Despierta con el sonido de la naturaleza y el aroma del bosque.' },
@@ -75,10 +76,10 @@ function GaleriaContent() {
           <h2 className="text-lg font-[500] text-[#1A1A1A]">{current.label}</h2>
         </div>
         <Link
-          href="/admin/galeria"
+          href="/admin"
           className="text-xs text-[#1B4332] font-[500] px-3 py-1.5 rounded-full bg-[#1B4332]/5"
         >
-          Cambiar
+          ← Volver
         </Link>
       </div>
 
@@ -88,6 +89,14 @@ function GaleriaContent() {
         textKey={current.textKey}
         textFallback={current.fallback}
       />
+
+      {/* Show price editor when on precios section */}
+      {current.value === 'precios' && (
+        <div className="mt-8">
+          <h3 className="text-sm font-[600] text-[#1B4332] mb-4">Lista de Precios</h3>
+          <PriceEditor />
+        </div>
+      )}
     </div>
   );
 }
