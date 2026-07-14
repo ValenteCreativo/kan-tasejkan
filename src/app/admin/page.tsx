@@ -4,46 +4,35 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
-import { ChevronRight, LogOut, Settings, Plus, Minus, X, Loader2 } from 'lucide-react';
-import { getAllServices, createService, deleteService } from '@/actions';
+import { LogOut, Plus, Minus, X, Loader2, Settings, Circle } from 'lucide-react';
+import { getNavigationItems, createNavigationItem, deleteNavigationItem, getAllServices, createService, deleteService } from '@/actions';
 
 type User = { email: string; isAdmin: boolean };
+type NavItem = { id: string; label: string; href: string; icon: string; isVisible: boolean | null; orderIndex: number | null };
 type ServiceItem = { id: string; title: string; slug: string; category: string; description: string | null; price: string | null; isPublished: boolean | null };
-
-const FIXED_SECTIONS = {
-  'Servicios': [
-    { label: 'Hospedaje', href: '/admin/galeria?seccion=hospedaje' },
-    { label: 'Restaurante', href: '/admin/galeria?seccion=restaurant' },
-    { label: 'Aventura', href: '/admin/galeria?seccion=aventura' },
-    { label: 'Balneario', href: '/admin/galeria?seccion=balneario' },
-    { label: 'Camping', href: '/admin/galeria?seccion=camping' },
-  ],
-  'Otros': [
-    { label: 'Quiénes Somos', href: '/admin/galeria?seccion=comunidad' },
-    { label: 'Premios', href: '/admin/galeria?seccion=premios' },
-    { label: 'Precios y Promos', href: '/admin/galeria?seccion=precios' },
-    { label: 'Paisajes', href: '/admin/galeria?seccion=paisajes' },
-  ],
-};
-
-const DYNAMIC_CATEGORIES = [
-  { key: 'Talleres', label: 'Talleres' },
-  { key: 'Experiencias', label: 'Experiencias' },
-];
 
 export default function AdminPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
   const [services, setServices] = useState<ServiceItem[]>([]);
 
-  // Popup state
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupCategory, setPopupCategory] = useState('');
-  const [newTitle, setNewTitle] = useState('');
-  const [newDesc, setNewDesc] = useState('');
-  const [newPrice, setNewPrice] = useState('');
-  const [adding, setAdding] = useState(false);
+  // Popup for adding bolita (page)
+  const [showPagePopup, setShowPagePopup] = useState(false);
+  const [newPageTitle, setNewPageTitle] = useState('');
+  const [addingPage, setAddingPage] = useState(false);
+
+  // Popup for adding tab (sub-item)
+  const [showTabPopup, setShowTabPopup] = useState(false);
+  const [tabCategory, setTabCategory] = useState('');
+  const [newTabTitle, setNewTabTitle] = useState('');
+  const [newTabDesc, setNewTabDesc] = useState('');
+  const [newTabPrice, setNewTabPrice] = useState('');
+  const [addingTab, setAddingTab] = useState(false);
+
+  // Expanded bolita
+  const [expandedPage, setExpandedPage] = useState<string | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -54,12 +43,13 @@ export default function AdminPage() {
     }
     setUser(parsed);
     setLoading(false);
-    loadServices();
+    loadData();
   }, [router]);
 
-  async function loadServices() {
-    const { data } = await getAllServices();
-    setServices((data as ServiceItem[]) || []);
+  async function loadData() {
+    const [navRes, svcRes] = await Promise.all([getNavigationItems(), getAllServices()]);
+    setNavItems((navRes.data as NavItem[]) || []);
+    setServices((svcRes.data as ServiceItem[]) || []);
   }
 
   async function handleLogout() {
@@ -68,37 +58,66 @@ export default function AdminPage() {
     router.push('/login');
   }
 
-  function openAddPopup(category: string) {
-    setPopupCategory(category);
-    setNewTitle('');
-    setNewDesc('');
-    setNewPrice('');
-    setShowPopup(true);
+  // Add bolita (page)
+  async function handleAddPage() {
+    if (!newPageTitle.trim()) return;
+    setAddingPage(true);
+    const href = '/' + newPageTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    await createNavigationItem({
+      label: newPageTitle.trim(),
+      href,
+      icon: 'star',
+      description: '',
+      orderIndex: navItems.length,
+      isVisible: true,
+    });
+    setNewPageTitle('');
+    setShowPagePopup(false);
+    setAddingPage(false);
+    loadData();
   }
 
-  async function handleAdd() {
-    if (!newTitle.trim()) return;
-    setAdding(true);
-    const slug = newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '-' + Date.now();
+  async function handleDeletePage(id: string, label: string) {
+    if (!confirm(`¿Eliminar la página "${label}" del menú?`)) return;
+    await deleteNavigationItem(id);
+    loadData();
+  }
+
+  // Add tab (sub-item)
+  async function handleAddTab() {
+    if (!newTabTitle.trim()) return;
+    setAddingTab(true);
+    const slug = newTabTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '-' + Date.now();
     await createService({
-      title: newTitle.trim(),
+      title: newTabTitle.trim(),
       slug,
-      category: popupCategory,
-      description: newDesc.trim() || null,
+      category: tabCategory,
+      description: newTabDesc.trim() || null,
       shortDescription: null,
-      price: newPrice.trim() || null,
+      price: newTabPrice.trim() || null,
       isPublished: true,
       orderIndex: 0,
     });
-    setAdding(false);
-    setShowPopup(false);
-    loadServices();
+    setNewTabTitle('');
+    setNewTabDesc('');
+    setNewTabPrice('');
+    setShowTabPopup(false);
+    setAddingTab(false);
+    loadData();
   }
 
-  async function handleDelete(id: string, title: string) {
+  async function handleDeleteTab(id: string, title: string) {
     if (!confirm(`¿Eliminar "${title}"?`)) return;
     await deleteService(id);
-    loadServices();
+    loadData();
+  }
+
+  function openTabPopup(category: string) {
+    setTabCategory(category);
+    setNewTabTitle('');
+    setNewTabDesc('');
+    setNewTabPrice('');
+    setShowTabPopup(true);
   }
 
   if (loading || !user) {
@@ -107,6 +126,11 @@ export default function AdminPage() {
         <div className="w-3 h-3 rounded-full bg-[#1B4332] animate-pulse" />
       </main>
     );
+  }
+
+  // Map nav items to a "category" key for matching tabs
+  function getCategoryKey(label: string) {
+    return label;
   }
 
   return (
@@ -125,132 +149,175 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-lg mx-auto px-5 md:px-8">
-        <p className="text-xs text-[#8B8B8B] mt-6 mb-2 px-1">
-          Toca una sección para editar texto y fotos
-        </p>
+        {/* Bolitas (pages) header */}
+        <div className="flex items-center justify-between mt-6 mb-4">
+          <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#D4A853]">
+            Páginas del sitio (bolitas)
+          </p>
+          <button
+            onClick={() => setShowPagePopup(true)}
+            className="w-8 h-8 rounded-full bg-[#1B4332] flex items-center justify-center active:bg-[#2D6A4F]"
+          >
+            <Plus size={16} className="text-white" />
+          </button>
+        </div>
 
-        {/* Fixed sections */}
-        {Object.entries(FIXED_SECTIONS).map(([group, items]) => (
-          <div key={group} className="mt-5">
-            <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#D4A853] mb-2 px-1">{group}</p>
-            <div className="space-y-2">
-              {items.map((item) => (
-                <Link key={item.href} href={item.href} className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors">
-                  <span className="text-sm font-[500] text-[#1A1A1A] flex-1">{item.label}</span>
-                  <ChevronRight size={14} className="text-[#8B8B8B]" />
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
+        {/* Bolitas grid */}
+        <div className="grid grid-cols-3 gap-3">
+          {navItems.filter(n => n.isVisible).map((nav) => {
+            const isExpanded = expandedPage === nav.id;
+            const tabs = services.filter(s => s.category === getCategoryKey(nav.label));
 
-        {/* Dynamic categories (Talleres, Experiencias) */}
-        {DYNAMIC_CATEGORIES.map(({ key, label }) => {
-          const categoryItems = services.filter(s => s.category === key);
-          return (
-            <div key={key} className="mt-5">
-              <div className="flex items-center justify-between mb-2 px-1">
-                <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#D4A853]">{label}</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => openAddPopup(key)}
-                    className="w-7 h-7 rounded-full bg-[#1B4332] flex items-center justify-center active:bg-[#2D6A4F]"
-                  >
-                    <Plus size={14} className="text-white" />
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                {categoryItems.length === 0 && (
-                  <p className="text-xs text-[#8B8B8B] px-4 py-3 bg-white rounded-xl border border-[#E0DDD5]">
-                    No hay {label.toLowerCase()} todavía. Toca + para agregar.
-                  </p>
-                )}
-                {categoryItems.map((item) => (
-                  <div key={item.id} className="flex items-center gap-2 bg-white rounded-xl border border-[#E0DDD5] overflow-hidden">
-                    <Link
-                      href={`/admin/galeria?seccion=${item.slug}`}
-                      className="flex-1 p-3.5 active:bg-[#F5F0E8]"
-                    >
-                      <p className="text-sm font-[500] text-[#1A1A1A]">{item.title}</p>
-                      {item.price && <p className="text-xs text-[#D4A853] mt-0.5">${item.price}</p>}
-                    </Link>
+            return (
+              <div key={nav.id} className={`col-span-3`}>
+                {/* Card */}
+                <div className={`bg-white rounded-xl border ${isExpanded ? 'border-[#1B4332]' : 'border-[#E0DDD5]'} overflow-hidden`}>
+                  <div className="flex items-center">
                     <button
-                      onClick={() => handleDelete(item.id, item.title)}
-                      className="w-10 h-full flex items-center justify-center border-l border-[#E0DDD5] active:bg-red-50"
+                      onClick={() => setExpandedPage(isExpanded ? null : nav.id)}
+                      className="flex-1 flex items-center gap-3 p-4 active:bg-[#F5F0E8]"
                     >
-                      <Minus size={14} className="text-red-400" />
+                      <div className="w-10 h-10 rounded-full bg-[#1B4332]/8 flex items-center justify-center shrink-0">
+                        <Circle size={14} className="text-[#1B4332]" fill="#1B4332" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm font-[600] text-[#1A1A1A]">{nav.label}</p>
+                        <p className="text-[10px] text-[#8B8B8B]">{tabs.length} elemento{tabs.length !== 1 ? 's' : ''}</p>
+                      </div>
+                    </button>
+                    {/* Edit photos link */}
+                    <Link
+                      href={`/admin/galeria?seccion=${nav.href.replace('/', '')}`}
+                      className="px-3 py-2 text-[10px] text-[#1B4332] font-[500] active:bg-[#F5F0E8]"
+                    >
+                      📷
+                    </Link>
+                    {/* Delete page */}
+                    <button
+                      onClick={() => handleDeletePage(nav.id, nav.label)}
+                      className="px-3 py-2 active:bg-red-50"
+                    >
+                      <Minus size={12} className="text-red-400" />
                     </button>
                   </div>
-                ))}
+
+                  {/* Expanded: show tabs */}
+                  {isExpanded && (
+                    <div className="border-t border-[#E0DDD5] p-3 bg-[#FAFAFA] space-y-2">
+                      {tabs.length === 0 && (
+                        <p className="text-xs text-[#8B8B8B] text-center py-2">Sin sub-secciones</p>
+                      )}
+                      {tabs.map((tab) => (
+                        <div key={tab.id} className="flex items-center bg-white rounded-lg border border-[#E0DDD5] overflow-hidden">
+                          <Link
+                            href={`/admin/galeria?seccion=${tab.slug}`}
+                            className="flex-1 p-3 active:bg-[#F5F0E8]"
+                          >
+                            <p className="text-xs font-[500] text-[#1A1A1A]">{tab.title}</p>
+                            {tab.price && <p className="text-[10px] text-[#D4A853]">${tab.price}</p>}
+                          </Link>
+                          <button
+                            onClick={() => handleDeleteTab(tab.id, tab.title)}
+                            className="px-3 py-2 border-l border-[#E0DDD5] active:bg-red-50"
+                          >
+                            <Minus size={10} className="text-red-400" />
+                          </button>
+                        </div>
+                      ))}
+                      {/* Add tab button */}
+                      <button
+                        onClick={() => openTabPopup(getCategoryKey(nav.label))}
+                        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-[#E0DDD5] text-xs text-[#1B4332] font-[500] active:bg-[#F5F0E8]"
+                      >
+                        <Plus size={12} /> Agregar
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Config */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Link href="/admin/configuracion" className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-[#E0DDD5] active:bg-[#F5F0E8]">
             <Settings size={16} className="text-[#4A4A4A]" />
-            <span className="text-sm font-[500] text-[#1A1A1A] flex-1">Configuración del sitio</span>
-            <ChevronRight size={14} className="text-[#8B8B8B]" />
+            <span className="text-sm font-[500] text-[#1A1A1A] flex-1">Configuración</span>
           </Link>
         </div>
 
-        <p className="text-center text-[10px] text-[#8B8B8B] mt-8">{user.email}</p>
+        <p className="text-center text-[10px] text-[#8B8B8B] mt-6">{user.email}</p>
       </div>
 
-      {/* Add popup */}
-      {showPopup && (
-        <div className="fixed inset-0 z-[999] bg-black/50 flex items-end md:items-center justify-center p-4" onClick={() => setShowPopup(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4" onClick={e => e.stopPropagation()}>
+      {/* Popup: Add page (bolita) */}
+      {showPagePopup && (
+        <div className="fixed inset-0 z-[999] bg-black/50 flex items-end md:items-center justify-center p-4" onClick={() => setShowPagePopup(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-[600] text-[#1A1A1A]">Agregar {popupCategory === 'Talleres' ? 'Taller' : 'Experiencia'}</h3>
-              <button onClick={() => setShowPopup(false)} className="w-8 h-8 rounded-full bg-[#F5F0E8] flex items-center justify-center">
-                <X size={16} className="text-[#4A4A4A]" />
+              <h3 className="text-base font-[600] text-[#1A1A1A]">Nueva Página</h3>
+              <button onClick={() => setShowPagePopup(false)} className="w-8 h-8 rounded-full bg-[#F5F0E8] flex items-center justify-center">
+                <X size={16} />
               </button>
             </div>
-
-            <div>
-              <label className="text-xs font-[500] text-[#4A4A4A] block mb-1">Nombre *</label>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                className="w-full px-3 py-3 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none"
-                placeholder="Ej: Taller de Temazcal"
-                autoFocus
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-[500] text-[#4A4A4A] block mb-1">Descripción</label>
-              <textarea
-                value={newDesc}
-                onChange={(e) => setNewDesc(e.target.value)}
-                rows={3}
-                className="w-full px-3 py-2.5 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none resize-y"
-                placeholder="Describe brevemente..."
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-[500] text-[#4A4A4A] block mb-1">Precio (opcional)</label>
-              <input
-                type="text"
-                value={newPrice}
-                onChange={(e) => setNewPrice(e.target.value)}
-                className="w-full px-3 py-3 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none"
-                placeholder="Ej: 250"
-              />
-            </div>
-
+            <input
+              type="text"
+              value={newPageTitle}
+              onChange={(e) => setNewPageTitle(e.target.value)}
+              className="w-full px-3 py-3 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none"
+              placeholder="Nombre de la página"
+              autoFocus
+            />
             <button
-              onClick={handleAdd}
-              disabled={adding || !newTitle.trim()}
-              className="w-full flex items-center justify-center gap-2 bg-[#1B4332] text-white rounded-xl py-3.5 text-sm font-[500] active:bg-[#2D6A4F] disabled:opacity-50"
+              onClick={handleAddPage}
+              disabled={addingPage || !newPageTitle.trim()}
+              className="w-full flex items-center justify-center gap-2 bg-[#1B4332] text-white rounded-xl py-3.5 text-sm font-[500] disabled:opacity-50"
             >
-              {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+              {addingPage ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+              Crear página
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Popup: Add tab (sub-item) */}
+      {showTabPopup && (
+        <div className="fixed inset-0 z-[999] bg-black/50 flex items-end md:items-center justify-center p-4" onClick={() => setShowTabPopup(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-[600] text-[#1A1A1A]">Agregar a {tabCategory}</h3>
+              <button onClick={() => setShowTabPopup(false)} className="w-8 h-8 rounded-full bg-[#F5F0E8] flex items-center justify-center">
+                <X size={16} />
+              </button>
+            </div>
+            <input
+              type="text"
+              value={newTabTitle}
+              onChange={(e) => setNewTabTitle(e.target.value)}
+              className="w-full px-3 py-3 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none"
+              placeholder="Nombre"
+              autoFocus
+            />
+            <textarea
+              value={newTabDesc}
+              onChange={(e) => setNewTabDesc(e.target.value)}
+              rows={2}
+              className="w-full px-3 py-2.5 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none resize-y"
+              placeholder="Descripción (opcional)"
+            />
+            <input
+              type="text"
+              value={newTabPrice}
+              onChange={(e) => setNewTabPrice(e.target.value)}
+              className="w-full px-3 py-3 bg-[#FAFAFA] border border-[#E0DDD5] rounded-xl text-sm focus:border-[#1B4332] focus:outline-none"
+              placeholder="Precio (opcional, ej: 250)"
+            />
+            <button
+              onClick={handleAddTab}
+              disabled={addingTab || !newTabTitle.trim()}
+              className="w-full flex items-center justify-center gap-2 bg-[#D4A853] text-white rounded-xl py-3.5 text-sm font-[500] disabled:opacity-50"
+            >
+              {addingTab ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
               Guardar
             </button>
           </div>
