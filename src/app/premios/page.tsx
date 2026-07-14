@@ -4,11 +4,13 @@ import { Award, Shield, Leaf, Star } from 'lucide-react';
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import SectionGallery from '../../components/ui/SectionGallery';
+import BackButton from '../../components/ui/BackButton';
 
 export default function PremiosPage() {
   return (
     <>
       <HeroSection title="Premios y Certificaciones" subtitle="Reconocimientos que avalan nuestro compromiso con la excelencia sustentable" />
+      <BackButton />
 
       <section className="content-container py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
@@ -43,6 +45,7 @@ export default function PremiosPage() {
         </div>
       </section>
 
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );

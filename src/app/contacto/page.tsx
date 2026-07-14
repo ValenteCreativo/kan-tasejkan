@@ -1,6 +1,7 @@
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
+import BackButton from '../../components/ui/BackButton';
 
 export const metadata = {
   title: 'Contacto — Kan-Tasejkan',
@@ -14,6 +15,7 @@ export default function ContactoPage() {
         title="Contacto"
         subtitle="Estamos aquí para ayudarte a planear tu visita a Kan-Tasejkan"
       />
+      <BackButton />
 
       {/* Content */}
       <section className="content-container py-16 md:py-24">
@@ -141,6 +143,7 @@ export default function ContactoPage() {
         </div>
       </section>
 
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );

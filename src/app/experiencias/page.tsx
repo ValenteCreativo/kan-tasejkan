@@ -5,6 +5,7 @@ import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import Tabs from '../../components/ui/Tabs';
 import SectionGallery from '../../components/ui/SectionGallery';
+import BackButton from '../../components/ui/BackButton';
 import { getAllServices } from '@/actions';
 
 type ServiceItem = {
@@ -70,6 +71,7 @@ export default function ExperienciasPage() {
   return (
     <>
       <HeroSection title="Experiencias Turísticas Comunitarias" subtitle="Vive la cultura indígena de manera auténtica y transformadora" />
+      <BackButton />
       <section className="content-container py-12 md:py-20">
         {tabs.length > 0 ? <Tabs tabs={tabs} /> : (
           <div className="text-center py-8">
@@ -77,6 +79,7 @@ export default function ExperienciasPage() {
           </div>
         )}
       </section>
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );

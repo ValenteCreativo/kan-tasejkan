@@ -78,9 +78,9 @@ export default function OrbitalSystem() {
   useEffect(() => {
     function handleResize() {
       const w = window.innerWidth;
-      if (w >= 1280) { setLogoSize(380); setOrbitRadius(320); setIsMobile(false); }
-      else if (w >= 1024) { setLogoSize(320); setOrbitRadius(280); setIsMobile(false); }
-      else if (w >= 768) { setLogoSize(260); setOrbitRadius(240); setIsMobile(false); }
+      if (w >= 1280) { setLogoSize(300); setOrbitRadius(230); setIsMobile(false); }
+      else if (w >= 1024) { setLogoSize(260); setOrbitRadius(200); setIsMobile(false); }
+      else if (w >= 768) { setLogoSize(220); setOrbitRadius(180); setIsMobile(false); }
       else { setLogoSize(200); setOrbitRadius(0); setIsMobile(true); }
     }
     handleResize();
@@ -230,7 +230,7 @@ export default function OrbitalSystem() {
               background: '#D4A853',
               boxShadow: '0 0 8px rgba(212,168,83,0.6)',
             }}
-            animate={{ y: [0, -8, 0], opacity: [0.2, 0.7, 0.2] }}
+            animate={{ y: [0, -8, 0], opacity: [0.2, 0.2, 0.2] }}
             transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
           />
         );

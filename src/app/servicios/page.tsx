@@ -6,6 +6,7 @@ import Footer from '../../components/ui/Footer';
 import Tabs from '../../components/ui/Tabs';
 import SectionGallery from '../../components/ui/SectionGallery';
 import EditableText from '../../components/ui/EditableText';
+import BackButton from '../../components/ui/BackButton';
 
 const servicios = [
   {
@@ -102,9 +103,11 @@ export default function ServiciosPage() {
   return (
     <>
       <HeroSection title="Servicios" subtitle="Todo lo que necesitas para una estancia inolvidable rodeado de naturaleza" />
+      <BackButton />
       <section className="content-container py-12 md:py-20">
         <Tabs tabs={tabs} />
       </section>
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );

@@ -35,19 +35,21 @@ function GaleriaContent() {
   // Si no hay sección, mostrar selector
   if (isDynamic) {
     // Dynamic item (taller or experiencia from DB)
+    const cleanLabel = paramSection.replace(/-\d+$/, '').replace(/-/g, ' ');
     return (
       <div className="max-w-2xl mx-auto px-5 md:px-8 mt-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-[500] text-[#1A1A1A]">Editar sección</h2>
+          <h2 className="text-lg font-[500] text-[#1A1A1A] capitalize">{cleanLabel}</h2>
           <Link href="/admin" className="text-xs text-[#1B4332] font-[500] px-3 py-1.5 rounded-full bg-[#1B4332]/5">
             Volver
           </Link>
         </div>
         <SectionEditor
           section={paramSection}
-          sectionLabel={paramSection.replace(/-\d+$/, '').replace(/-/g, ' ')}
+          sectionLabel={cleanLabel}
           textKey={`${paramSection}_texto`}
           textFallback=""
+          serviceSlug={paramSection}
         />
       </div>
     );

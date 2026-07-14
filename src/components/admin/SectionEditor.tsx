@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Trash2, Image as ImageIcon, Video, Loader2, Camera, Save, Check } from 'lucide-react';
-import { getAllMedia, createMedia, deleteMedia, uploadFile, getSiteSetting, updateSiteSettings } from '@/actions';
+import { getAllMedia, createMedia, deleteMedia, uploadFile, getSiteSetting, updateSiteSettings, getServiceBySlug, updateService } from '@/actions';
 import { useDropzone } from 'react-dropzone';
 
 type MediaItem = {
@@ -22,9 +22,10 @@ interface SectionEditorProps {
   sectionLabel: string;
   textKey: string;
   textFallback: string;
+  serviceSlug?: string; // If this is a service, allows editing price
 }
 
-export default function SectionEditor({ section, sectionLabel, textKey, textFallback }: SectionEditorProps) {
+export default function SectionEditor({ section, sectionLabel, textKey, textFallback, serviceSlug }: SectionEditorProps) {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -33,6 +34,7 @@ export default function SectionEditor({ section, sectionLabel, textKey, textFall
 
   // Text editing
   const [text, setText] = useState(textFallback);
+  const [price, setPrice] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -40,7 +42,14 @@ export default function SectionEditor({ section, sectionLabel, textKey, textFall
     getSiteSetting(textKey).then(({ data }) => {
       if (data) setText(data);
     }).catch(() => {});
-  }, [textKey]);
+    // Load price from service if it's a service slug
+    if (serviceSlug) {
+      getServiceBySlug(serviceSlug).then(({ data }) => {
+        if (data?.price) setPrice(data.price);
+        if (data?.description && !textFallback) setText(data.description);
+      }).catch(() => {});
+    }
+  }, [textKey, serviceSlug, textFallback]);
 
   const loadMedia = useCallback(async () => {
     setLoading(true);
@@ -55,6 +64,16 @@ export default function SectionEditor({ section, sectionLabel, textKey, textFall
     setSaving(true);
     setSaved(false);
     await updateSiteSettings({ [textKey]: text });
+    // If it's a service, also update description and price in services table
+    if (serviceSlug) {
+      const { data } = await getServiceBySlug(serviceSlug);
+      if (data) {
+        await updateService(data.id, {
+          description: text || null,
+          price: price || null,
+        });
+      }
+    }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -141,6 +160,20 @@ export default function SectionEditor({ section, sectionLabel, textKey, textFall
           className="w-full px-3 py-2 bg-[#FAFAFA] border border-[#E0DDD5] rounded-lg text-sm text-[#1A1A1A] focus:border-[#1B4332] focus:outline-none resize-y"
           placeholder={`Describe ${sectionLabel}...`}
         />
+        {serviceSlug && (
+          <div className="mt-3">
+            <label className="text-xs font-[600] uppercase tracking-wider text-[#4A4A4A] block mb-1">
+              Precio
+            </label>
+            <input
+              type="text"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full px-3 py-2 bg-[#FAFAFA] border border-[#E0DDD5] rounded-lg text-sm text-[#1A1A1A] focus:border-[#1B4332] focus:outline-none"
+              placeholder="Ej: 250 (dejar vacío para 'Consultar')"
+            />
+          </div>
+        )}
         <button
           onClick={handleSaveText}
           disabled={saving}

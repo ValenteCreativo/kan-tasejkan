@@ -3,6 +3,7 @@
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import SectionGallery from '../../components/ui/SectionGallery';
+import BackButton from '../../components/ui/BackButton';
 
 export default function QuienesSomosPage() {
   return (
@@ -11,6 +12,7 @@ export default function QuienesSomosPage() {
         title="Quiénes Somos"
         subtitle="Somos una comunidad indígena comprometida con el turismo sustentable y la preservación de nuestra cultura ancestral"
       />
+      <BackButton />
 
       <section className="content-container py-16 md:py-24">
         <div className="max-w-4xl mx-auto">
@@ -53,6 +55,7 @@ export default function QuienesSomosPage() {
         </div>
       </section>
 
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );
