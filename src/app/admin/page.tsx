@@ -7,17 +7,6 @@ import { WHITELISTED_EMAIL } from '../../lib/constants';
 import {
   ChevronRight,
   LogOut,
-  Home,
-  UtensilsCrossed,
-  Mountain,
-  Waves,
-  Tent,
-  Flame,
-  Heart,
-  Award,
-  Users,
-  TreePine,
-  Tag,
   Settings,
 } from 'lucide-react';
 
@@ -25,25 +14,27 @@ type User = { email: string; isAdmin: boolean };
 
 const SECTIONS = {
   'Servicios': [
-    { label: 'Hospedaje', section: 'hospedaje', icon: Home },
-    { label: 'Restaurante', section: 'restaurant', icon: UtensilsCrossed },
-    { label: 'Aventura', section: 'aventura', icon: Mountain },
-    { label: 'Balneario', section: 'balneario', icon: Waves },
-    { label: 'Camping', section: 'camping', icon: Tent },
+    { label: 'Hospedaje', href: '/admin/galeria?seccion=hospedaje' },
+    { label: 'Restaurante', href: '/admin/galeria?seccion=restaurant' },
+    { label: 'Aventura', href: '/admin/galeria?seccion=aventura' },
+    { label: 'Balneario', href: '/admin/galeria?seccion=balneario' },
+    { label: 'Camping', href: '/admin/galeria?seccion=camping' },
   ],
   'Talleres': [
-    { label: 'Talleres (general)', section: 'talleres', icon: Users },
+    { label: '✏️ Administrar talleres', href: '/admin/secciones?cat=talleres' },
+    { label: '📷 Fotos de talleres', href: '/admin/galeria?seccion=talleres' },
   ],
   'Experiencias': [
-    { label: 'Gastronómica', section: 'experiencia-gastronomica', icon: Flame },
-    { label: 'Rituales', section: 'rituales', icon: Heart },
-    { label: 'Bodas', section: 'bodas', icon: Heart },
+    { label: '✏️ Administrar experiencias', href: '/admin/secciones?cat=experiencias' },
+    { label: 'Gastronómica', href: '/admin/galeria?seccion=experiencia-gastronomica' },
+    { label: 'Rituales', href: '/admin/galeria?seccion=rituales' },
+    { label: 'Bodas', href: '/admin/galeria?seccion=bodas' },
   ],
   'Otros': [
-    { label: 'Quiénes Somos', section: 'comunidad', icon: Users },
-    { label: 'Premios', section: 'premios', icon: Award },
-    { label: 'Precios y Promos', section: 'precios', icon: Tag },
-    { label: 'Paisajes', section: 'paisajes', icon: TreePine },
+    { label: 'Quiénes Somos', href: '/admin/galeria?seccion=comunidad' },
+    { label: 'Premios', href: '/admin/galeria?seccion=premios' },
+    { label: 'Precios y Promos', href: '/admin/galeria?seccion=precios' },
+    { label: 'Paisajes', href: '/admin/galeria?seccion=paisajes' },
   ],
 };
 
@@ -107,22 +98,16 @@ export default function AdminPage() {
               {group}
             </p>
             <div className="space-y-2">
-              {items.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.section}
-                    href={`/admin/galeria?seccion=${item.section}`}
-                    className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-[#1B4332]/8 flex items-center justify-center shrink-0">
-                      <Icon size={16} className="text-[#1B4332]" />
-                    </div>
-                    <span className="text-sm font-[500] text-[#1A1A1A] flex-1">{item.label}</span>
-                    <ChevronRight size={14} className="text-[#8B8B8B]" />
-                  </Link>
-                );
-              })}
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors"
+                >
+                  <span className="text-sm font-[500] text-[#1A1A1A] flex-1">{item.label}</span>
+                  <ChevronRight size={14} className="text-[#8B8B8B]" />
+                </Link>
+              ))}
             </div>
           </div>
         ))}
