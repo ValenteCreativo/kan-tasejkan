@@ -4,12 +4,46 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { WHITELISTED_EMAIL } from '../../lib/constants';
-import { LogOut, Plus, Minus, X, Loader2, Settings, Circle } from 'lucide-react';
+import { LogOut, Plus, Minus, X, Loader2, Settings, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame, Heart, Award, Users, TreePine, Tag, Star, Book, Map, Music, Camera, Coffee, Leaf, Sun } from 'lucide-react';
 import { getNavigationItems, createNavigationItem, deleteNavigationItem, getAllServices, createService, deleteService } from '@/actions';
 
 type User = { email: string; isAdmin: boolean };
 type NavItem = { id: string; label: string; href: string; icon: string; isVisible: boolean | null; orderIndex: number | null };
 type ServiceItem = { id: string; title: string; slug: string; category: string; description: string | null; price: string | null; isPublished: boolean | null };
+
+const ICON_OPTIONS = [
+  { value: 'home', label: 'Casa', Icon: Home },
+  { value: 'mountain', label: 'Montaña', Icon: Mountain },
+  { value: 'waves', label: 'Agua', Icon: Waves },
+  { value: 'tent', label: 'Camping', Icon: Tent },
+  { value: 'flame', label: 'Fuego', Icon: Flame },
+  { value: 'heart', label: 'Corazón', Icon: Heart },
+  { value: 'award', label: 'Premio', Icon: Award },
+  { value: 'users', label: 'Personas', Icon: Users },
+  { value: 'tree', label: 'Árbol', Icon: TreePine },
+  { value: 'tag', label: 'Precio', Icon: Tag },
+  { value: 'star', label: 'Estrella', Icon: Star },
+  { value: 'utensils', label: 'Comida', Icon: UtensilsCrossed },
+  { value: 'book', label: 'Libro', Icon: Book },
+  { value: 'map', label: 'Mapa', Icon: Map },
+  { value: 'music', label: 'Música', Icon: Music },
+  { value: 'camera', label: 'Cámara', Icon: Camera },
+  { value: 'coffee', label: 'Café', Icon: Coffee },
+  { value: 'leaf', label: 'Hoja', Icon: Leaf },
+  { value: 'sun', label: 'Sol', Icon: Sun },
+];
+
+function getIconComponent(iconName: string) {
+  const found = ICON_OPTIONS.find(i => i.value === iconName);
+  if (found) return found.Icon;
+  // fallback based on common names
+  switch (iconName) {
+    case 'people': return Users;
+    case 'hands': return Leaf;
+    case 'fire': return Flame;
+    default: return Star;
+  }
+}
 
 export default function AdminPage() {
   const router = useRouter();
@@ -21,6 +55,7 @@ export default function AdminPage() {
   // Popup for adding bolita (page)
   const [showPagePopup, setShowPagePopup] = useState(false);
   const [newPageTitle, setNewPageTitle] = useState('');
+  const [newPageIcon, setNewPageIcon] = useState('star');
   const [addingPage, setAddingPage] = useState(false);
 
   // Popup for adding tab (sub-item)
@@ -66,12 +101,13 @@ export default function AdminPage() {
     await createNavigationItem({
       label: newPageTitle.trim(),
       href,
-      icon: 'star',
+      icon: newPageIcon,
       description: '',
       orderIndex: navItems.length,
       isVisible: true,
     });
     setNewPageTitle('');
+    setNewPageIcon('star');
     setShowPagePopup(false);
     setAddingPage(false);
     loadData();
@@ -166,6 +202,7 @@ export default function AdminPage() {
         <div className="grid grid-cols-2 gap-3">
           {navItems.filter(n => n.isVisible).map((nav) => {
             const tabs = services.filter(s => s.category === getCategoryKey(nav.label));
+            const IconComp = getIconComponent(nav.icon);
 
             return (
               <button
@@ -178,7 +215,7 @@ export default function AdminPage() {
                 }`}
               >
                 <div className="w-12 h-12 rounded-full bg-[#1B4332]/10 flex items-center justify-center">
-                  <Circle size={16} className="text-[#1B4332]" fill="#1B4332" />
+                  <IconComp size={20} className="text-[#1B4332]" />
                 </div>
                 <span className="text-xs font-[600] text-[#1A1A1A]">{nav.label}</span>
                 <span className="text-[10px] text-[#8B8B8B]">{tabs.length} tab{tabs.length !== 1 ? 's' : ''}</span>
@@ -251,7 +288,7 @@ export default function AdminPage() {
       {/* Popup: Add page (bolita) */}
       {showPagePopup && (
         <div className="fixed inset-0 z-[999] bg-black/50 flex items-end md:items-center justify-center p-4" onClick={() => setShowPagePopup(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h3 className="text-base font-[600] text-[#1A1A1A]">Nueva Página</h3>
               <button onClick={() => setShowPagePopup(false)} className="w-8 h-8 rounded-full bg-[#F5F0E8] flex items-center justify-center">
@@ -266,6 +303,26 @@ export default function AdminPage() {
               placeholder="Nombre de la página"
               autoFocus
             />
+            {/* Icon selector */}
+            <div>
+              <p className="text-xs font-[500] text-[#4A4A4A] mb-2">Ícono</p>
+              <div className="grid grid-cols-5 gap-2">
+                {ICON_OPTIONS.map(({ value, Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setNewPageIcon(value)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                      newPageIcon === value
+                        ? 'bg-[#1B4332] text-white scale-110'
+                        : 'bg-[#F5F0E8] text-[#4A4A4A] active:bg-[#E0DDD5]'
+                    }`}
+                  >
+                    <Icon size={16} />
+                  </button>
+                ))}
+              </div>
+            </div>
             <button
               onClick={handleAddPage}
               disabled={addingPage || !newPageTitle.trim()}
