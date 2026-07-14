@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import SectionGallery from '../../components/ui/SectionGallery';
-import { getAllServices } from '@/actions';
+import BackButton from '../../components/ui/BackButton';
+import { getAllServices, getSiteSettings } from '@/actions';
 
 type ServiceItem = {
   id: string;
@@ -17,12 +18,21 @@ type ServiceItem = {
 export default function PreciosPage() {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [whatsappHref, setWhatsappHref] = useState('#');
 
   useEffect(() => {
     getAllServices(true).then(({ data }) => {
       setServices((data as ServiceItem[]) || []);
       setLoading(false);
     }).catch(() => setLoading(false));
+
+    getSiteSettings().then(({ data }) => {
+      const num = (data?.whatsapp_number || '+529241078457').replace(/[^0-9]/g, '');
+      const msg = encodeURIComponent(data?.whatsapp_message || 'Hola, me interesa conocer más sobre Kan-Tasejkan. ¿Podrían orientarme?');
+      setWhatsappHref(`https://wa.me/${num}?text=${msg}`);
+    }).catch(() => {
+      setWhatsappHref('https://wa.me/529241078457?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20Kan-Tasejkan.%20%C2%BFPodr%C3%ADan%20orientarme%3F');
+    });
   }, []);
 
   // Group by category
@@ -38,6 +48,7 @@ export default function PreciosPage() {
         title="Precios y Promociones"
         subtitle="Consulta nuestras tarifas y paquetes especiales"
       />
+      <BackButton />
 
       <section className="content-container py-12 md:py-20">
         <div className="max-w-3xl mx-auto">
@@ -47,12 +58,12 @@ export default function PreciosPage() {
               📞 Para reservaciones y precios actualizados contáctanos por WhatsApp
             </p>
             <a
-              href="https://wa.me/529241078457"
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-3 btn-kan-filled text-xs"
             >
-              WhatsApp: 924 107 8457
+              Reservar / Contactar
             </a>
           </div>
 
@@ -91,6 +102,7 @@ export default function PreciosPage() {
         </div>
       </section>
 
+      <div className="pb-16 md:pb-24" />
       <Footer />
     </>
   );

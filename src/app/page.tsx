@@ -1,10 +1,23 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import OrbitalSystem from '../components/orbital/OrbitalSystem';
 import Footer from '../components/ui/Footer';
+import { getSiteSettings } from '@/actions';
 
 export default function Home() {
+  const [subtitle, setSubtitle] = useState<string | null>(null);
+
+  useEffect(() => {
+    getSiteSettings().then(({ data }) => {
+      if (data?.landing_subtitle) setSubtitle(data.landing_subtitle);
+      else if (data?.site_tagline) setSubtitle(data.site_tagline);
+      else setSubtitle('Lugar de Sombras · Ecoturismo Indígena');
+    }).catch(() => {
+      setSubtitle('Lugar de Sombras · Ecoturismo Indígena');
+    });
+  }, []);
   return (
     <>
       {/* ─── Landing: Fondo natural + Logo + Menú orbital ─── */}
@@ -28,15 +41,15 @@ export default function Home() {
           transition={{ duration: 1 }}
         >
           <p className="text-base md:text-xl lg:text-2xl font-[300] tracking-[0.25em] text-white uppercase drop-shadow-lg">
-            Lugar de Sombras · Ecoturismo Indígena
+            {subtitle || '\u00A0'}
           </p>
         </motion.header>
 
         {/* Orbital system */}
         <motion.div
           className="relative z-10 flex-1 w-full flex items-center justify-center py-6"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ scale: 0.96 }}
+          animate={{ scale: 1 }}
           transition={{ duration: 1.2, delay: 0.2 }}
         >
           <OrbitalSystem />

@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram } from 'lucide-react';
 import Link from 'next/link';
+import { getSiteSettings } from '@/actions';
 
 function TikTokIcon() {
   return (
@@ -11,14 +13,45 @@ function TikTokIcon() {
   );
 }
 
+// Defaults (fallbacks if DB has no value yet)
+const DEFAULTS = {
+  site_name: 'Kan-Tasejkan',
+  site_tagline: 'Lugar de Sombras · Ecoturismo Indígena',
+  whatsapp_number: '+529241078457',
+  whatsapp_message: 'Hola, me interesa conocer más sobre Kan-Tasejkan. ¿Podrían orientarme?',
+  contact_email: 'contacto@kan-tasejkan.com',
+  horario: 'Lun – Dom, 8:00 – 20:00 (WhatsApp)',
+  facebook_url: 'https://facebook.com/kantasejkan',
+  instagram_url: 'https://instagram.com/kantasejkan',
+  tiktok_url: 'https://vt.tiktok.com/ZSXNr1XAr/',
+  google_maps_url: 'https://maps.app.goo.gl/B1ts4V4fcXwNtTnh7',
+  direccion: 'Centro Ecoturístico Kan-Tasejkan\nTonalapan, Mecayapan, Sierra Sur de Veracruz',
+};
+
 export default function Footer() {
+  const [s, setS] = useState<Record<string, string>>(DEFAULTS);
+
+  useEffect(() => {
+    getSiteSettings().then(({ data }) => {
+      if (data) setS(prev => ({ ...prev, ...data }));
+    }).catch(() => {});
+  }, []);
+
+  const whatsappNum = (s.whatsapp_number || DEFAULTS.whatsapp_number).replace(/[^0-9]/g, '');
+  const whatsappMsg = encodeURIComponent(s.whatsapp_message || DEFAULTS.whatsapp_message);
+  const whatsappHref = `https://wa.me/${whatsappNum}?text=${whatsappMsg}`;
+
   return (
     <footer className="bg-[#1B4332]">
       <div className="content-container py-10 md:py-12">
         {/* Top: Logo + tagline */}
         <div className="text-center mb-8">
-          <h2 className="text-base font-[400] tracking-[0.3em] uppercase text-white">Kan-Tasejkan</h2>
-          <p className="text-xs text-white/70 mt-1">Lugar de Sombras · Ecoturismo Indígena</p>
+          <h2 className="text-base font-[400] tracking-[0.3em] uppercase text-white">
+            {s.site_name || DEFAULTS.site_name}
+          </h2>
+          <p className="text-xs text-white/70 mt-1">
+            {s.site_tagline || DEFAULTS.site_tagline}
+          </p>
         </div>
 
         {/* Main grid */}
@@ -31,7 +64,7 @@ export default function Footer() {
             </h3>
             <div className="flex items-start gap-3 text-white text-sm leading-relaxed mb-4">
               <MapPin size={16} className="mt-0.5 shrink-0 text-[#D4A853]" />
-              <p>Centro Ecoturístico Kan-Tasejkan<br />Tonalapan, Mecayapan, Sierra Sur de Veracruz</p>
+              <p className="whitespace-pre-line">{s.direccion || DEFAULTS.direccion}</p>
             </div>
             <div className="w-full h-28 rounded-lg overflow-hidden border border-white/20">
               <iframe
@@ -46,7 +79,7 @@ export default function Footer() {
               />
             </div>
             <a
-              href="https://maps.app.goo.gl/B1ts4V4fcXwNtTnh7"
+              href={s.google_maps_url || DEFAULTS.google_maps_url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-[#D4A853] hover:text-white transition-colors mt-2 inline-block"
@@ -61,17 +94,17 @@ export default function Footer() {
               Contacto
             </h3>
             <div className="space-y-3">
-              <a href="https://wa.me/529241078457" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white text-sm hover:text-[#D4A853] transition-colors">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white text-sm hover:text-[#D4A853] transition-colors">
                 <Phone size={15} className="text-[#D4A853] shrink-0" />
-                924 107 8457
+                Reservar / Contactar
               </a>
-              <a href="mailto:contacto@kan-tasejkan.com" className="flex items-center gap-3 text-white text-sm hover:text-[#D4A853] transition-colors">
+              <a href={`mailto:${s.contact_email || DEFAULTS.contact_email}`} className="flex items-center gap-3 text-white text-sm hover:text-[#D4A853] transition-colors">
                 <Mail size={15} className="text-[#D4A853] shrink-0" />
-                contacto@kan-tasejkan.com
+                {s.contact_email || DEFAULTS.contact_email}
               </a>
               <div className="flex items-center gap-3 text-white text-sm">
                 <Clock size={15} className="text-[#D4A853] shrink-0" />
-                Lun – Dom, 8:00 – 18:00
+                {s.horario || DEFAULTS.horario}
               </div>
             </div>
           </div>
@@ -82,33 +115,39 @@ export default function Footer() {
               Redes Sociales
             </h3>
             <div className="flex gap-3">
-              <a
-                href="https://facebook.com/kantasejkan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook size={16} className="text-white" />
-              </a>
-              <a
-                href="https://instagram.com/kantasejkan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={16} className="text-white" />
-              </a>
-              <a
-                href="https://vt.tiktok.com/ZSXNr1XAr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
-                aria-label="TikTok"
-              >
-                <TikTokIcon />
-              </a>
+              {(s.facebook_url || DEFAULTS.facebook_url) && (
+                <a
+                  href={s.facebook_url || DEFAULTS.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook size={16} className="text-white" />
+                </a>
+              )}
+              {(s.instagram_url || DEFAULTS.instagram_url) && (
+                <a
+                  href={s.instagram_url || DEFAULTS.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram size={16} className="text-white" />
+                </a>
+              )}
+              {(s.tiktok_url || DEFAULTS.tiktok_url) && (
+                <a
+                  href={s.tiktok_url || DEFAULTS.tiktok_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors"
+                  aria-label="TikTok"
+                >
+                  <TikTokIcon />
+                </a>
+              )}
             </div>
           </div>
 
@@ -131,7 +170,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-8 pt-4 border-t border-white/15 text-center">
           <p className="text-white/60 text-xs">
-            © 2026 Kan-Tasejkan · Lugar de Sombras. Todos los derechos reservados.
+            © {new Date().getFullYear()} {s.site_name || DEFAULTS.site_name} · {s.site_tagline || DEFAULTS.site_tagline}. Todos los derechos reservados.
           </p>
         </div>
       </div>

@@ -48,11 +48,12 @@ function getIcon(iconName: string) {
 }
 
 export default function OrbitalSystem() {
-  const [logoSize, setLogoSize] = useState(320);
-  const [orbitRadius, setOrbitRadius] = useState(280);
+  const [logoSize, setLogoSize] = useState(0);
+  const [orbitRadius, setOrbitRadius] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [navItems, setNavItems] = useState<NavItem[]>(FALLBACK_ITEMS);
+  const [navItems, setNavItems] = useState<NavItem[]>([]);
+  const [ready, setReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,9 +71,17 @@ export default function OrbitalSystem() {
             icon: item.icon,
             angle: i * step,
           })));
+        } else {
+          setNavItems(FALLBACK_ITEMS);
         }
+      } else {
+        setNavItems(FALLBACK_ITEMS);
       }
-    }).catch(() => {});
+      setReady(true);
+    }).catch(() => {
+      setNavItems(FALLBACK_ITEMS);
+      setReady(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -97,6 +106,10 @@ export default function OrbitalSystem() {
   }
 
   // ─── MOBILE LAYOUT ───
+  if (!ready || logoSize === 0) {
+    return null;
+  }
+
   if (isMobile) {
     return (
       <div className="flex flex-col items-center w-full px-4 gap-6">
@@ -147,6 +160,7 @@ export default function OrbitalSystem() {
       {/* Logo (center) */}
       <motion.div
         className="absolute"
+        initial={false}
         style={{
           width: logoSize,
           height: logoSize,
@@ -190,7 +204,8 @@ export default function OrbitalSystem() {
             }}
           >
             <motion.div
-              className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex items-center justify-center mb-2 group-hover:bg-white/30 group-hover:border-white/50 group-hover:shadow-lg transition-all duration-300"
+              className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center mb-2 group-hover:bg-white/20 group-hover:border-white/30 group-hover:shadow-lg transition-all duration-300"
+              initial={false}
               whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -229,8 +244,9 @@ export default function OrbitalSystem() {
               transform: 'translate(-50%, -50%)',
               background: '#D4A853',
               boxShadow: '0 0 8px rgba(212,168,83,0.6)',
+              opacity: 0.2,
             }}
-            animate={{ y: [0, -8, 0], opacity: [0.2, 0.2, 0.2] }}
+            animate={{ y: [0, -8, 0] }}
             transition={{ duration: p.dur, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
           />
         );

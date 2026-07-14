@@ -1,14 +1,34 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import BackButton from '../../components/ui/BackButton';
+import { getSiteSettings } from '@/actions';
 
-export const metadata = {
-  title: 'Contacto — Kan-Tasejkan',
-  description: 'Contáctanos para reservaciones, información sobre servicios y actividades. Centro Ecoturístico Kan-Tasejkan, Tonalapan, Mecayapan, Veracruz.',
+const DEFAULTS = {
+  whatsapp_number: '+529241078457',
+  whatsapp_message: 'Hola, me interesa conocer más sobre Kan-Tasejkan. ¿Podrían orientarme?',
+  contact_email: 'contacto@kan-tasejkan.com',
+  horario: 'Lun – Dom, 8:00 – 20:00 (WhatsApp)',
+  direccion: 'Centro Ecoturístico Kan-Tasejkan\nTonalapan, Mecayapan, Sierra Sur de Veracruz',
+  google_maps_url: 'https://maps.app.goo.gl/B1ts4V4fcXwNtTnh7',
 };
 
 export default function ContactoPage() {
+  const [s, setS] = useState<Record<string, string>>(DEFAULTS);
+
+  useEffect(() => {
+    getSiteSettings().then(({ data }) => {
+      if (data) setS(prev => ({ ...prev, ...data }));
+    }).catch(() => {});
+  }, []);
+
+  const whatsappNum = (s.whatsapp_number || DEFAULTS.whatsapp_number).replace(/[^0-9]/g, '');
+  const whatsappMsg = encodeURIComponent(s.whatsapp_message || DEFAULTS.whatsapp_message);
+  const whatsappHref = `https://wa.me/${whatsappNum}?text=${whatsappMsg}`;
+
   return (
     <>
       <HeroSection
@@ -31,7 +51,7 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <p className="text-sm font-[500] text-[#1A1A1A]">Ubicación</p>
-                    <p className="text-sm text-[#4A4A4A]">Centro Ecoturístico Kan-Tasejkan<br />Tonalapan, Mecayapan, Sierra Sur de Veracruz</p>
+                    <p className="text-sm text-[#4A4A4A] whitespace-pre-line">{s.direccion || DEFAULTS.direccion}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -39,8 +59,10 @@ export default function ContactoPage() {
                     <Phone size={18} className="text-[#D4A853]" />
                   </div>
                   <div>
-                    <p className="text-sm font-[500] text-[#1A1A1A]">Teléfono</p>
-                    <a href="https://wa.me/529241078457" target="_blank" rel="noopener noreferrer" className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">924 107 8457</a>
+                    <p className="text-sm font-[500] text-[#1A1A1A]">Teléfono / WhatsApp</p>
+                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">
+                      {s.whatsapp_number || DEFAULTS.whatsapp_number}
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -49,7 +71,7 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <p className="text-sm font-[500] text-[#1A1A1A]">WhatsApp</p>
-                    <a href="https://wa.me/529241078457" target="_blank" rel="noopener noreferrer" className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">Enviar mensaje</a>
+                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">Enviar mensaje</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -58,7 +80,9 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <p className="text-sm font-[500] text-[#1A1A1A]">Email</p>
-                    <a href="mailto:contacto@kan-tasejkan.com" className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">contacto@kan-tasejkan.com</a>
+                    <a href={`mailto:${s.contact_email || DEFAULTS.contact_email}`} className="text-sm text-[#4A4A4A] hover:text-[#1B4332] transition-colors">
+                      {s.contact_email || DEFAULTS.contact_email}
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -67,7 +91,7 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <p className="text-sm font-[500] text-[#1A1A1A]">Horario de Atención</p>
-                    <p className="text-sm text-[#4A4A4A]">Lunes a Domingo<br />8:00 AM - 6:00 PM</p>
+                    <p className="text-sm text-[#4A4A4A]">{s.horario || DEFAULTS.horario}</p>
                   </div>
                 </div>
               </div>
@@ -87,7 +111,7 @@ export default function ContactoPage() {
               />
             </div>
             <a
-              href="https://maps.app.goo.gl/B1ts4V4fcXwNtTnh7"
+              href={s.google_maps_url || DEFAULTS.google_maps_url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-[#2D6A4F] hover:text-[#1B4332] transition-colors inline-flex items-center gap-1"

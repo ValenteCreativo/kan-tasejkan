@@ -1,12 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Home, UtensilsCrossed, Mountain, Waves, Tent } from 'lucide-react';
 import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import Tabs from '../../components/ui/Tabs';
 import SectionGallery from '../../components/ui/SectionGallery';
-import EditableText from '../../components/ui/EditableText';
 import BackButton from '../../components/ui/BackButton';
+import { getSiteSettings } from '@/actions';
 
 const servicios = [
   {
@@ -61,8 +62,10 @@ const servicios = [
   },
 ];
 
-function ServicioContent({ servicio }: { servicio: typeof servicios[number] }) {
+function ServicioContent({ servicio, textos }: { servicio: typeof servicios[number]; textos: Record<string, string> }) {
   const Icon = servicio.icon;
+  const descripcion = textos[servicio.settingKey] || servicio.description;
+
   return (
     <div className="max-w-5xl mx-auto">
       <div className="flex items-center gap-4 justify-center mb-8">
@@ -75,7 +78,7 @@ function ServicioContent({ servicio }: { servicio: typeof servicios[number] }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
         <div className="md:col-span-2">
           <p className="text-[#4A4A4A] leading-relaxed text-lg font-light">
-            <EditableText settingKey={servicio.settingKey} fallback={servicio.description} />
+            {descripcion}
           </p>
         </div>
         <div>
@@ -94,10 +97,31 @@ function ServicioContent({ servicio }: { servicio: typeof servicios[number] }) {
 }
 
 export default function ServiciosPage() {
+  const [textos, setTextos] = useState<Record<string, string> | null>(null);
+
+  useEffect(() => {
+    getSiteSettings().then(({ data }) => {
+      setTextos(data || {});
+    }).catch(() => {
+      setTextos({});
+    });
+  }, []);
+
+  if (textos === null) {
+    return (
+      <>
+        <HeroSection title="Servicios" subtitle="Todo lo que necesitas para una estancia inolvidable rodeado de naturaleza" />
+        <div className="flex justify-center py-16">
+          <div className="w-3 h-3 rounded-full bg-[#1B4332] animate-pulse" />
+        </div>
+      </>
+    );
+  }
+
   const tabs = servicios.map((s) => ({
     id: s.id,
     label: s.label,
-    content: <ServicioContent servicio={s} />,
+    content: <ServicioContent servicio={s} textos={textos} />,
   }));
 
   return (

@@ -11,16 +11,23 @@ interface EditableTextProps {
 
 /**
  * Shows text from DB (site_settings) if available, otherwise shows fallback.
- * The admin can edit these from /admin/contenido.
+ * Does NOT render anything visible until the DB responds to avoid flash.
  */
 export default function EditableText({ settingKey, fallback, className = '' }: EditableTextProps) {
-  const [text, setText] = useState(fallback);
+  const [text, setText] = useState<string | null>(null);
 
   useEffect(() => {
     getSiteSetting(settingKey).then(({ data }) => {
-      if (data) setText(data);
-    }).catch(() => {});
-  }, [settingKey]);
+      setText(data || fallback);
+    }).catch(() => {
+      setText(fallback);
+    });
+  }, [settingKey, fallback]);
+
+  // Don't render text until we know what to show
+  if (text === null) {
+    return <span className={`${className} opacity-0`} aria-hidden>{fallback}</span>;
+  }
 
   return <span className={className}>{text}</span>;
 }
