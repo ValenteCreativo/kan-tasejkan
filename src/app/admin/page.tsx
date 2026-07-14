@@ -239,13 +239,13 @@ export default function AdminPage() {
                     href={`/admin/galeria?seccion=${nav.href.replace('/', '')}`}
                     className="text-[10px] px-2.5 py-1 rounded-full bg-[#1B4332]/8 text-[#1B4332] font-[500]"
                   >
-                    📷 Fotos
+                    ✏️ Editar página
                   </Link>
                   <button
                     onClick={() => handleDeletePage(nav.id, nav.label)}
                     className="text-[10px] px-2.5 py-1 rounded-full bg-red-50 text-red-500 font-[500]"
                   >
-                    Eliminar página
+                    Eliminar
                   </button>
                 </div>
               </div>
