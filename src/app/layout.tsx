@@ -12,14 +12,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Kan-Tasejkan — Lugar de Sombras | Ecoturismo Indígena en Veracruz",
-  description: "Espacio ecoturístico indígena en la Sierra de Zongolica, Veracruz. Hospedaje en cabañas, restaurante, deportes de aventura, balneario, camping, talleres culturales y experiencias turísticas comunitarias.",
+  description: "Espacio ecoturístico indígena en Tonalapan, municipio de Mecayapan, Sierra Sur de Veracruz. Hospedaje en cabañas, restaurante, deportes de aventura, balneario, camping, talleres culturales y experiencias turísticas comunitarias.",
   icons: {
     icon: '/logo-nobg.png',
     apple: '/logo-nobg.png',
   },
   openGraph: {
     title: "Kan-Tasejkan — Lugar de Sombras",
-    description: "Ecoturismo indígena en la Sierra de Zongolica, Veracruz. Vive experiencias auténticas en contacto con la naturaleza y la cultura ancestral.",
+    description: "Ecoturismo indígena en Tonalapan, municipio de Mecayapan, Sierra Sur de Veracruz. Vive experiencias auténticas en contacto con la naturaleza y la cultura ancestral.",
     type: "website",
   },
 };

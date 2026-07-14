@@ -5,4 +5,4 @@ export const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_DEFAULT_PASSWORD || 'Adm
 
 export const SITE_NAME = 'Kan-Tasejkan';
 export const SITE_TAGLINE = 'Lugar de Sombras';
-export const SITE_DESCRIPTION = 'Espacio ecoturístico indígena en la Sierra de Zongolica, Veracruz.';
+export const SITE_DESCRIPTION = 'Espacio ecoturístico indígena en Tonalapan, Mecayapan, Sierra Sur de Veracruz.';

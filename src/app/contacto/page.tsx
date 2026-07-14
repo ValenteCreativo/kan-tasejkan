@@ -4,7 +4,7 @@ import Footer from '../../components/ui/Footer';
 
 export const metadata = {
   title: 'Contacto — Kan-Tasejkan',
-  description: 'Contáctanos para reservaciones, información sobre servicios y actividades. Centro Ecoturístico Kan-Tasejkan, Sierra de Zongolica, Veracruz.',
+  description: 'Contáctanos para reservaciones, información sobre servicios y actividades. Centro Ecoturístico Kan-Tasejkan, Tonalapan, Mecayapan, Veracruz.',
 };
 
 export default function ContactoPage() {
@@ -29,7 +29,7 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <p className="text-sm font-[500] text-[#1A1A1A]">Ubicación</p>
-                    <p className="text-sm text-[#4A4A4A]">Centro Ecoturístico Kan-Tasejkan<br />Sierra de Zongolica, Veracruz, México</p>
+                    <p className="text-sm text-[#4A4A4A]">Centro Ecoturístico Kan-Tasejkan<br />Tonalapan, Mecayapan, Sierra Sur de Veracruz</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">

@@ -5,6 +5,7 @@ import HeroSection from '../../components/ui/HeroSection';
 import Footer from '../../components/ui/Footer';
 import Tabs from '../../components/ui/Tabs';
 import SectionGallery from '../../components/ui/SectionGallery';
+import EditableText from '../../components/ui/EditableText';
 
 const servicios = [
   {
@@ -12,7 +13,8 @@ const servicios = [
     label: 'Hospedaje',
     title: 'Hospedaje en Cabañas',
     section: 'hospedaje',
-    description: 'Cabañas rústicas y acogedoras integradas al entorno natural de la sierra. Despierta con el sonido de la naturaleza y el aroma del bosque de niebla.',
+    settingKey: 'hospedaje_texto',
+    description: 'Cabañas rústicas y acogedoras integradas al entorno natural. Despierta con el sonido de la naturaleza y el aroma del bosque.',
     icon: Home,
     features: ['Cabañas familiares', 'Vistas al bosque', 'Agua caliente', 'Chimenea'],
   },
@@ -21,7 +23,8 @@ const servicios = [
     label: 'Restaurante',
     title: 'Restaurante',
     section: 'restaurant',
-    description: 'Gastronomía regional e indígena preparada con ingredientes locales y técnicas ancestrales. Sabores auténticos de la Sierra de Zongolica.',
+    settingKey: 'restaurant_texto',
+    description: 'Gastronomía regional e indígena preparada con ingredientes locales y técnicas ancestrales. Sabores auténticos de la Sierra Sur de Veracruz.',
     icon: UtensilsCrossed,
     features: ['Comida regional', 'Ingredientes orgánicos', 'Recetas ancestrales', 'Café de altura'],
   },
@@ -30,6 +33,7 @@ const servicios = [
     label: 'Aventura',
     title: 'Deportes de Aventura',
     section: 'aventura',
+    settingKey: 'aventura_texto',
     description: 'Tirolesas, rappel, senderismo y más actividades para los amantes de la adrenalina en un entorno natural incomparable.',
     icon: Mountain,
     features: ['Tirolesa', 'Rappel', 'Senderismo', 'Ciclismo de montaña'],
@@ -39,7 +43,8 @@ const servicios = [
     label: 'Balneario',
     title: 'Balneario',
     section: 'balneario',
-    description: 'Albercas y pozas naturales rodeadas de vegetación exuberante. Un oasis de frescura en medio de la sierra.',
+    settingKey: 'balneario_texto',
+    description: 'Albercas y pozas naturales rodeadas de vegetación exuberante. Un oasis de frescura.',
     icon: Waves,
     features: ['Pozas naturales', 'Alberca', 'Área de descanso', 'Toboganes'],
   },
@@ -48,7 +53,8 @@ const servicios = [
     label: 'Camping',
     title: 'Camping',
     section: 'camping',
-    description: 'Áreas de acampado equipadas para vivir la experiencia completa de dormir bajo las estrellas en la sierra veracruzana.',
+    settingKey: 'camping_texto',
+    description: 'Áreas de acampado equipadas para dormir bajo las estrellas en la sierra veracruzana.',
     icon: Tent,
     features: ['Zona de fogatas', 'Sanitarios', 'Área equipada', 'Noches de estrellas'],
   },
@@ -67,7 +73,9 @@ function ServicioContent({ servicio }: { servicio: typeof servicios[number] }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
         <div className="md:col-span-2">
-          <p className="text-[#4A4A4A] leading-relaxed text-lg font-light">{servicio.description}</p>
+          <p className="text-[#4A4A4A] leading-relaxed text-lg font-light">
+            <EditableText settingKey={servicio.settingKey} fallback={servicio.description} />
+          </p>
         </div>
         <div>
           <span className="text-[10px] uppercase tracking-[0.2em] text-[#4A4A4A] font-[500] block mb-3">Características</span>
@@ -94,7 +102,7 @@ export default function ServiciosPage() {
   return (
     <>
       <HeroSection title="Servicios" subtitle="Todo lo que necesitas para una estancia inolvidable rodeado de naturaleza" />
-      <section className="content-container py-16 md:py-24">
+      <section className="content-container py-12 md:py-20">
         <Tabs tabs={tabs} />
       </section>
       <Footer />

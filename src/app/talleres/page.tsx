@@ -41,7 +41,7 @@ export default function TalleresPage() {
   return (
     <>
       <HeroSection title="Talleres" subtitle="Aprende de nuestra cultura ancestral con experiencias prácticas y vivenciales" />
-      <section className="content-container py-16 md:py-24">
+      <section className="content-container py-12 md:py-20">
         <Tabs tabs={tabs} />
       </section>
       <Footer />

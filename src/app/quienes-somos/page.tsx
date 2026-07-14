@@ -20,7 +20,7 @@ export default function QuienesSomosPage() {
             <h2 className="text-2xl md:text-3xl font-[200] text-[#1B4332] mt-2 mb-5">Kan-Tasejkan</h2>
             <div className="space-y-4 text-[#4A4A4A] leading-relaxed">
               <p>
-                Kan-Tasejkan, que en nuestra lengua náhuatl significa &ldquo;Lugar de Sombras&rdquo;, es un espacio ecoturístico ubicado en el corazón de la Sierra de Zongolica, Veracruz.
+                Kan-Tasejkan, que en nuestra lengua náhuatl significa &ldquo;Lugar de Sombras&rdquo;, es un espacio ecoturístico ubicado en Tonalapan, municipio de Mecayapan, en la Sierra Sur de Veracruz.
               </p>
               <p>
                 Nuestro proyecto nace del deseo de compartir la riqueza natural y cultural de nuestra comunidad con visitantes de todo el mundo, generando desarrollo económico local de manera sustentable.

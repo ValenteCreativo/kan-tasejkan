@@ -14,15 +14,15 @@ function TikTokIcon() {
 export default function Footer() {
   return (
     <footer className="bg-[#1B4332]">
-      <div className="content-container py-14 md:py-16">
+      <div className="content-container py-10 md:py-12">
         {/* Top: Logo + tagline */}
-        <div className="text-center mb-10">
-          <h2 className="text-lg font-[400] tracking-[0.3em] uppercase text-white">Kan-Tasejkan</h2>
-          <p className="text-sm text-white/70 mt-1">Lugar de Sombras · Ecoturismo Indígena</p>
+        <div className="text-center mb-8">
+          <h2 className="text-base font-[400] tracking-[0.3em] uppercase text-white">Kan-Tasejkan</h2>
+          <p className="text-xs text-white/70 mt-1">Lugar de Sombras · Ecoturismo Indígena</p>
         </div>
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
 
           {/* Col 1: Ubicación + Mapa */}
           <div className="sm:col-span-2 lg:col-span-1">
@@ -31,9 +31,9 @@ export default function Footer() {
             </h3>
             <div className="flex items-start gap-3 text-white text-sm leading-relaxed mb-4">
               <MapPin size={16} className="mt-0.5 shrink-0 text-[#D4A853]" />
-              <p>Centro Ecoturístico Kan-Tasejkan<br />Sierra de Zongolica, Veracruz, México</p>
+              <p>Centro Ecoturístico Kan-Tasejkan<br />Tonalapan, Mecayapan, Sierra Sur de Veracruz</p>
             </div>
-            <div className="w-full h-32 rounded-lg overflow-hidden border border-white/20">
+            <div className="w-full h-28 rounded-lg overflow-hidden border border-white/20">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3800!2d-94.7981762!3d18.1466413!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85e9f23c3f135f27%3A0x7d04ec0e92691050!2sCentro%20Ecotur%C3%ADstico%20Kan%20Tasejkan!5e0!3m2!1ses!2smx!4v1720000000000"
                 width="100%"
@@ -129,7 +129,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-5 border-t border-white/15 text-center">
+        <div className="mt-8 pt-4 border-t border-white/15 text-center">
           <p className="text-white/60 text-xs">
             © 2026 Kan-Tasejkan · Lugar de Sombras. Todos los derechos reservados.
           </p>

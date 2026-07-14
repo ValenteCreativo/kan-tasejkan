@@ -134,6 +134,17 @@ export default function AdminPage() {
 
         {/* Configuración mínima */}
         <Link
+          href="/admin/contenido"
+          className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-3"
+        >
+          <div className="flex items-center gap-3">
+            <ImageIcon size={18} className="text-[#1B4332]" />
+            <span className="text-sm font-[500] text-[#1A1A1A]">Editar textos de las páginas</span>
+          </div>
+          <ChevronRight size={16} className="text-[#8B8B8B]" />
+        </Link>
+
+        <Link
           href="/admin/configuracion"
           className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-3"
         >

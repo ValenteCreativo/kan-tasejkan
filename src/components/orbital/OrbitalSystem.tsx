@@ -22,10 +22,11 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'quienes-somos', label: 'Quiénes Somos', description: 'Nuestra historia y comunidad.', href: '/quienes-somos', icon: 'people', angle: 0 },
-  { id: 'servicios', label: 'Servicios', description: 'Hospedaje, restaurant, aventura, balneario y camping.', href: '/servicios', icon: 'mountain', angle: 72 },
-  { id: 'talleres', label: 'Talleres', description: 'Aprende de nuestra cultura ancestral.', href: '/talleres', icon: 'hands', angle: 144 },
-  { id: 'experiencias', label: 'Experiencias', description: 'Gastronómica, rituales, bodas tradicionales.', href: '/experiencias', icon: 'fire', angle: 216 },
-  { id: 'premios', label: 'Premios y Certificaciones', description: 'Reconocimientos a nuestro trabajo.', href: '/premios', icon: 'star', angle: 288 },
+  { id: 'servicios', label: 'Servicios', description: 'Hospedaje, restaurant, aventura, balneario y camping.', href: '/servicios', icon: 'mountain', angle: 60 },
+  { id: 'talleres', label: 'Talleres', description: 'Aprende de nuestra cultura ancestral.', href: '/talleres', icon: 'hands', angle: 120 },
+  { id: 'experiencias', label: 'Experiencias', description: 'Gastronómica, rituales, bodas tradicionales.', href: '/experiencias', icon: 'fire', angle: 180 },
+  { id: 'precios', label: 'Precios', description: 'Tarifas y promociones.', href: '/precios', icon: 'star', angle: 240 },
+  { id: 'premios', label: 'Premios', description: 'Reconocimientos a nuestro trabajo.', href: '/premios', icon: 'star', angle: 300 },
 ];
 
 // Icon map
