@@ -7,19 +7,19 @@ import { ArrowLeft, Loader2, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame
 import SectionEditor from '@/components/admin/SectionEditor';
 
 const SECTIONS = [
-  { value: 'hospedaje', label: 'Hospedaje', icon: Home, textKey: 'hospedaje_texto', fallback: 'Cabañas rústicas y acogedoras integradas al entorno natural.' },
-  { value: 'restaurant', label: 'Restaurante', icon: UtensilsCrossed, textKey: 'restaurant_texto', fallback: 'Gastronomía regional e indígena con ingredientes locales.' },
-  { value: 'aventura', label: 'Aventura', icon: Mountain, textKey: 'aventura_texto', fallback: 'Tirolesas, rappel, senderismo y más actividades de adrenalina.' },
-  { value: 'balneario', label: 'Balneario', icon: Waves, textKey: 'balneario_texto', fallback: 'Albercas y pozas naturales rodeadas de vegetación.' },
-  { value: 'camping', label: 'Camping', icon: Tent, textKey: 'camping_texto', fallback: 'Áreas de acampado bajo las estrellas.' },
-  { value: 'talleres', label: 'Talleres', icon: Users, textKey: 'talleres_texto', fallback: 'Aprende de nuestra cultura ancestral.' },
-  { value: 'experiencia-gastronomica', label: 'Exp. Gastronómica', icon: Flame, textKey: 'gastronomica_texto', fallback: 'Cocina tradicional náhuatl desde el campo hasta la mesa.' },
-  { value: 'rituales', label: 'Rituales', icon: Heart, textKey: 'rituales_texto', fallback: 'Temazcal, ceremonias y rituales de nuestra tradición.' },
-  { value: 'bodas', label: 'Bodas', icon: Heart, textKey: 'bodas_texto', fallback: 'Ceremonias tradicionales en un entorno natural mágico.' },
-  { value: 'comunidad', label: 'Comunidad', icon: Users, textKey: 'quienes_somos_texto', fallback: 'Nuestra historia y comunidad.' },
-  { value: 'premios', label: 'Premios', icon: Award, textKey: 'premios_texto', fallback: 'Reconocimientos a nuestro trabajo.' },
-  { value: 'precios', label: 'Precios y Promos', icon: Tag, textKey: 'precios_texto', fallback: 'Tarifas y promociones especiales.' },
-  { value: 'paisajes', label: 'Paisajes', icon: TreePine, textKey: 'paisajes_texto', fallback: 'La naturaleza que nos rodea.' },
+  { value: 'hospedaje', label: 'Hospedaje', icon: Home, textKey: 'hospedaje_texto', fallback: 'Cabañas rústicas y acogedoras integradas al entorno natural. Despierta con el sonido de la naturaleza y el aroma del bosque.' },
+  { value: 'restaurant', label: 'Restaurante', icon: UtensilsCrossed, textKey: 'restaurant_texto', fallback: 'Gastronomía regional e indígena preparada con ingredientes locales y técnicas ancestrales. Sabores auténticos de la Sierra Sur de Veracruz.' },
+  { value: 'aventura', label: 'Aventura', icon: Mountain, textKey: 'aventura_texto', fallback: 'Tirolesas, rappel, senderismo y más actividades para los amantes de la adrenalina en un entorno natural incomparable.' },
+  { value: 'balneario', label: 'Balneario', icon: Waves, textKey: 'balneario_texto', fallback: 'Albercas y pozas naturales rodeadas de vegetación exuberante. Un oasis de frescura.' },
+  { value: 'camping', label: 'Camping', icon: Tent, textKey: 'camping_texto', fallback: 'Áreas de acampado equipadas para dormir bajo las estrellas en la sierra veracruzana.' },
+  { value: 'talleres', label: 'Talleres', icon: Users, textKey: 'talleres_texto', fallback: 'Aprende de nuestra cultura ancestral con experiencias prácticas y vivenciales.' },
+  { value: 'experiencia-gastronomica', label: 'Exp. Gastronómica', icon: Flame, textKey: 'gastronomica_texto', fallback: 'Sumérgete en la cocina tradicional náhuatl. Desde la recolección de ingredientes en el campo hasta la preparación y degustación de platillos ancestrales.' },
+  { value: 'rituales', label: 'Rituales', icon: Heart, textKey: 'rituales_texto', fallback: 'Participa en ceremonias y rituales de nuestra tradición náhuatl. Temazcal, ceremonias de agradecimiento a la tierra y celebraciones según el calendario sagrado.' },
+  { value: 'bodas', label: 'Bodas', icon: Heart, textKey: 'bodas_texto', fallback: 'Celebra tu unión con una ceremonia tradicional indígena en un entorno natural mágico. Nuestros guías espirituales conducen la ceremonia respetando las tradiciones ancestrales.' },
+  { value: 'comunidad', label: 'Quiénes Somos', icon: Users, textKey: 'quienes_somos_texto', fallback: 'Somos una comunidad indígena comprometida con el turismo sustentable, la preservación de nuestra cultura y el cuidado de la tierra que nos ha sido heredada.' },
+  { value: 'premios', label: 'Premios', icon: Award, textKey: 'premios_texto', fallback: 'Nuestro trabajo ha sido reconocido por diversas instituciones nacionales e internacionales que valoran el ecoturismo sustentable.' },
+  { value: 'precios', label: 'Precios y Promos', icon: Tag, textKey: 'precios_texto', fallback: 'Consulta nuestras tarifas y paquetes especiales.' },
+  { value: 'paisajes', label: 'Paisajes', icon: TreePine, textKey: 'paisajes_texto', fallback: 'La naturaleza que nos rodea en Tonalapan, Mecayapan.' },
 ];
 
 function GaleriaContent() {
