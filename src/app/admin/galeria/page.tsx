@@ -57,25 +57,11 @@ function GaleriaContent() {
 
   if (!current) {
     return (
-      <div className="max-w-lg mx-auto px-5 md:px-8 mt-6">
-        <p className="text-base font-[500] text-[#1A1A1A] mb-4 text-center">
-          Selecciona una sección para editar
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          {SECTIONS.map((s) => {
-            const Icon = s.icon;
-            return (
-              <Link
-                key={s.value}
-                href={`/admin/galeria?seccion=${s.value}`}
-                className="flex flex-col items-center gap-2 bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors"
-              >
-                <Icon size={20} className="text-[#1B4332]" />
-                <span className="text-xs font-[500] text-[#1A1A1A]">{s.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+      <div className="max-w-lg mx-auto px-5 md:px-8 mt-6 text-center">
+        <p className="text-sm text-[#4A4A4A] mb-4">Selecciona una sección desde el panel principal</p>
+        <Link href="/admin" className="inline-block text-xs text-[#1B4332] font-[500] px-4 py-2 rounded-full bg-[#1B4332]/8 active:bg-[#1B4332]/15">
+          ← Ir al panel
+        </Link>
       </div>
     );
   }
