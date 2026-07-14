@@ -59,7 +59,10 @@ export default function ExperienciasPage() {
     label: exp.title.length > 18 ? exp.title.slice(0, 18) + '…' : exp.title,
     content: (
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-[200] text-[#1B4332] text-center mb-6">{exp.title}</h2>
+        <h2 className="text-2xl md:text-3xl font-[200] text-[#1B4332] text-center mb-4">{exp.title}</h2>
+        {'price' in exp && (exp as any).price && (
+          <p className="text-center text-[#D4A853] font-[500] mb-4">${(exp as any).price}</p>
+        )}
         {exp.description && (
           <p className="text-[#4A4A4A] leading-relaxed text-lg font-light max-w-3xl mx-auto text-center mb-10">{exp.description}</p>
         )}

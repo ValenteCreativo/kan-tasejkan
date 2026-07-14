@@ -88,6 +88,7 @@ function GaleriaContent() {
         sectionLabel={current.label}
         textKey={current.textKey}
         textFallback={current.fallback}
+        serviceSlug={current.value}
       />
 
       {/* Show price editor when on precios section */}

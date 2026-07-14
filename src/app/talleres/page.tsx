@@ -58,11 +58,14 @@ export default function TalleresPage() {
     label: t.title.length > 15 ? t.title.slice(0, 15) + '…' : t.title,
     content: (
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-[200] text-[#1B4332] text-center mb-6">{t.title}</h2>
+        <h2 className="text-2xl md:text-3xl font-[200] text-[#1B4332] text-center mb-4">{t.title}</h2>
+        {'price' in t && (t as any).price && (
+          <p className="text-center text-[#D4A853] font-[500] mb-4">${(t as any).price}</p>
+        )}
         {t.description && (
           <p className="text-[#4A4A4A] leading-relaxed text-lg font-light max-w-3xl mx-auto text-center mb-10">{t.description}</p>
         )}
-        <SectionGallery section="talleres" columns={3} showEmpty />
+        <SectionGallery section={'slug' in t ? (t as any).slug : 'talleres'} columns={3} showEmpty />
       </div>
     ),
   }));
