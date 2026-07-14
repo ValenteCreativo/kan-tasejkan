@@ -163,81 +163,79 @@ export default function AdminPage() {
         </div>
 
         {/* Bolitas grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {navItems.filter(n => n.isVisible).map((nav) => {
-            const isExpanded = expandedPage === nav.id;
             const tabs = services.filter(s => s.category === getCategoryKey(nav.label));
 
             return (
-              <div key={nav.id} className={`col-span-3`}>
-                {/* Card */}
-                <div className={`bg-white rounded-xl border ${isExpanded ? 'border-[#1B4332]' : 'border-[#E0DDD5]'} overflow-hidden`}>
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => setExpandedPage(isExpanded ? null : nav.id)}
-                      className="flex-1 flex items-center gap-3 p-4 active:bg-[#F5F0E8]"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-[#1B4332]/8 flex items-center justify-center shrink-0">
-                        <Circle size={14} className="text-[#1B4332]" fill="#1B4332" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-sm font-[600] text-[#1A1A1A]">{nav.label}</p>
-                        <p className="text-[10px] text-[#8B8B8B]">{tabs.length} elemento{tabs.length !== 1 ? 's' : ''}</p>
-                      </div>
-                    </button>
-                    {/* Edit photos link */}
-                    <Link
-                      href={`/admin/galeria?seccion=${nav.href.replace('/', '')}`}
-                      className="px-3 py-2 text-[10px] text-[#1B4332] font-[500] active:bg-[#F5F0E8]"
-                    >
-                      📷
-                    </Link>
-                    {/* Delete page */}
-                    <button
-                      onClick={() => handleDeletePage(nav.id, nav.label)}
-                      className="px-3 py-2 active:bg-red-50"
-                    >
-                      <Minus size={12} className="text-red-400" />
-                    </button>
-                  </div>
-
-                  {/* Expanded: show tabs */}
-                  {isExpanded && (
-                    <div className="border-t border-[#E0DDD5] p-3 bg-[#FAFAFA] space-y-2">
-                      {tabs.length === 0 && (
-                        <p className="text-xs text-[#8B8B8B] text-center py-2">Sin sub-secciones</p>
-                      )}
-                      {tabs.map((tab) => (
-                        <div key={tab.id} className="flex items-center bg-white rounded-lg border border-[#E0DDD5] overflow-hidden">
-                          <Link
-                            href={`/admin/galeria?seccion=${tab.slug}`}
-                            className="flex-1 p-3 active:bg-[#F5F0E8]"
-                          >
-                            <p className="text-xs font-[500] text-[#1A1A1A]">{tab.title}</p>
-                            {tab.price && <p className="text-[10px] text-[#D4A853]">${tab.price}</p>}
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteTab(tab.id, tab.title)}
-                            className="px-3 py-2 border-l border-[#E0DDD5] active:bg-red-50"
-                          >
-                            <Minus size={10} className="text-red-400" />
-                          </button>
-                        </div>
-                      ))}
-                      {/* Add tab button */}
-                      <button
-                        onClick={() => openTabPopup(getCategoryKey(nav.label))}
-                        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-[#E0DDD5] text-xs text-[#1B4332] font-[500] active:bg-[#F5F0E8]"
-                      >
-                        <Plus size={12} /> Agregar
-                      </button>
-                    </div>
-                  )}
+              <button
+                key={nav.id}
+                onClick={() => setExpandedPage(expandedPage === nav.id ? null : nav.id)}
+                className={`flex flex-col items-center gap-2 p-5 rounded-2xl border text-center transition-all ${
+                  expandedPage === nav.id
+                    ? 'bg-[#1B4332]/5 border-[#1B4332] shadow-sm'
+                    : 'bg-white border-[#E0DDD5] active:bg-[#F5F0E8]'
+                }`}
+              >
+                <div className="w-12 h-12 rounded-full bg-[#1B4332]/10 flex items-center justify-center">
+                  <Circle size={16} className="text-[#1B4332]" fill="#1B4332" />
                 </div>
-              </div>
+                <span className="text-xs font-[600] text-[#1A1A1A]">{nav.label}</span>
+                <span className="text-[10px] text-[#8B8B8B]">{tabs.length} tab{tabs.length !== 1 ? 's' : ''}</span>
+              </button>
             );
           })}
         </div>
+
+        {/* Expanded panel for selected bolita */}
+        {expandedPage && (() => {
+          const nav = navItems.find(n => n.id === expandedPage);
+          if (!nav) return null;
+          const tabs = services.filter(s => s.category === getCategoryKey(nav.label));
+
+          return (
+            <div className="mt-4 bg-white rounded-2xl border border-[#1B4332] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-[600] text-[#1B4332]">{nav.label}</h3>
+                <div className="flex gap-2">
+                  <Link
+                    href={`/admin/galeria?seccion=${nav.href.replace('/', '')}`}
+                    className="text-[10px] px-2.5 py-1 rounded-full bg-[#1B4332]/8 text-[#1B4332] font-[500]"
+                  >
+                    📷 Fotos
+                  </Link>
+                  <button
+                    onClick={() => handleDeletePage(nav.id, nav.label)}
+                    className="text-[10px] px-2.5 py-1 rounded-full bg-red-50 text-red-500 font-[500]"
+                  >
+                    Eliminar página
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabs dentro */}
+              {tabs.map((tab) => (
+                <div key={tab.id} className="flex items-center bg-[#FAFAFA] rounded-xl border border-[#E0DDD5] overflow-hidden">
+                  <Link href={`/admin/galeria?seccion=${tab.slug}`} className="flex-1 p-3 active:bg-[#F5F0E8]">
+                    <p className="text-xs font-[500] text-[#1A1A1A]">{tab.title}</p>
+                    {tab.price && <p className="text-[10px] text-[#D4A853]">${tab.price}</p>}
+                  </Link>
+                  <button onClick={() => handleDeleteTab(tab.id, tab.title)} className="px-3 py-3 border-l border-[#E0DDD5] active:bg-red-50">
+                    <Minus size={12} className="text-red-400" />
+                  </button>
+                </div>
+              ))}
+
+              {/* Add tab */}
+              <button
+                onClick={() => openTabPopup(getCategoryKey(nav.label))}
+                className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-dashed border-[#D4A853] text-xs text-[#D4A853] font-[500] active:bg-[#D4A853]/5"
+              >
+                <Plus size={12} /> Agregar a {nav.label}
+              </button>
+            </div>
+          );
+        })()}
 
         {/* Config */}
         <div className="mt-6">
