@@ -1,171 +1,52 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeft, Trash2, Image as ImageIcon, Video, Loader2, Camera, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame, Heart, Award, Users, TreePine } from 'lucide-react';
-import { getAllMedia, createMedia, deleteMedia, uploadFile } from '@/actions';
-import { useDropzone } from 'react-dropzone';
-
-type MediaItem = {
-  id: string;
-  title: string | null;
-  url: string;
-  type: string;
-  section: string;
-  isPublished: boolean | null;
-};
+import { ArrowLeft, Loader2, Home, UtensilsCrossed, Mountain, Waves, Tent, Flame, Heart, Award, Users, TreePine, Tag } from 'lucide-react';
+import SectionEditor from '@/components/admin/SectionEditor';
 
 const SECTIONS = [
-  { value: 'hospedaje', label: 'Hospedaje', icon: Home },
-  { value: 'restaurant', label: 'Restaurante', icon: UtensilsCrossed },
-  { value: 'aventura', label: 'Aventura', icon: Mountain },
-  { value: 'balneario', label: 'Balneario', icon: Waves },
-  { value: 'camping', label: 'Camping', icon: Tent },
-  { value: 'talleres', label: 'Talleres', icon: Users },
-  { value: 'experiencia-gastronomica', label: 'Gastronómica', icon: Flame },
-  { value: 'rituales', label: 'Rituales', icon: Heart },
-  { value: 'bodas', label: 'Bodas', icon: Heart },
-  { value: 'comunidad', label: 'Comunidad', icon: Users },
-  { value: 'premios', label: 'Premios', icon: Award },
-  { value: 'precios', label: 'Precios y Promos', icon: Heart },
-  { value: 'paisajes', label: 'Paisajes', icon: TreePine },
+  { value: 'hospedaje', label: 'Hospedaje', icon: Home, textKey: 'hospedaje_texto', fallback: 'Cabañas rústicas y acogedoras integradas al entorno natural.' },
+  { value: 'restaurant', label: 'Restaurante', icon: UtensilsCrossed, textKey: 'restaurant_texto', fallback: 'Gastronomía regional e indígena con ingredientes locales.' },
+  { value: 'aventura', label: 'Aventura', icon: Mountain, textKey: 'aventura_texto', fallback: 'Tirolesas, rappel, senderismo y más actividades de adrenalina.' },
+  { value: 'balneario', label: 'Balneario', icon: Waves, textKey: 'balneario_texto', fallback: 'Albercas y pozas naturales rodeadas de vegetación.' },
+  { value: 'camping', label: 'Camping', icon: Tent, textKey: 'camping_texto', fallback: 'Áreas de acampado bajo las estrellas.' },
+  { value: 'talleres', label: 'Talleres', icon: Users, textKey: 'talleres_texto', fallback: 'Aprende de nuestra cultura ancestral.' },
+  { value: 'experiencia-gastronomica', label: 'Exp. Gastronómica', icon: Flame, textKey: 'gastronomica_texto', fallback: 'Cocina tradicional náhuatl desde el campo hasta la mesa.' },
+  { value: 'rituales', label: 'Rituales', icon: Heart, textKey: 'rituales_texto', fallback: 'Temazcal, ceremonias y rituales de nuestra tradición.' },
+  { value: 'bodas', label: 'Bodas', icon: Heart, textKey: 'bodas_texto', fallback: 'Ceremonias tradicionales en un entorno natural mágico.' },
+  { value: 'comunidad', label: 'Comunidad', icon: Users, textKey: 'quienes_somos_texto', fallback: 'Nuestra historia y comunidad.' },
+  { value: 'premios', label: 'Premios', icon: Award, textKey: 'premios_texto', fallback: 'Reconocimientos a nuestro trabajo.' },
+  { value: 'precios', label: 'Precios y Promos', icon: Tag, textKey: 'precios_texto', fallback: 'Tarifas y promociones especiales.' },
+  { value: 'paisajes', label: 'Paisajes', icon: TreePine, textKey: 'paisajes_texto', fallback: 'La naturaleza que nos rodea.' },
 ];
 
 function GaleriaContent() {
   const searchParams = useSearchParams();
   const paramSection = searchParams.get('seccion') || '';
 
-  const [activeSection, setActiveSection] = useState(paramSection);
-  const [items, setItems] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploadCount, setUploadCount] = useState(0);
-  const [uploadTotal, setUploadTotal] = useState(0);
+  const current = SECTIONS.find(s => s.value === paramSection);
 
-  const loadMedia = useCallback(async () => {
-    if (!activeSection) { setItems([]); return; }
-    setLoading(true);
-    const { data } = await getAllMedia(activeSection);
-    setItems((data as MediaItem[]) || []);
-    setLoading(false);
-  }, [activeSection]);
-
-  useEffect(() => { loadMedia(); }, [loadMedia]);
-
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (!activeSection) {
-      alert('Selecciona primero una sección');
-      return;
-    }
-
-    // Filter out unsupported formats (HEIC) with a friendly message
-    const supported = acceptedFiles.filter(f => {
-      const name = f.name.toLowerCase();
-      if (name.endsWith('.heic') || name.endsWith('.heif')) {
-        alert(`"${f.name}" está en formato HEIC. Por favor cambia la configuración de tu cámara a JPG (Ajustes > Cámara > Formatos > Más compatible) o envíatela por WhatsApp primero para convertirla.`);
-        return false;
-      }
-      return true;
-    });
-
-    if (supported.length === 0) return;
-
-    setUploading(true);
-    setUploadTotal(supported.length);
-    setUploadCount(0);
-
-    let errors = 0;
-    let success = 0;
-
-    for (const file of supported) {
-      try {
-        const isVideo = file.type.startsWith('video/');
-        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-        const pathname = `media/${activeSection}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('pathname', pathname);
-
-        const { url, error: uploadError } = await uploadFile(formData);
-        if (uploadError || !url) {
-          errors++;
-          console.error(`Upload error: ${file.name}`, uploadError);
-          continue;
-        }
-
-        const { error: dbError } = await createMedia({
-          title: file.name.replace(/\.[^.]+$/, ''),
-          url,
-          type: isVideo ? 'video' : 'image',
-          section: activeSection,
-          isPublished: true,
-        });
-
-        if (dbError) {
-          errors++;
-          console.error(`DB error: ${file.name}`, dbError);
-          continue;
-        }
-
-        success++;
-        setUploadCount((c) => c + 1);
-      } catch (err) {
-        errors++;
-        console.error('Upload error:', err);
-      }
-    }
-
-    setUploading(false);
-
-    if (errors > 0 && success === 0) {
-      alert('No se pudieron subir las fotos. Intenta cerrar sesión y volver a entrar.');
-    } else if (errors > 0) {
-      alert(`Se subieron ${success} de ${supported.length} archivos. ${errors} fallaron — intenta subirlos de nuevo.`);
-    }
-
-    loadMedia();
-  }, [activeSection, loadMedia]);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    onDropRejected: () => {
-      alert('Máximo 10 archivos a la vez. Sube de poco en poco.');
-    },
-    accept: { 'image/*': [], 'video/*': [] },
-    multiple: true,
-    maxFiles: 10,
-    noClick: false,
-    noKeyboard: true,
-  });
-
-  async function handleDelete(id: string) {
-    if (!confirm('¿Eliminar esta foto?')) return;
-    await deleteMedia(id);
-    loadMedia();
-  }
-
-  // Si no hay sección seleccionada, mostrar selector
-  if (!activeSection) {
+  // Si no hay sección, mostrar selector
+  if (!current) {
     return (
       <div className="max-w-lg mx-auto px-5 md:px-8 mt-6">
         <p className="text-base font-[500] text-[#1A1A1A] mb-4 text-center">
-          ¿A qué sección quieres subir fotos?
+          Selecciona una sección para editar
         </p>
         <div className="grid grid-cols-2 gap-3">
           {SECTIONS.map((s) => {
             const Icon = s.icon;
             return (
-              <button
+              <Link
                 key={s.value}
-                onClick={() => setActiveSection(s.value)}
+                href={`/admin/galeria?seccion=${s.value}`}
                 className="flex flex-col items-center gap-2 bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors"
               >
                 <Icon size={20} className="text-[#1B4332]" />
                 <span className="text-xs font-[500] text-[#1A1A1A]">{s.label}</span>
-              </button>
+              </Link>
             );
           })}
         </div>
@@ -173,99 +54,28 @@ function GaleriaContent() {
     );
   }
 
-  const sectionLabel = SECTIONS.find(s => s.value === activeSection)?.label || activeSection;
-
   return (
-    <div className="max-w-4xl mx-auto px-5 md:px-8">
-      {/* Sección activa */}
-      <div className="mt-6 mb-4 flex items-center justify-between">
-        <p className="text-base font-[500] text-[#1A1A1A]">
-          📁 {sectionLabel}
-        </p>
-        <button
-          onClick={() => setActiveSection('')}
-          className="text-xs text-[#1B4332] font-[500] px-3 py-1.5 rounded-full bg-[#1B4332]/5 active:bg-[#1B4332]/10"
+    <div className="max-w-2xl mx-auto px-5 md:px-8 mt-6">
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <current.icon size={20} className="text-[#1B4332]" />
+          <h2 className="text-lg font-[500] text-[#1A1A1A]">{current.label}</h2>
+        </div>
+        <Link
+          href="/admin/galeria"
+          className="text-xs text-[#1B4332] font-[500] px-3 py-1.5 rounded-full bg-[#1B4332]/5"
         >
-          Cambiar sección
-        </button>
+          Cambiar
+        </Link>
       </div>
 
-      {/* Upload zone */}
-      <div
-        {...getRootProps()}
-        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors mb-6 ${
-          isDragActive ? 'border-[#52B788] bg-[#52B788]/5' : 'border-[#E0DDD5] bg-white active:bg-[#F5F0E8]'
-        }`}
-      >
-        <input {...getInputProps()} />
-        {uploading ? (
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 size={32} className="animate-spin text-[#1B4332]" />
-            <p className="text-base text-[#1A1A1A] font-[500]">Subiendo {uploadCount} de {uploadTotal}...</p>
-            <p className="text-sm text-[#8B8B8B]">No cierres esta página</p>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-[#1B4332]/10 flex items-center justify-center">
-              <Camera size={28} className="text-[#1B4332]" />
-            </div>
-            <p className="text-base text-[#1A1A1A] font-[500]">
-              Toca aquí para seleccionar fotos
-            </p>
-            <p className="text-sm text-[#8B8B8B]">
-              Máximo 10 a la vez
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Fotos de esta sección */}
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 size={24} className="animate-spin text-[#1B4332]" />
-        </div>
-      ) : items.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-2xl border border-[#E0DDD5]">
-          <ImageIcon size={36} className="mx-auto mb-3 text-[#8B8B8B]" />
-          <p className="text-sm text-[#4A4A4A]">No hay fotos en {sectionLabel}</p>
-          <p className="text-xs text-[#8B8B8B] mt-1">Usa el botón de arriba para subir</p>
-        </div>
-      ) : (
-        <>
-          <p className="text-xs text-[#8B8B8B] mb-3">{items.length} foto{items.length !== 1 ? 's' : ''} en {sectionLabel}</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {items.map((item) => (
-              <div key={item.id} className="relative bg-white rounded-xl border border-[#E0DDD5] overflow-hidden">
-                <div className="aspect-square relative bg-[#F5F0E8]">
-                  {item.type === 'image' ? (
-                    <Image
-                      src={item.url}
-                      alt={item.title || ''}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                      <Video size={28} className="text-[#1B4332]" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-2 flex justify-end">
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center active:bg-red-100"
-                    title="Eliminar"
-                  >
-                    <Trash2 size={14} className="text-red-500" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+      <SectionEditor
+        section={current.value}
+        sectionLabel={current.label}
+        textKey={current.textKey}
+        textFallback={current.fallback}
+      />
     </div>
   );
 }
@@ -275,12 +85,13 @@ export default function GaleriaAdminPage() {
     <div className="min-h-screen bg-[#FAFAFA] pb-8">
       {/* Header */}
       <div className="bg-[#1B4332] text-white px-5 py-5 md:px-8 md:py-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <Link href="/admin" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-3">
             <ArrowLeft size={16} />
             Volver al panel
           </Link>
-          <h1 className="text-lg md:text-xl font-[500]">Galería de Fotos y Videos</h1>
+          <h1 className="text-lg md:text-xl font-[500]">Editar Sección</h1>
+          <p className="text-sm text-white/70 mt-0.5">Cambia el texto y sube fotos</p>
         </div>
       </div>
 

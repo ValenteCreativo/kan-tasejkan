@@ -91,12 +91,12 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-lg mx-auto px-5 md:px-8">
-        {/* Secciones para subir fotos directo */}
+        {/* Secciones */}
         <p className="text-xs font-[600] tracking-[0.12em] uppercase text-[#4A4A4A] mt-6 mb-3 px-1">
-          Subir fotos por sección
+          Editar secciones
         </p>
         <p className="text-xs text-[#8B8B8B] mb-4 px-1">
-          Toca una sección para subir fotos directamente ahí
+          Toca una sección para editar su texto y subir fotos
         </p>
 
         <div className="grid grid-cols-2 gap-3">
@@ -132,18 +132,7 @@ export default function AdminPage() {
           <ChevronRight size={16} className="text-[#8B8B8B]" />
         </Link>
 
-        {/* Configuración mínima */}
-        <Link
-          href="/admin/contenido"
-          className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-3"
-        >
-          <div className="flex items-center gap-3">
-            <ImageIcon size={18} className="text-[#1B4332]" />
-            <span className="text-sm font-[500] text-[#1A1A1A]">Editar textos de las páginas</span>
-          </div>
-          <ChevronRight size={16} className="text-[#8B8B8B]" />
-        </Link>
-
+        {/* Configuración */}
         <Link
           href="/admin/configuracion"
           className="flex items-center justify-between bg-white rounded-xl p-4 border border-[#E0DDD5] active:bg-[#F5F0E8] transition-colors mt-3"
